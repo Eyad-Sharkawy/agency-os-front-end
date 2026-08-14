@@ -10,7 +10,7 @@ The **Agency OS Front-End** is a single page application built with **Angular 22
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Framework**: Angular `22.0.0` (Pure Standalone Component Architecture)
 - **Language**: TypeScript `~6.0.2`
@@ -24,7 +24,7 @@ The **Agency OS Front-End** is a single page application built with **Angular 22
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 src/
@@ -48,7 +48,7 @@ src/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js 20+
@@ -86,16 +86,16 @@ npx prettier --write .
 
 ---
 
-## 🔗 Back-End API Integration
+## Back-End API Integration
 
 - **API Base URL**: `http://localhost:8080/api/v1`
 - **Multi-Tenant Header**: Outgoing requests must include the `X-Tenant-ID` header corresponding to the active workspace.
 - **Authentication**: Keycloak Bearer JWT attached via `Authorization: Bearer <token>`.
-- **Live Timers**: Connects to `/ws-timer` with STOMP over SockJS subscribing to `/topic/{tenantId}/timers/start` and `/topic/{tenantId}/timers/stop`.
+- **Live Timers**: Connects to `/ws-timer` with STOMP over SockJS, subscribing to `/topic/{tenantId}/timers/start` and `/topic/{tenantId}/timers/stop`.
 
 ---
 
-## 📚 Documentation Reference
+## Documentation Reference
 
 - [📐 Front-End Architecture & State Guide](docs/ARCHITECTURE.md)
 - [📡 Back-End API Integration & WebSocket Guide](docs/API_INTEGRATION.md)
