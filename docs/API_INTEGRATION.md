@@ -173,6 +173,7 @@ export interface Client {
 export interface Project {
   id: string;
   name: string;
+  description?: string;
   budget: number;
   billingRate: number;
   status: ProjectStatus;
