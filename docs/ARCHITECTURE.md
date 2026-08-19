@@ -58,9 +58,9 @@ src/
 State in Agency OS follows a **Store Service** pattern powered by Angular Signals:
 
 ```typescript
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed } from "@angular/core";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class WorkspaceStore {
   private readonly _activeWorkspace = signal<Workspace | null>(null);
   private readonly _workspaces = signal<Workspace[]>([]);
@@ -72,7 +72,7 @@ export class WorkspaceStore {
 
   setActiveWorkspace(workspace: Workspace) {
     this._activeWorkspace.set(workspace);
-    localStorage.setItem('active_tenant_id', workspace.tenantId);
+    localStorage.setItem("active_tenant_id", workspace.tenantId);
   }
 }
 ```
@@ -85,42 +85,42 @@ export class WorkspaceStore {
 // app.routes.ts
 export const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: ShellComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'projects', pathMatch: 'full' },
-      { 
-        path: 'workspaces', 
-        loadComponent: () => import('./features/workspaces/workspaces.component') 
+      { path: "", redirectTo: "projects", pathMatch: "full" },
+      {
+        path: "workspaces",
+        loadComponent: () => import("./features/workspaces/workspaces.component"),
       },
-      { 
-        path: 'clients', 
-        canActivate: [roleGuard(['OWNER', 'ADMIN', 'MEMBER'])],
-        loadComponent: () => import('./features/clients/clients.component') 
+      {
+        path: "clients",
+        canActivate: [roleGuard(["OWNER", "ADMIN", "MEMBER"])],
+        loadComponent: () => import("./features/clients/clients.component"),
       },
-      { 
-        path: 'projects', 
-        loadComponent: () => import('./features/projects/projects.component') 
+      {
+        path: "projects",
+        loadComponent: () => import("./features/projects/projects.component"),
       },
-      { 
-        path: 'tasks', 
-        loadComponent: () => import('./features/tasks/tasks.component') 
+      {
+        path: "tasks",
+        loadComponent: () => import("./features/tasks/tasks.component"),
       },
-      { 
-        path: 'time-tracking', 
-        canActivate: [roleGuard(['OWNER', 'ADMIN', 'MEMBER'])],
-        loadComponent: () => import('./features/time-tracking/time-tracking.component') 
+      {
+        path: "time-tracking",
+        canActivate: [roleGuard(["OWNER", "ADMIN", "MEMBER"])],
+        loadComponent: () => import("./features/time-tracking/time-tracking.component"),
       },
-      { 
-        path: 'invoices', 
-        canActivate: [roleGuard(['OWNER', 'ADMIN', 'CLIENT'])],
-        loadComponent: () => import('./features/invoices/invoices.component') 
+      {
+        path: "invoices",
+        canActivate: [roleGuard(["OWNER", "ADMIN", "CLIENT"])],
+        loadComponent: () => import("./features/invoices/invoices.component"),
       },
-    ]
+    ],
   },
-  { path: 'login', loadComponent: () => import('./features/auth/login.component') },
-  { path: '**', redirectTo: '' }
+  { path: "login", loadComponent: () => import("./features/auth/login.component") },
+  { path: "**", redirectTo: "" },
 ];
 ```
 
@@ -129,6 +129,7 @@ export const routes: Routes = [
 ## 5. Testing with Vitest
 
 Unit tests are executed via Vitest with `jsdom` runner:
+
 - Component DOM rendering and inputs/outputs.
 - Signal state mutations.
 - Mocked HTTP testing with `HttpTestingController`.

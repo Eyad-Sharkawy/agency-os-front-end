@@ -4,7 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-blue.svg)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8.svg)](https://tailwindcss.com/)
 [![Vitest](https://img.shields.io/badge/Vitest-4.0.8-yellow.svg)](https://vitest.dev/)
-[![License](https://img.shields.io/badge/License-Proprietary-lightgrey.svg)]()
+[![License](https://img.shields.io/badge/License-Proprietary-lightgrey.svg)](<>)
 
 The **Agency OS Front-End** is a single page application built with **Angular 22** using a pure standalone architecture, Angular Signals for reactive state management, Tailwind CSS v4 for styling, and Vitest for testing.
 
@@ -51,35 +51,44 @@ src/
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 20+
 - npm 10+
 
 ### Installation
+
 ```bash
 npm install
 ```
 
 ### Development Server
+
 ```bash
 npm start
 # or
 ng serve
 ```
+
 Navigate to `http://localhost:4200/`. The application will automatically reload upon source code changes.
 
 ### Running Unit Tests
+
 ```bash
 npm test
 ```
+
 Executes unit tests using Vitest and jsdom.
 
 ### Building for Production
+
 ```bash
 npm run build
 ```
+
 Build artifacts are compiled with optimizations into the `dist/` directory.
 
 ### Code Formatting
+
 ```bash
 npx prettier --write .
 ```

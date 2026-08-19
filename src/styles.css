@@ -1,37 +1,37 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme {
-  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
 
   /* Brand & Action */
-  --color-primary: var(--primary);
-  --color-on-primary: var(--on-primary);
-  --color-primary-container: var(--primary-container);
-  --color-on-primary-container: var(--on-primary-container);
+  --color-primary: var(--primary, #3b82f6);
+  --color-on-primary: var(--on-primary, #ffffff);
+  --color-primary-container: var(--primary-container, #eff6ff);
+  --color-on-primary-container: var(--on-primary-container, #1e40af);
 
   /* Surfaces & Backgrounds */
-  --color-surface: var(--surface);
-  --color-surface-dim: var(--surface-dim);
-  --color-surface-bright: var(--surface-bright);
-  --color-surface-container-lowest: var(--surface-container-lowest);
-  --color-surface-container-low: var(--surface-container-low);
-  --color-surface-container: var(--surface-container);
-  --color-surface-container-high: var(--surface-container-high);
-  --color-surface-container-highest: var(--surface-container-highest);
+  --color-surface: var(--surface, #f7f9fb);
+  --color-surface-dim: var(--surface-dim, #d8dadc);
+  --color-surface-bright: var(--surface-bright, #ffffff);
+  --color-surface-container-lowest: var(--surface-container-lowest, #ffffff);
+  --color-surface-container-low: var(--surface-container-low, #f2f4f6);
+  --color-surface-container: var(--surface-container, #eceef0);
+  --color-surface-container-high: var(--surface-container-high, #e6e8ea);
+  --color-surface-container-highest: var(--surface-container-highest, #e0e2e4);
 
   /* Content & Hierarchy */
-  --color-on-surface: var(--on-surface);
-  --color-on-surface-variant: var(--on-surface-variant);
-  --color-outline: var(--outline);
-  --color-outline-variant: var(--outline-variant);
+  --color-on-surface: var(--on-surface, #1a1c1e);
+  --color-on-surface-variant: var(--on-surface-variant, #43474e);
+  --color-outline: var(--outline, #73777f);
+  --color-outline-variant: var(--outline-variant, #c3c7cf);
 
   /* Semantic / Status */
-  --color-success: var(--success);
-  --color-on-success: var(--on-success);
-  --color-error: var(--error);
-  --color-on-error: var(--on-error);
-  --color-warning: var(--warning);
-  --color-on-warning: var(--on-warning);
+  --color-success: var(--success, #22c55e);
+  --color-on-success: var(--on-success, #ffffff);
+  --color-error: var(--error, #ef4444);
+  --color-on-error: var(--on-error, #ffffff);
+  --color-warning: var(--warning, #f59e0b);
+  --color-on-warning: var(--on-warning, #ffffff);
 
   /* Elevation Shadows */
   --shadow-sm: var(--shadow-sm);
@@ -79,9 +79,19 @@
 .dark {
   color-scheme: dark;
 
-  --surface: #1a1c1e;
+  /* Surfaces & Backgrounds */
+  --surface: #121417;
+  --surface-dim: #0e1012;
+  --surface-bright: #37393d;
+  --surface-container-lowest: #090a0c;
+  --surface-container-low: #1a1c1f;
+  --surface-container: #202226;
+  --surface-container-high: #2b2d32;
+  --surface-container-highest: #36383e;
+
+  /* Content & Hierarchy */
   --on-surface: #e2e2e6;
-  --surface-container: #2d2f33;
   --on-surface-variant: #c3c7cf;
+  --outline: #8d9199;
   --outline-variant: #43474e;
 }

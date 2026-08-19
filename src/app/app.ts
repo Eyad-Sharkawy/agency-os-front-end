@@ -1,16 +1,14 @@
-import { Component, signal } from '@angular/core';
-import { LogoComponent } from './shared/components/logo/logo';
-import { provideIcons } from '@ng-icons/core';
-import { simpleGithub } from '@ng-icons/simple-icons';
-import { Icons } from './shared/components/icons/icons';
+import { Component } from "@angular/core";
+import { provideIcons } from "@ng-icons/core";
+import { Icons } from "./shared/components/icons/icons";
+import { Button } from "./shared/components/button/button";
+import { lucideMenu } from "@ng-icons/lucide";
 
 @Component({
-  selector: 'aos-root',
-  imports: [LogoComponent, Icons],
-  providers: provideIcons({ simpleGithub }),
-  templateUrl: './app.html',
-  styleUrl: './app.css',
+  selector: "aos-root",
+  imports: [Icons, Button, Button],
+  providers: provideIcons({ lucideMenu }),
+  templateUrl: "./app.html",
+  styleUrl: "./app.css",
 })
-export class App {
-  protected readonly title = signal('agency-os');
-}
+export class App {}
