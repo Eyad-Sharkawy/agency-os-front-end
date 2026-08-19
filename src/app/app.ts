@@ -1,11 +1,15 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { LogoComponent } from './shared/components/logo/logo';
+import { provideIcons } from '@ng-icons/core';
+import { simpleGithub } from '@ng-icons/simple-icons';
+import { Icons } from './shared/components/icons/icons';
 
 @Component({
   selector: 'aos-root',
-  imports: [RouterOutlet],
+  imports: [LogoComponent, Icons],
+  providers: provideIcons({ simpleGithub }),
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('agency-os');
