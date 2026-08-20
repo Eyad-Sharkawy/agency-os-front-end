@@ -1,0 +1,48 @@
+@if (isOpen()) {
+  <div
+    id="mobile-nav-menu"
+    role="menu"
+    animate.enter="menu-enter"
+    animate.leave="menu-leave"
+    class="bg-surface-container-lowest border-outline/15 absolute inset-x-0 top-full z-50 flex w-full flex-col gap-2 border-b px-6 py-4 shadow-md lg:hidden"
+  >
+    <a
+      routerLink="/"
+      [routerLinkActiveOptions]="{ exact: true }"
+      routerLinkActive="text-primary bg-surface-container-high/60 [&>span]:after:w-full"
+      (click)="close()"
+      role="menuitem"
+      class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors md:hidden"
+    >
+      <span
+        class="after:bg-primary relative py-0.5 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-200 hover:after:w-full"
+      >
+        Features
+      </span>
+    </a>
+
+    <a
+      routerLink="/how-it-works"
+      routerLinkActive="text-primary bg-surface-container-high/60 [&>span]:after:w-full"
+      (click)="close()"
+      role="menuitem"
+      class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors md:hidden"
+    >
+      <span
+        class="after:bg-primary relative py-0.5 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-200 hover:after:w-full"
+      >
+        How It Works
+      </span>
+    </a>
+
+    <hr class="border-outline/10 my-1 md:hidden" />
+
+    <aos-button variant="outlined" href="https://github.com/Eyad-Sharkawy/agency-os-back-end">
+      <aos-icons name="simpleGithub" class="size-6" />
+      <span class="ml-2">View on Github</span>
+    </aos-button>
+
+    <aos-button variant="outlined">Login</aos-button>
+    <aos-button variant="primary">Sign up</aos-button>
+  </div>
+}
