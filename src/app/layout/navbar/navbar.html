@@ -43,7 +43,30 @@
     aria-controls="mobile-nav-menu"
     (click)="$event.stopPropagation(); toggleMenu()"
   >
-    <aos-icons [name]="isMenuOpen() ? 'lucideX' : 'lucideMenu'" strokeWidth="1" />
+    <div class="relative size-5 flex items-center justify-center">
+      <aos-icons
+        name="lucideMenu"
+        strokeWidth="1.5"
+        class="absolute inset-0 transition-all duration-300 ease-in-out"
+        [class.opacity-0]="isMenuOpen()"
+        [class.rotate-90]="isMenuOpen()"
+        [class.scale-75]="isMenuOpen()"
+        [class.opacity-100]="!isMenuOpen()"
+        [class.rotate-0]="!isMenuOpen()"
+        [class.scale-100]="!isMenuOpen()"
+      />
+      <aos-icons
+        name="lucideX"
+        strokeWidth="1.5"
+        class="absolute inset-0 transition-all duration-300 ease-in-out"
+        [class.opacity-0]="!isMenuOpen()"
+        [class.-rotate-90]="!isMenuOpen()"
+        [class.scale-75]="!isMenuOpen()"
+        [class.opacity-100]="isMenuOpen()"
+        [class.rotate-0]="isMenuOpen()"
+        [class.scale-100]="isMenuOpen()"
+      />
+    </div>
   </aos-button>
 
   <aos-dropdown-menu [(isOpen)]="isMenuOpen" />

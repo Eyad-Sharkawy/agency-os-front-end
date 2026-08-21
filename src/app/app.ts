@@ -7,7 +7,7 @@ import { Navbar } from "./layout/navbar/navbar";
 
 @Component({
   selector: "aos-root",
-  imports: [Icons, Button, Button, Navbar],
+  imports: [Navbar],
   providers: provideIcons({ lucideMenu }),
   templateUrl: "./app.html",
   styleUrl: "./app.css",
