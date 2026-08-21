@@ -12,7 +12,9 @@ import { Component, computed, input } from "@angular/core";
     <img
       [src]="logoSrc()"
       [alt]="altText()"
-      class="h-full w-full rounded-[inherit] object-contain"
+      width="24"
+      height="24"
+      class="size-full rounded-[inherit] object-contain"
       loading="eager"
       decoding="async"
     />

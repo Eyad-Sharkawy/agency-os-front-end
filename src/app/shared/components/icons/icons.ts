@@ -7,11 +7,11 @@ import { NgIcon } from "@ng-icons/core";
   imports: [NgIcon],
   host: {
     class:
-      "max-w-full max-h-full inline-flex items-center justify-center shrink-0 leading-none select-none",
+      "inline-flex items-center justify-center shrink-0 leading-none select-none overflow-hidden aspect-square",
     "[attr.aria-hidden]": "true",
   },
   template: `
-    <ng-icon [name]="name()" size="100%" [strokeWidth]="strokeWidth()" class="h-full w-full" />
+    <ng-icon [name]="name()" size="100%" [strokeWidth]="strokeWidth()" class="size-full flex items-center justify-center" />
   `,
 })
 export class Icons {
