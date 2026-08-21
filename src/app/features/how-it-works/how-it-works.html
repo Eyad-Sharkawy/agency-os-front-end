@@ -1,0 +1,362 @@
+<div class="relative overflow-hidden">
+  <!-- Background Glow & Grid Accents -->
+  <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden">
+    <div class="h-[550px] w-[1100px] rounded-full bg-gradient-to-b from-primary/15 via-primary/5 to-transparent blur-3xl"></div>
+  </div>
+
+  <!-- Hero Header (Full Viewport Height) -->
+  <section class="mx-auto flex min-h-[calc(100dvh-64px)] max-w-5xl flex-col items-center justify-center gap-6 px-4 py-12 text-center">
+    <div class="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary transition-colors">
+      <aos-icons name="lucideSparkles" class="size-3.5 text-primary" />
+      <span>The Unified Workflow Engine</span>
+    </div>
+
+    <h1 class="max-w-4xl text-3xl font-extrabold tracking-tight text-on-surface sm:text-5xl md:text-6xl md:leading-[1.15]">
+      Everything you need to run your agency,
+      <span class="bg-gradient-to-r from-primary via-blue-600 to-indigo-600 bg-clip-text text-transparent">simplified.</span>
+    </h1>
+
+    <p class="max-w-2xl text-sm leading-relaxed text-on-surface-variant sm:text-base md:text-lg">
+      From client onboarding to real-time work tracking and 1-click invoicing, see how Agency OS replaces five disconnected SaaS subscriptions with one streamlined, high-performance operating engine.
+    </p>
+
+    <!-- Step Jump Indicators -->
+    <div class="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs font-medium text-on-surface-variant">
+      <a href="#step-1" class="flex items-center gap-1.5 rounded-full border border-outline-variant/60 bg-surface-container-low px-3.5 py-1.5 hover:border-primary/40 hover:text-primary transition-colors">
+        <span class="flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-on-primary">1</span>
+        Workspace & Clients
+      </a>
+      <span class="text-outline-variant">•</span>
+      <a href="#step-2" class="flex items-center gap-1.5 rounded-full border border-outline-variant/60 bg-surface-container-low px-3.5 py-1.5 hover:border-primary/40 hover:text-primary transition-colors">
+        <span class="flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-on-primary">2</span>
+        Kanban & Timers
+      </a>
+      <span class="text-outline-variant">•</span>
+      <a href="#step-3" class="flex items-center gap-1.5 rounded-full border border-outline-variant/60 bg-surface-container-low px-3.5 py-1.5 hover:border-primary/40 hover:text-primary transition-colors">
+        <span class="flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-on-primary">3</span>
+        1-Click Invoicing
+      </a>
+    </div>
+  </section>
+
+  <!-- The 3-Step Interactive Process -->
+  <section class="mx-auto flex max-w-6xl flex-col gap-20 px-4 py-12 md:gap-28 md:py-16">
+    <!-- Step 1: Create Workspace & Add Clients -->
+    <div id="step-1" class="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
+      <div class="flex flex-col gap-4 lg:col-span-6">
+        <div class="flex size-10 items-center justify-center rounded-xl bg-primary font-bold text-on-primary text-base shadow-sm">
+          01
+        </div>
+        <h2 class="text-2xl font-extrabold tracking-tight text-on-surface sm:text-3xl">
+          Create Your Workspace & Add Clients
+        </h2>
+        <p class="text-sm leading-relaxed text-on-surface-variant sm:text-base">
+          Begin by setting up your organization's digital headquarters. Define your client accounts, establish custom billable hourly rates, and structure project parameters. Everything links natively to your billing engine from day one.
+        </p>
+        <ul class="flex flex-col gap-2.5 pt-2 text-xs font-medium text-on-surface-variant sm:text-sm">
+          <li class="flex items-center gap-2">
+            <aos-icons name="lucideCheckCircle2" class="size-4.5 text-primary shrink-0" />
+            <span>Define comprehensive client profiles, contracts, and currency terms</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <aos-icons name="lucideCheckCircle2" class="size-4.5 text-primary shrink-0" />
+            <span>Set custom hourly rate cards per project, retainer, or team member</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <aos-icons name="lucideCheckCircle2" class="size-4.5 text-primary shrink-0" />
+            <span>Organize team roles and department access permissions in minutes</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Step 1 Visual Mockup Card -->
+      <div class="lg:col-span-6">
+        <div class="relative overflow-hidden rounded-2xl border border-outline-variant/60 bg-surface-container-low p-6 shadow-xl">
+          <div class="flex items-center justify-between border-b border-outline-variant/40 pb-4">
+            <div class="flex items-center gap-3">
+              <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <aos-icons name="lucideBuilding2" class="size-5" />
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-on-surface">Acme Global Tech</h4>
+                <p class="text-xs text-on-surface-variant">Enterprise Client Account • ID #CLI-902</p>
+              </div>
+            </div>
+            <span class="rounded-full bg-success/15 px-2.5 py-0.5 text-xs font-semibold text-success">
+              Active Retainer
+            </span>
+          </div>
+
+          <div class="mt-4 flex flex-col gap-3">
+            <div class="grid grid-cols-2 gap-3">
+              <div class="rounded-xl border border-outline-variant/40 bg-surface p-3">
+                <span class="text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">Default Billing Rate</span>
+                <div class="mt-1 text-base font-bold text-primary">$165.00 <span class="text-xs font-normal text-on-surface-variant">/ hr</span></div>
+              </div>
+              <div class="rounded-xl border border-outline-variant/40 bg-surface p-3">
+                <span class="text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">Monthly Budget</span>
+                <div class="mt-1 text-base font-bold text-on-surface">40.0 hrs <span class="text-xs font-normal text-success">(85% cap)</span></div>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-outline-variant/40 bg-surface p-3.5">
+              <div class="flex items-center justify-between text-xs font-semibold text-on-surface">
+                <span>Active Deliverable: Design System v2</span>
+                <span class="text-primary font-bold">28.5 / 40 hrs</span>
+              </div>
+              <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-surface-container-high">
+                <div class="h-full rounded-full bg-primary" style="width: 71%;"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-on-surface-variant">
+                <span>Assigned: Alex, Maya, Jordan</span>
+                <span class="text-success font-medium">✓ Ready for billing</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Track Tasks & Work in Real-Time -->
+    <div id="step-2" class="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
+      <!-- Step 2 Visual Mockup Card -->
+      <div class="order-2 lg:order-1 lg:col-span-6">
+        <div class="relative overflow-hidden rounded-2xl border border-outline-variant/60 bg-surface-container-low p-6 shadow-xl">
+          <div class="flex items-center justify-between border-b border-outline-variant/40 pb-4">
+            <div class="flex items-center gap-2">
+              <aos-icons name="lucideFolderKanban" class="size-5 text-primary" />
+              <h4 class="text-sm font-bold text-on-surface">Sprint Workflow Board</h4>
+            </div>
+            <span class="text-xs font-medium text-on-surface-variant">Sprint 24</span>
+          </div>
+
+          <!-- Mini Board Columns -->
+          <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <!-- In Progress Column -->
+            <div class="flex flex-col gap-2.5 rounded-xl border border-primary/30 bg-surface p-3 shadow-xs">
+              <div class="flex items-center justify-between text-xs font-bold text-on-surface">
+                <span class="flex items-center gap-1.5 text-primary">
+                  <span class="size-2 rounded-full bg-primary animate-pulse"></span>
+                  In Progress
+                </span>
+                <span class="rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">Active</span>
+              </div>
+
+              <!-- Active Task with Live Stopwatch -->
+              <div class="rounded-lg border border-primary/40 bg-surface-container-low p-3">
+                <span class="rounded bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary">Frontend</span>
+                <h5 class="mt-1.5 text-xs font-semibold text-on-surface">Client Portal Dashboard</h5>
+                
+                <!-- Live Stopwatch Widget -->
+                <div class="mt-3 flex items-center justify-between rounded-md bg-primary/10 px-2.5 py-1.5">
+                  <div class="flex items-center gap-1.5 text-primary font-mono text-xs font-bold">
+                    <aos-icons name="lucideTimer" class="size-3.5 animate-spin" />
+                    <span>02:45:18</span>
+                  </div>
+                  <span class="text-[10px] font-medium text-primary">Tracking</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Review / Done Column -->
+            <div class="flex flex-col gap-2.5 rounded-xl border border-outline-variant/40 bg-surface p-3 shadow-xs opacity-90">
+              <div class="flex items-center justify-between text-xs font-bold text-on-surface">
+                <span class="flex items-center gap-1.5 text-success">
+                  <span class="size-2 rounded-full bg-success"></span>
+                  Done & Approved
+                </span>
+                <span class="text-[10px] text-on-surface-variant">1</span>
+              </div>
+
+              <div class="rounded-lg border border-outline-variant/40 bg-surface-container-low p-3">
+                <span class="rounded bg-success/15 px-2 py-0.5 text-[10px] font-semibold text-success">API Spec</span>
+                <h5 class="mt-1.5 text-xs font-semibold text-on-surface">Webhook Integration</h5>
+                <div class="mt-3 flex items-center justify-between text-[11px] text-on-surface-variant">
+                  <span class="text-success font-medium">✓ 6.0 hrs logged</span>
+                  <span>Billable</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-1 lg:order-2 flex flex-col gap-4 lg:col-span-6">
+        <div class="flex size-10 items-center justify-center rounded-xl bg-primary font-bold text-on-primary text-base shadow-sm">
+          02
+        </div>
+        <h2 class="text-2xl font-extrabold tracking-tight text-on-surface sm:text-3xl">
+          Track Tasks & Work in Real-Time
+        </h2>
+        <p class="text-sm leading-relaxed text-on-surface-variant sm:text-base">
+          Assign tasks across your team and monitor deliverables on a unified Kanban board. Log billable hours accurately with our integrated live stopwatch, ensuring every minute of hard work is captured and accounted for without manual timesheet spreadsheets.
+        </p>
+        <ul class="flex flex-col gap-2.5 pt-2 text-xs font-medium text-on-surface-variant sm:text-sm">
+          <li class="flex items-center gap-2">
+            <aos-icons name="lucideCheckCircle2" class="size-4.5 text-primary shrink-0" />
+            <span>Interactive drag-and-drop Kanban boards with customizable status stages</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <aos-icons name="lucideCheckCircle2" class="size-4.5 text-primary shrink-0" />
+            <span>One-click task stopwatch timers that record precise durations</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <aos-icons name="lucideCheckCircle2" class="size-4.5 text-primary shrink-0" />
+            <span>Synchronized with team calendars to prevent capacity bottlenecks</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 3: Generate Invoices in 1 Click -->
+    <div id="step-3" class="grid grid-cols-1 items-center gap-10 lg:grid-cols-12">
+      <div class="flex flex-col gap-4 lg:col-span-6">
+        <div class="flex size-10 items-center justify-center rounded-xl bg-primary font-bold text-on-primary text-base shadow-sm">
+          03
+        </div>
+        <h2 class="text-2xl font-extrabold tracking-tight text-on-surface sm:text-3xl">
+          Generate Invoices in 1 Click
+        </h2>
+        <p class="text-sm leading-relaxed text-on-surface-variant sm:text-base">
+          When the billing cycle arrives, the system automatically aggregates unbilled hours and project milestones into clean, professional PDF invoices. Track payment lifecycle from 'Issued' to 'Paid' without switching tools.
+        </p>
+        <ul class="flex flex-col gap-2.5 pt-2 text-xs font-medium text-on-surface-variant sm:text-sm">
+          <li class="flex items-center gap-2">
+            <aos-icons name="lucideCheckCircle2" class="size-4.5 text-primary shrink-0" />
+            <span>Automatic grouping of unbilled time entries and project line items</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <aos-icons name="lucideCheckCircle2" class="size-4.5 text-primary shrink-0" />
+            <span>Pristine, branded PDF invoices with clear rate breakdowns</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <aos-icons name="lucideCheckCircle2" class="size-4.5 text-primary shrink-0" />
+            <span>Real-time payment tracking with clear status tags (Issued, Paid, Overdue)</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Step 3 Visual Mockup Card -->
+      <div class="lg:col-span-6">
+        <div class="relative overflow-hidden rounded-2xl border border-outline-variant/60 bg-surface-container-low p-6 shadow-xl">
+          <div class="flex items-center justify-between border-b border-outline-variant/40 pb-4">
+            <div>
+              <div class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Invoice</div>
+              <h4 class="text-base font-bold text-on-surface">#INV-2026-1042</h4>
+            </div>
+            <span class="flex items-center gap-1 rounded-full bg-success/15 px-3 py-1 text-xs font-bold text-success">
+              <aos-icons name="lucideCheckCircle2" class="size-3.5" />
+              Paid in Full
+            </span>
+          </div>
+
+          <!-- Itemized Breakdown -->
+          <div class="mt-4 flex flex-col gap-2.5">
+            <div class="flex items-center justify-between rounded-lg bg-surface p-3 text-xs">
+              <div>
+                <div class="font-semibold text-on-surface">Design System & UI Architecture</div>
+                <div class="text-[11px] text-on-surface-variant">18.5 hrs @ $150.00/hr</div>
+              </div>
+              <span class="font-mono font-bold text-on-surface">$2,775.00</span>
+            </div>
+
+            <div class="flex items-center justify-between rounded-lg bg-surface p-3 text-xs">
+              <div>
+                <div class="font-semibold text-on-surface">Backend Webhook Integration</div>
+                <div class="text-[11px] text-on-surface-variant">12.0 hrs @ $160.00/hr</div>
+              </div>
+              <span class="font-mono font-bold text-on-surface">$1,920.00</span>
+            </div>
+
+            <div class="mt-2 flex items-center justify-between border-t border-outline-variant/40 pt-3 text-sm">
+              <span class="font-bold text-on-surface">Total Amount Paid</span>
+              <span class="font-mono text-base font-extrabold text-primary">$4,695.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Integration Advantage / Why A Unified OS Section -->
+  <section class="border-y border-outline-variant/40 bg-surface-container-low/40 py-16 px-4 md:py-24">
+    <div class="mx-auto max-w-6xl flex flex-col gap-12 text-center">
+      <div class="flex flex-col items-center gap-3">
+        <div class="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <aos-icons name="lucideWorkflow" class="size-6" />
+        </div>
+        <h2 class="text-3xl font-extrabold tracking-tight text-on-surface sm:text-4xl">
+          The Unified Integration Advantage
+        </h2>
+        <p class="max-w-2xl text-sm leading-relaxed text-on-surface-variant sm:text-base">
+          When your CRM, project tracking, live timers, and invoicing share the exact same database models, data friction drops to zero.
+        </p>
+      </div>
+
+      <!-- 4-Card Advantage Bento Grid -->
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 text-left">
+        <div class="flex flex-col gap-3 rounded-2xl border border-outline-variant/60 bg-surface-container-low p-5 backdrop-blur-xs">
+          <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <aos-icons name="lucideZap" class="size-5" />
+          </div>
+          <h3 class="text-base font-bold text-on-surface">Zero Reconciliation</h3>
+          <p class="text-xs leading-relaxed text-on-surface-variant">
+            No more manual copying of logged hours into separate billing software. Hours roll straight into approved invoices.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-3 rounded-2xl border border-outline-variant/60 bg-surface-container-low p-5 backdrop-blur-xs">
+          <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <aos-icons name="lucideTrendingUp" class="size-5" />
+          </div>
+          <h3 class="text-base font-bold text-on-surface">Real-Time Margins</h3>
+          <p class="text-xs leading-relaxed text-on-surface-variant">
+            Instantly view which client retainers and project scopes are generating profit, and which are incurring team overtime.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-3 rounded-2xl border border-outline-variant/60 bg-surface-container-low p-5 backdrop-blur-xs">
+          <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <aos-icons name="lucideShieldCheck" class="size-5" />
+          </div>
+          <h3 class="text-base font-bold text-on-surface">100% Data Privacy</h3>
+          <p class="text-xs leading-relaxed text-on-surface-variant">
+            Deploy on your own infrastructure or cloud. Your client rosters, financial ledger, and contract rates stay strictly private.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-3 rounded-2xl border border-outline-variant/60 bg-surface-container-low p-5 backdrop-blur-xs">
+          <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <aos-icons name="lucideLayers" class="size-5" />
+          </div>
+          <h3 class="text-base font-bold text-on-surface">Single Source of Truth</h3>
+          <p class="text-xs leading-relaxed text-on-surface-variant">
+            Eliminates desynced spreadsheet copies, broken third-party webhook zaps, and forgotten unbilled client hours.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA Section -->
+  <section class="py-16 px-4 md:py-24">
+    <div class="mx-auto max-w-5xl rounded-3xl border border-primary/30 bg-gradient-to-b from-primary/15 via-primary/5 to-surface-container-low p-8 text-center sm:p-12 md:p-16">
+      <h2 class="text-3xl font-extrabold tracking-tight text-on-surface sm:text-4xl md:text-5xl">
+        Ready to streamline your agency workflow?
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-sm text-on-surface-variant sm:text-base">
+        Get started with Agency OS today. 100% open-source, self-hostable, and designed for modern digital agencies.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <aos-button variant="primary" class="h-11">
+          Get Started for Free
+        </aos-button>
+        <aos-button variant="outlined" href="https://github.com/Eyad-Sharkawy/agency-os-back-end" class="h-11">
+          <aos-icons name="simpleGithub" class="size-4" />
+          <span class="ml-2">View Source on GitHub</span>
+        </aos-button>
+      </div>
+    </div>
+  </section>
+</div>
