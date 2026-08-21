@@ -4,10 +4,10 @@
   --font-sans: "Plus Jakarta Sans", sans-serif;
 
   /* Brand & Action */
-  --color-primary: var(--primary, #3b82f6);
+  --color-primary: var(--primary, #059669);
   --color-on-primary: var(--on-primary, #ffffff);
-  --color-primary-container: var(--primary-container, #eff6ff);
-  --color-on-primary-container: var(--on-primary-container, #1e40af);
+  --color-primary-container: var(--primary-container, #ecfdf5);
+  --color-on-primary-container: var(--on-primary-container, #064e3b);
 
   /* Surfaces & Backgrounds */
   --color-surface: var(--surface, #f7f9fb);
@@ -41,11 +41,11 @@
 :root {
   color-scheme: light;
 
-  /* Brand & Action (Primary) */
-  --primary: #3b82f6;
+  /* Brand & Action (Primary - Bold Green) */
+  --primary: #059669;
   --on-primary: #ffffff;
-  --primary-container: #eff6ff;
-  --on-primary-container: #1e40af;
+  --primary-container: #ecfdf5;
+  --on-primary-container: #064e3b;
 
   /* Surfaces & Backgrounds */
   --surface: #f7f9fb;
@@ -78,6 +78,12 @@
 
 .dark {
   color-scheme: dark;
+
+  /* Brand & Action (Primary - Luminous Emerald) */
+  --primary: #10b981;
+  --on-primary: #022c22;
+  --primary-container: #064e3b;
+  --on-primary-container: #a7f3d0;
 
   /* Surfaces & Backgrounds */
   --surface: #121417;
