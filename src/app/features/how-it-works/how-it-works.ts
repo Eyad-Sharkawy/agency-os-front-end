@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { RouterLink } from "@angular/router";
 import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
 import { provideIcons } from "@ng-icons/core";
@@ -25,7 +24,7 @@ import { simpleGithub } from "@ng-icons/simple-icons";
 
 @Component({
   selector: "aos-how-it-works",
-  imports: [Button, RouterLink, Icons],
+  imports: [Button, Icons],
   providers: [
     provideIcons({
       lucideSparkles,

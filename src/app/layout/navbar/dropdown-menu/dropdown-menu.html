@@ -40,14 +40,14 @@
     <button
       type="button"
       (click)="themeService.toggleTheme()"
-      class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors cursor-pointer"
+      class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high flex cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors"
     >
       <span class="flex items-center gap-2.5">
         <div class="relative flex size-4 items-center justify-center">
           <aos-icons
             name="lucideSun"
             strokeWidth="1.75"
-            class="absolute inset-0 transition-all duration-300 ease-in-out text-amber-500"
+            class="absolute inset-0 text-amber-500 transition-all duration-300 ease-in-out"
             [class.opacity-0]="themeService.theme() === 'light'"
             [class.rotate-90]="themeService.theme() === 'light'"
             [class.scale-75]="themeService.theme() === 'light'"
@@ -58,7 +58,7 @@
           <aos-icons
             name="lucideMoon"
             strokeWidth="1.75"
-            class="absolute inset-0 transition-all duration-300 ease-in-out text-on-surface-variant"
+            class="text-on-surface-variant absolute inset-0 transition-all duration-300 ease-in-out"
             [class.opacity-0]="themeService.theme() === 'dark'"
             [class.-rotate-90]="themeService.theme() === 'dark'"
             [class.scale-75]="themeService.theme() === 'dark'"
@@ -67,9 +67,9 @@
             [class.scale-100]="themeService.theme() === 'light'"
           />
         </div>
-        <span>{{ themeService.theme() === 'dark' ? 'Light Mode' : 'Dark Mode' }}</span>
+        <span>{{ themeService.theme() === "dark" ? "Light Mode" : "Dark Mode" }}</span>
       </span>
-      <span class="text-xs text-on-surface-variant/70 capitalize">{{ themeService.theme() }}</span>
+      <span class="text-on-surface-variant/70 text-xs capitalize">{{ themeService.theme() }}</span>
     </button>
 
     <aos-button variant="outlined" href="https://github.com/Eyad-Sharkawy/agency-os-back-end">

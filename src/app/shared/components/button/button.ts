@@ -61,9 +61,9 @@ export class Button {
   readonly routerLink = input<string | unknown[] | undefined>(undefined);
   readonly target = input<string | undefined>(undefined);
   readonly rel = input<string | undefined>(undefined);
-  readonly ariaLabel = input<string | undefined>(undefined, { alias: "aria-label" });
-  readonly ariaExpanded = input<string | undefined>(undefined, { alias: "aria-expanded" });
-  readonly ariaControls = input<string | undefined>(undefined, { alias: "aria-controls" });
+  readonly ariaLabel = input<string | undefined>(undefined);
+  readonly ariaExpanded = input<string | undefined>(undefined);
+  readonly ariaControls = input<string | undefined>(undefined);
   readonly disabled = input<boolean, unknown>(false, { transform: booleanAttribute });
 
   protected readonly computedClasses = computed<string>(() => {

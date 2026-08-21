@@ -6,6 +6,60 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <!-- Immediate Theme Initialization to Prevent Theme Flash & CLS -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem("agency_os_theme");
+          var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          if (saved === "dark" || (!saved && prefersDark)) {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- Critical Baseline Styles to Prevent Icon & Logo Blowout / CLS Before CSS Loads -->
+    <style>
+      html.dark {
+        color-scheme: dark;
+        background-color: #121417;
+        color: #e2e2e6;
+      }
+      html:not(.dark) {
+        color-scheme: light;
+        background-color: #f7f9fb;
+        color: #1a1c1e;
+      }
+      aos-icons,
+      aos-logo,
+      ng-icon {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+        vertical-align: middle !important;
+      }
+      aos-icons svg,
+      ng-icon svg {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        display: block !important;
+      }
+      aos-logo img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+      }
+    </style>
+
+    <!-- Google Search Console Verification -->
+    <meta name="google-site-verification" content="yqaL5zw1dV8cHy6aK0YWSMit6b-fjTC5e61FQJVxXUo" />
+
     <!-- Primary Meta Tags -->
     <meta name="title" content="Agency OS - All-in-One Agency Management Platform" />
     <meta
@@ -58,7 +112,7 @@
 
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
-    <!-- Google Fonts: Plus Jakarta Sans -->
+    <!-- Google Fonts: Plus Jakarta Sans with Preconnect & Preload -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Allow: /how-it-works
+Disallow: /dashboard/
+Disallow: /workspaces/
+Disallow: /api/
+
+Sitemap: https://agency-os-eyad.vercel.app/sitemap.xml

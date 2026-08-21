@@ -1,21 +1,22 @@
-<footer class="border-t border-outline-variant/40 bg-surface-container-lowest">
+<footer class="border-outline-variant/40 bg-surface-container-lowest border-t">
   <div class="mx-auto max-w-7xl px-6 py-12 lg:px-8">
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
       <!-- Brand & Mission Column -->
       <div class="flex flex-col gap-4 lg:col-span-2">
         <a routerLink="/" class="flex items-center gap-2">
-          <aos-logo class="w-6" />
-          <span class="text-base font-bold text-primary">Agency OS</span>
+          <aos-logo class="size-6 shrink-0" />
+          <span class="text-primary text-base font-bold">Agency OS</span>
         </a>
-        <p class="max-w-sm text-xs leading-relaxed text-on-surface-variant">
-          The modern, open-source operating system designed for digital agencies, studios, and consultants to manage work, teams, and billing seamlessly.
+        <p class="text-on-surface-variant max-w-sm text-xs leading-relaxed">
+          The modern, open-source operating system designed for digital agencies, studios, and
+          consultants to manage work, teams, and billing seamlessly.
         </p>
         <div class="flex items-center gap-3 pt-2">
           <a
             href="https://github.com/Eyad-Sharkawy/agency-os-back-end"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center gap-2 rounded-md border border-outline-variant/60 bg-surface-container-low px-3 py-1.5 text-xs font-medium text-on-surface hover:border-primary/40 hover:bg-surface-container transition-colors"
+            class="border-outline-variant/60 bg-surface-container-low text-on-surface hover:border-primary/40 hover:bg-surface-container flex items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors"
           >
             <aos-icons name="simpleGithub" class="size-4" />
             <span>GitHub Repository</span>
@@ -25,45 +26,64 @@
 
       <!-- Product Links -->
       <div class="flex flex-col gap-3">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-on-surface">Product</h4>
-        <ul class="flex flex-col gap-2 text-xs text-on-surface-variant">
-          <li><a routerLink="/" fragment="features" class="hover:text-primary transition-colors">Features</a></li>
-          <li><a routerLink="/how-it-works" class="hover:text-primary transition-colors">How It Works</a></li>
+        <p class="text-on-surface text-xs font-bold tracking-wider uppercase">Product</p>
+        <ul class="text-on-surface-variant flex flex-col gap-2 text-xs">
+          <li>
+            <a routerLink="/" fragment="features" class="hover:text-primary transition-colors"
+              >Features</a
+            >
+          </li>
+          <li>
+            <a routerLink="/how-it-works" class="hover:text-primary transition-colors"
+              >How It Works</a
+            >
+          </li>
           <li><a routerLink="/" class="hover:text-primary transition-colors">CRM & Pipeline</a></li>
-          <li><a routerLink="/" class="hover:text-primary transition-colors">Kanban & Calendar</a></li>
-          <li><a routerLink="/" class="hover:text-primary transition-colors">Time & Invoicing</a></li>
+          <li>
+            <a routerLink="/" class="hover:text-primary transition-colors">Kanban & Calendar</a>
+          </li>
+          <li>
+            <a routerLink="/" class="hover:text-primary transition-colors">Time & Invoicing</a>
+          </li>
         </ul>
       </div>
 
       <!-- Resources Links -->
       <div class="flex flex-col gap-3">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-on-surface">Architecture</h4>
-        <ul class="flex flex-col gap-2 text-xs text-on-surface-variant">
-          <li><span class="text-on-surface-variant/80">Spring Boot 3.x Backend</span></li>
-          <li><span class="text-on-surface-variant/80">Angular Frontend</span></li>
-          <li><span class="text-on-surface-variant/80">Tailwind CSS</span></li>
-          <li><span class="text-on-surface-variant/80">PostgreSQL Relational DB</span></li>
+        <p class="text-on-surface text-xs font-bold tracking-wider uppercase">Architecture</p>
+        <ul class="text-on-surface-variant flex flex-col gap-2 text-xs">
+          <li><span class="text-on-surface-variant">Spring Boot 3.x Backend</span></li>
+          <li><span class="text-on-surface-variant">Angular Frontend</span></li>
+          <li><span class="text-on-surface-variant">Tailwind CSS</span></li>
+          <li><span class="text-on-surface-variant">PostgreSQL Relational DB</span></li>
         </ul>
       </div>
 
       <!-- Legal / Open Source -->
       <div class="flex flex-col gap-3">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-on-surface">Community</h4>
-        <ul class="flex flex-col gap-2 text-xs text-on-surface-variant">
-          <li><span class="text-on-surface-variant/80">Open Source Software</span></li>
-          <li><span class="text-on-surface-variant/80">Self-Hosted Community</span></li>
-          <li><a href="https://github.com/Eyad-Sharkawy/agency-os-back-end/issues" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">Report an Issue</a></li>
+        <p class="text-on-surface text-xs font-bold tracking-wider uppercase">Community</p>
+        <ul class="text-on-surface-variant flex flex-col gap-2 text-xs">
+          <li><span class="text-on-surface-variant">Open Source Software</span></li>
+          <li><span class="text-on-surface-variant">Self-Hosted Community</span></li>
+          <li>
+            <a
+              href="https://github.com/Eyad-Sharkawy/agency-os-back-end/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-primary transition-colors"
+              >Report an Issue</a
+            >
+          </li>
         </ul>
       </div>
     </div>
 
     <!-- Bottom Bar -->
-    <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-outline-variant/40 pt-6 text-xs text-on-surface-variant sm:flex-row">
+    <div
+      class="border-outline-variant/40 text-on-surface-variant mt-12 flex flex-col items-center justify-between gap-4 border-t pt-6 text-xs sm:flex-row"
+    >
       <p>© {{ currentYear }} Agency OS. Built for modern agencies.</p>
-      <p class="flex items-center gap-1">
-        Crafted with open-source passion
-      </p>
+      <p class="flex items-center gap-1">Crafted with open-source passion</p>
     </div>
   </div>
 </footer>
-

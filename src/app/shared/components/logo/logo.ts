@@ -5,7 +5,8 @@ import { Component, computed, input } from "@angular/core";
   selector: "aos-logo",
   standalone: true,
   host: {
-    class: "max-h-full max-w-full inline-flex items-center justify-center shrink-0 select-none",
+    class:
+      "inline-flex items-center justify-center shrink-0 select-none aspect-square overflow-hidden",
   },
   template: `
     <img

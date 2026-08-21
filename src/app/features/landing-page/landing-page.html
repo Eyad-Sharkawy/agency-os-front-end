@@ -1,73 +1,96 @@
 <div class="relative overflow-hidden">
   <!-- Background Glow & Grid Accents -->
-  <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden">
-    <div class="h-[500px] w-[1000px] rounded-full bg-gradient-to-b from-primary/15 via-primary/5 to-transparent blur-3xl"></div>
+  <div
+    class="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden"
+  >
+    <div
+      class="from-primary/15 via-primary/5 h-[500px] w-[1000px] rounded-full bg-gradient-to-b to-transparent blur-3xl"
+    ></div>
   </div>
 
   <!-- Hero Section (Full Viewport Height) -->
-  <section class="flex min-h-[calc(100dvh-64px)] flex-col items-center justify-center gap-6 px-4 py-12 text-center">
+  <section
+    class="flex min-h-[calc(100dvh-64px)] flex-col items-center justify-center gap-6 px-4 py-12 text-center"
+  >
     <!-- Announcement Badge -->
-    <div class="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/15">
-      <aos-icons name="lucideSparkles" class="size-3.5 text-primary" />
+    <div
+      class="border-primary/25 bg-primary/10 text-primary hover:bg-primary/15 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors"
+    >
+      <aos-icons name="lucideSparkles" class="text-primary size-3.5" />
       <span>The Open Source Agency Operating System</span>
     </div>
 
     <!-- Main Headline -->
-    <h1 class="max-w-4xl text-3xl font-extrabold tracking-tight text-on-surface sm:text-5xl md:text-6xl md:leading-[1.15]">
+    <h1
+      class="text-on-surface max-w-4xl text-3xl font-extrabold tracking-tight sm:text-5xl md:text-6xl md:leading-[1.15]"
+    >
       Run Your Projects, Team, and Invoicing in One
-      <span class="bg-gradient-to-r from-primary via-emerald-600 to-teal-600 bg-clip-text text-transparent">Unified Workspace.</span>
+      <span
+        class="from-primary bg-gradient-to-r via-emerald-600 to-teal-600 bg-clip-text text-transparent"
+        >Unified Workspace.</span
+      >
     </h1>
 
     <!-- Subtitle -->
-    <p class="max-w-2xl text-sm leading-relaxed text-on-surface-variant sm:text-base md:text-lg">
-      Stop juggling ten disconnected tools. Agency OS provides a single, high-performance platform designed specifically for modern digital agencies to manage clients, track time, and get paid faster.
+    <p class="text-on-surface-variant max-w-2xl text-sm leading-relaxed sm:text-base md:text-lg">
+      Stop juggling ten disconnected tools. Agency OS provides a single, high-performance platform
+      designed specifically for modern digital agencies to manage clients, track time, and get paid
+      faster.
     </p>
 
     <!-- Hero CTA Buttons -->
     <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
-      <aos-button variant="primary" class="h-11">
-        Get Started for Free
-      </aos-button>
+      <aos-button variant="primary" class="h-11"> Get Started for Free </aos-button>
       <aos-button routerLink="." fragment="features" variant="outlined" class="h-11">
         Explore Features
       </aos-button>
     </div>
 
     <!-- Trust Badges -->
-    <div class="flex flex-wrap items-center justify-center gap-6 pt-2 text-xs font-medium text-on-surface-variant">
+    <div
+      class="text-on-surface-variant flex flex-wrap items-center justify-center gap-6 pt-2 text-xs font-medium"
+    >
       <span class="flex items-center gap-1.5">
-        <aos-icons name="lucideCheckCircle2" class="size-4 text-success" />
+        <aos-icons name="lucideCheckCircle2" class="text-success size-4" />
         100% Open Source
       </span>
       <span class="flex items-center gap-1.5">
-        <aos-icons name="lucideCheckCircle2" class="size-4 text-success" />
+        <aos-icons name="lucideCheckCircle2" class="text-success size-4" />
         Self-Hostable or Cloud
       </span>
       <span class="flex items-center gap-1.5">
-        <aos-icons name="lucideCheckCircle2" class="size-4 text-success" />
+        <aos-icons name="lucideCheckCircle2" class="text-success size-4" />
         No Credit Card Required
       </span>
     </div>
   </section>
 
   <!-- Interactive-Style Dashboard Preview Mockup Section -->
-  <section class="flex flex-col items-center justify-center px-4 pb-16 pt-4 md:pb-24">
+  <section class="flex flex-col items-center justify-center px-4 pt-4 pb-16 md:pb-24">
     <div class="w-full max-w-5xl px-2 sm:px-4">
-      <div class="relative overflow-hidden rounded-2xl border border-outline-variant/60 bg-surface-container-lowest shadow-2xl shadow-primary/10">
+      <div
+        class="border-outline-variant/60 bg-surface-container-lowest shadow-primary/10 relative overflow-hidden rounded-2xl border shadow-2xl"
+      >
         <!-- Mockup Window Header -->
-        <div class="flex h-11 items-center justify-between border-b border-outline-variant/50 bg-surface-container-low px-4">
+        <div
+          class="border-outline-variant/50 bg-surface-container-low flex h-11 items-center justify-between border-b px-4"
+        >
           <div class="flex items-center gap-2">
             <span class="size-3 rounded-full bg-red-400"></span>
             <span class="size-3 rounded-full bg-amber-400"></span>
             <span class="size-3 rounded-full bg-emerald-400"></span>
           </div>
-          <div class="flex items-center gap-2 rounded-md bg-surface-container px-3 py-1 text-xs text-on-surface-variant">
-            <aos-icons name="lucideShieldCheck" class="size-3.5 text-primary" />
+          <div
+            class="bg-surface-container text-on-surface-variant flex items-center gap-2 rounded-md px-3 py-1 text-xs"
+          >
+            <aos-icons name="lucideShieldCheck" class="text-primary size-3.5" />
             <span class="font-mono text-[11px]">agency-os/workspace/overview</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="inline-flex items-center gap-1 rounded-full bg-success/15 px-2 py-0.5 text-[11px] font-medium text-success">
-              <span class="size-1.5 rounded-full bg-success animate-pulse"></span>
+            <span
+              class="bg-success/15 text-success inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium"
+            >
+              <span class="bg-success size-1.5 animate-pulse rounded-full"></span>
               Live Sync
             </span>
           </div>
@@ -77,40 +100,50 @@
         <div class="grid grid-cols-1 gap-4 p-4 text-left md:grid-cols-12 md:p-6">
           <!-- Mini Sidebar / Metrics -->
           <div class="flex flex-col gap-3 md:col-span-4">
-            <div class="rounded-xl border border-outline-variant/50 bg-surface-container-low p-4">
-              <span class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Active Workspace</span>
-              <h4 class="mt-1 text-base font-bold text-on-surface">Digital Apex Studio</h4>
-              <p class="text-xs text-on-surface-variant">8 team members • 12 active projects</p>
+            <div class="border-outline-variant/50 bg-surface-container-low rounded-xl border p-4">
+              <span class="text-on-surface-variant text-xs font-semibold tracking-wider uppercase"
+                >Active Workspace</span
+              >
+              <p class="text-on-surface mt-1 text-base font-bold">Digital Apex Studio</p>
+              <p class="text-on-surface-variant text-xs">8 team members • 12 active projects</p>
 
-              <div class="mt-4 flex items-center justify-between rounded-lg bg-primary/10 p-3">
+              <div class="bg-primary/10 mt-4 flex items-center justify-between rounded-lg p-3">
                 <div class="flex items-center gap-2.5">
-                  <div class="flex size-8 items-center justify-center rounded-lg bg-primary text-on-primary">
+                  <div
+                    class="bg-primary text-on-primary flex size-8 items-center justify-center rounded-lg"
+                  >
                     <aos-icons name="lucideTimer" class="size-4" />
                   </div>
                   <div>
-                    <div class="text-[11px] font-medium text-on-surface-variant">Timer Running</div>
-                    <div class="text-xs font-bold text-primary">UI Redesign • 02:45:18</div>
+                    <div class="text-on-surface-variant text-[11px] font-medium">Timer Running</div>
+                    <div class="text-primary text-xs font-bold">UI Redesign • 02:45:18</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="rounded-xl border border-outline-variant/50 bg-surface-container-low p-4">
-              <span class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Recent Invoices</span>
+            <div class="border-outline-variant/50 bg-surface-container-low rounded-xl border p-4">
+              <span class="text-on-surface-variant text-xs font-semibold tracking-wider uppercase"
+                >Recent Invoices</span
+              >
               <div class="mt-3 flex flex-col gap-2.5">
-                <div class="flex items-center justify-between rounded-md bg-surface p-2.5 text-xs">
+                <div class="bg-surface flex items-center justify-between rounded-md p-2.5 text-xs">
                   <div>
-                    <div class="font-semibold text-on-surface">Acme Corp Retainer</div>
-                    <div class="text-[11px] text-on-surface-variant">Due in 5 days</div>
+                    <div class="text-on-surface font-semibold">Acme Corp Retainer</div>
+                    <div class="text-on-surface-variant text-[11px]">Due in 5 days</div>
                   </div>
-                  <span class="rounded bg-success/15 px-2 py-0.5 font-bold text-success">$4,500</span>
+                  <span class="bg-success/15 text-success rounded px-2 py-0.5 font-bold"
+                    >$4,500</span
+                  >
                 </div>
-                <div class="flex items-center justify-between rounded-md bg-surface p-2.5 text-xs">
+                <div class="bg-surface flex items-center justify-between rounded-md p-2.5 text-xs">
                   <div>
-                    <div class="font-semibold text-on-surface">FinTech Mobile MVP</div>
-                    <div class="text-[11px] text-on-surface-variant">Paid yesterday</div>
+                    <div class="text-on-surface font-semibold">FinTech Mobile MVP</div>
+                    <div class="text-on-surface-variant text-[11px]">Paid yesterday</div>
                   </div>
-                  <span class="rounded bg-primary/15 px-2 py-0.5 font-bold text-primary">$8,200</span>
+                  <span class="bg-primary/15 text-primary rounded px-2 py-0.5 font-bold"
+                    >$8,200</span
+                  >
                 </div>
               </div>
             </div>
@@ -120,64 +153,91 @@
           <div class="flex flex-col gap-3 md:col-span-8">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <aos-icons name="lucideFolderKanban" class="size-4 text-primary" />
-                <h4 class="text-sm font-bold text-on-surface">Sprint Workflow Board</h4>
+                <aos-icons name="lucideFolderKanban" class="text-primary size-4" />
+                <p class="text-on-surface text-sm font-bold">Sprint Workflow Board</p>
               </div>
-              <span class="text-xs text-on-surface-variant font-medium">Sprint 24 • Q3</span>
+              <span class="text-on-surface-variant text-xs font-medium">Sprint 24 • Q3</span>
             </div>
 
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <!-- Column 1: In Progress -->
-              <div class="flex flex-col gap-2.5 rounded-xl border border-outline-variant/50 bg-surface-container-low p-3.5">
-                <div class="flex items-center justify-between text-xs font-bold text-on-surface">
+              <div
+                class="border-outline-variant/50 bg-surface-container-low flex flex-col gap-2.5 rounded-xl border p-3.5"
+              >
+                <div class="text-on-surface flex items-center justify-between text-xs font-bold">
                   <span class="flex items-center gap-1.5">
                     <span class="size-2 rounded-full bg-blue-500"></span>
                     In Progress
                   </span>
-                  <span class="rounded bg-surface px-1.5 py-0.5 text-[11px] text-on-surface-variant">2</span>
+                  <span class="bg-surface text-on-surface-variant rounded px-1.5 py-0.5 text-[11px]"
+                    >2</span
+                  >
                 </div>
 
-                <div class="rounded-lg border border-outline-variant/40 bg-surface p-3 shadow-xs">
+                <div class="border-outline-variant/40 bg-surface rounded-lg border p-3 shadow-xs">
                   <div class="flex items-center justify-between">
-                    <span class="rounded bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">Design System</span>
-                    <span class="text-[10px] text-on-surface-variant">4h logged</span>
+                    <span
+                      class="bg-primary/10 text-primary rounded px-2 py-0.5 text-[10px] font-semibold"
+                      >Design System</span
+                    >
+                    <span class="text-on-surface-variant text-[10px]">4h logged</span>
                   </div>
-                  <div class="mt-2 text-xs font-semibold text-on-surface">Revamp component tokens & dark mode</div>
-                  <div class="mt-3 flex items-center justify-between border-t border-outline-variant/30 pt-2 text-[11px] text-on-surface-variant">
+                  <div class="text-on-surface mt-2 text-xs font-semibold">
+                    Revamp component tokens & dark mode
+                  </div>
+                  <div
+                    class="border-outline-variant/30 text-on-surface-variant mt-3 flex items-center justify-between border-t pt-2 text-[11px]"
+                  >
                     <span class="flex items-center gap-1">
-                      <aos-icons name="lucideClock" class="size-3 text-warning" />
+                      <aos-icons name="lucideClock" class="text-warning size-3" />
                       Tomorrow
                     </span>
-                    <span class="font-medium text-primary">2 tasks left</span>
+                    <span class="text-primary font-medium">2 tasks left</span>
                   </div>
                 </div>
 
-                <div class="rounded-lg border border-outline-variant/40 bg-surface p-3 shadow-xs">
+                <div class="border-outline-variant/40 bg-surface rounded-lg border p-3 shadow-xs">
                   <div class="flex items-center justify-between">
-                    <span class="rounded bg-purple-500/10 px-2 py-0.5 text-[10px] font-semibold text-purple-600">Backend</span>
-                    <span class="text-[10px] text-on-surface-variant">1.5h logged</span>
+                    <span
+                      class="rounded bg-purple-500/10 px-2 py-0.5 text-[10px] font-semibold text-purple-600"
+                      >Backend</span
+                    >
+                    <span class="text-on-surface-variant text-[10px]">1.5h logged</span>
                   </div>
-                  <div class="mt-2 text-xs font-semibold text-on-surface">Webhook event dispatcher for Stripe</div>
+                  <div class="text-on-surface mt-2 text-xs font-semibold">
+                    Webhook event dispatcher for Stripe
+                  </div>
                 </div>
               </div>
 
               <!-- Column 2: Ready for Review / Done -->
-              <div class="flex flex-col gap-2.5 rounded-xl border border-outline-variant/50 bg-surface-container-low p-3.5">
-                <div class="flex items-center justify-between text-xs font-bold text-on-surface">
+              <div
+                class="border-outline-variant/50 bg-surface-container-low flex flex-col gap-2.5 rounded-xl border p-3.5"
+              >
+                <div class="text-on-surface flex items-center justify-between text-xs font-bold">
                   <span class="flex items-center gap-1.5">
                     <span class="size-2 rounded-full bg-emerald-500"></span>
                     Done & Billed
                   </span>
-                  <span class="rounded bg-surface px-1.5 py-0.5 text-[11px] text-on-surface-variant">1</span>
+                  <span class="bg-surface text-on-surface-variant rounded px-1.5 py-0.5 text-[11px]"
+                    >1</span
+                  >
                 </div>
 
-                <div class="rounded-lg border border-outline-variant/40 bg-surface p-3 shadow-xs">
+                <div class="border-outline-variant/40 bg-surface rounded-lg border p-3 shadow-xs">
                   <div class="flex items-center justify-between">
-                    <span class="rounded bg-success/15 px-2 py-0.5 text-[10px] font-semibold text-success">Client Portal</span>
-                    <span class="text-[10px] text-success font-medium">Completed</span>
+                    <span
+                      class="bg-success/15 text-success rounded px-2 py-0.5 text-[10px] font-semibold"
+                      >Client Portal</span
+                    >
+                    <span class="text-success text-[10px] font-medium">Completed</span>
                   </div>
-                  <div class="mt-2 text-xs font-semibold text-on-surface">Client authentication & role gates</div>
-                  <div class="mt-3 flex items-center justify-between border-t border-outline-variant/30 pt-2 text-[11px] text-on-surface-variant">
+                  <div class="text-on-surface mt-2 text-xs font-semibold">
+                    Client authentication & role gates
+                  </div>
+                  <div
+                    class="border-outline-variant/30 text-on-surface-variant mt-3 flex items-center justify-between border-t pt-2 text-[11px]"
+                  >
                     <span class="text-success font-medium">✓ Invoice Attached</span>
                     <span>12.5 hrs</span>
                   </div>
@@ -191,46 +251,63 @@
   </section>
 
   <!-- Core Pillars Banner -->
-  <section class="border-y border-outline-variant/50 bg-surface-container-low/40 py-10 px-4">
+  <section class="border-outline-variant/50 bg-surface-container-low/40 border-y px-4 py-10">
     <div class="mx-auto max-w-6xl">
+      <h2 class="sr-only">Core Platform Pillars</h2>
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div class="flex items-start gap-3.5">
-          <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div
+            class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg"
+          >
             <aos-icons name="lucideLayers" class="size-5" />
           </div>
           <div>
-            <h4 class="text-sm font-bold text-on-surface">Unified Data Model</h4>
-            <p class="mt-1 text-xs text-on-surface-variant leading-relaxed">CRM, tasks, time, and billing all connected without brittle third-party zaps.</p>
+            <h3 class="text-on-surface text-sm font-bold">Unified Data Model</h3>
+            <p class="text-on-surface-variant mt-1 text-xs leading-relaxed">
+              CRM, tasks, time, and billing all connected without brittle third-party zaps.
+            </p>
           </div>
         </div>
 
         <div class="flex items-start gap-3.5">
-          <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div
+            class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg"
+          >
             <aos-icons name="lucideShieldCheck" class="size-5" />
           </div>
           <div>
-            <h4 class="text-sm font-bold text-on-surface">100% Data Privacy</h4>
-            <p class="mt-1 text-xs text-on-surface-variant leading-relaxed">Host on your own servers or private cloud. You own all client data and files.</p>
+            <h3 class="text-on-surface text-sm font-bold">100% Data Privacy</h3>
+            <p class="text-on-surface-variant mt-1 text-xs leading-relaxed">
+              Host on your own servers or private cloud. You own all client data and files.
+            </p>
           </div>
         </div>
 
         <div class="flex items-start gap-3.5">
-          <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div
+            class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg"
+          >
             <aos-icons name="lucideZap" class="size-5" />
           </div>
           <div>
-            <h4 class="text-sm font-bold text-on-surface">Sub-Second Speed</h4>
-            <p class="mt-1 text-xs text-on-surface-variant leading-relaxed">Engineered with high-concurrency Spring Boot and reactive Angular frontend.</p>
+            <h3 class="text-on-surface text-sm font-bold">Sub-Second Speed</h3>
+            <p class="text-on-surface-variant mt-1 text-xs leading-relaxed">
+              Engineered with high-concurrency Spring Boot and reactive Angular frontend.
+            </p>
           </div>
         </div>
 
         <div class="flex items-start gap-3.5">
-          <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div
+            class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg"
+          >
             <aos-icons name="lucideSparkles" class="size-5" />
           </div>
           <div>
-            <h4 class="text-sm font-bold text-on-surface">Zero Tool Bloat</h4>
-            <p class="mt-1 text-xs text-on-surface-variant leading-relaxed">Consolidate expensive subscriptions into one focused operating system.</p>
+            <h3 class="text-on-surface text-sm font-bold">Zero Tool Bloat</h3>
+            <p class="text-on-surface-variant mt-1 text-xs leading-relaxed">
+              Consolidate expensive subscriptions into one focused operating system.
+            </p>
           </div>
         </div>
       </div>
@@ -238,119 +315,169 @@
   </section>
 
   <!-- Features Section -->
-  <section id="features" class="mx-auto flex max-w-7xl flex-col gap-8 py-16 px-4 md:py-24">
+  <section id="features" class="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-16 md:py-24">
     <div class="flex flex-col items-center gap-3 text-center">
-      <div class="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+      <div
+        class="border-primary/20 bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold"
+      >
         Feature Suite
       </div>
-      <h2 class="text-3xl font-extrabold tracking-tight text-on-surface sm:text-4xl">
+      <h2 class="text-on-surface text-3xl font-extrabold tracking-tight sm:text-4xl">
         Everything your agency needs to operate
       </h2>
-      <p class="max-w-2xl text-sm text-on-surface-variant sm:text-base">
-        A complete, purpose-built suite of tools designed to streamline your daily operations and maximize billable profitability.
+      <p class="text-on-surface-variant max-w-2xl text-sm sm:text-base">
+        A complete, purpose-built suite of tools designed to streamline your daily operations and
+        maximize billable profitability.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 pt-4">
+    <div class="grid grid-cols-1 gap-6 pt-4 sm:grid-cols-2 lg:grid-cols-4">
       <aos-feature-card>
         <aos-icons name="lucideUsers" class="size-5" />
         <ng-container ngProjectAs="title">Client CRM</ng-container>
-        <ng-container ngProjectAs="description">Manage client relationships, contact details, and deal pipelines with full communication history.</ng-container>
+        <ng-container ngProjectAs="description"
+          >Manage client relationships, contact details, and deal pipelines with full communication
+          history.</ng-container
+        >
       </aos-feature-card>
 
       <aos-feature-card>
         <aos-icons name="lucideClipboardList" class="size-5" />
         <ng-container ngProjectAs="title">Project Tracking</ng-container>
-        <ng-container ngProjectAs="description">Organize deliverable scopes, set milestones, track deadlines, and delegate responsibilities.</ng-container>
+        <ng-container ngProjectAs="description"
+          >Organize deliverable scopes, set milestones, track deadlines, and delegate
+          responsibilities.</ng-container
+        >
       </aos-feature-card>
 
       <aos-feature-card>
         <aos-icons name="lucideKanbanSquare" class="size-5" />
         <ng-container ngProjectAs="title">Kanban Boards</ng-container>
-        <ng-container ngProjectAs="description">Visualize workflows with interactive columns and drag-and-drop task progression.</ng-container>
+        <ng-container ngProjectAs="description"
+          >Visualize workflows with interactive columns and drag-and-drop task
+          progression.</ng-container
+        >
       </aos-feature-card>
 
       <aos-feature-card>
         <aos-icons name="lucideCalendarRange" class="size-5" />
         <ng-container ngProjectAs="title">Live Calendar</ng-container>
-        <ng-container ngProjectAs="description">Visualize task deadlines, project schedules, and team capacity on an interactive live calendar.</ng-container>
+        <ng-container ngProjectAs="description"
+          >Visualize task deadlines, project schedules, and team capacity on an interactive live
+          calendar.</ng-container
+        >
       </aos-feature-card>
 
       <aos-feature-card>
         <aos-icons name="lucideTimer" class="size-5" />
         <ng-container ngProjectAs="title">Time Tracking</ng-container>
-        <ng-container ngProjectAs="description">Log hours directly against tasks with one-click timers for accurate project costing and billing.</ng-container>
+        <ng-container ngProjectAs="description"
+          >Log hours directly against tasks with one-click timers for accurate project costing and
+          billing.</ng-container
+        >
       </aos-feature-card>
 
       <aos-feature-card>
         <aos-icons name="lucideReceiptText" class="size-5" />
         <ng-container ngProjectAs="title">Smart Invoicing</ng-container>
-        <ng-container ngProjectAs="description">Generate clean, professional invoices directly from logged billable hours and track payment statuses.</ng-container>
+        <ng-container ngProjectAs="description"
+          >Generate clean, professional invoices directly from logged billable hours and track
+          payment statuses.</ng-container
+        >
       </aos-feature-card>
 
       <aos-feature-card>
         <aos-icons name="lucideWorkflow" class="size-5" />
         <ng-container ngProjectAs="title">Team Workspaces</ng-container>
-        <ng-container ngProjectAs="description">Collaborate across departments with isolated workspaces, role permissions, and access controls.</ng-container>
+        <ng-container ngProjectAs="description"
+          >Collaborate across departments with isolated workspaces, role permissions, and access
+          controls.</ng-container
+        >
       </aos-feature-card>
 
       <aos-feature-card>
         <aos-icons name="lucideBarChart3" class="size-5" />
         <ng-container ngProjectAs="title">Agency Analytics</ng-container>
-        <ng-container ngProjectAs="description">Gain real-time insights into agency profitability, team utilization, and project turnaround times.</ng-container>
+        <ng-container ngProjectAs="description"
+          >Gain real-time insights into agency profitability, team utilization, and project
+          turnaround times.</ng-container
+        >
       </aos-feature-card>
     </div>
   </section>
 
   <!-- How It Works Section -->
-  <section class="border-t border-outline-variant/40 bg-surface-container-low/30 py-16 px-4 md:py-24">
-    <div class="mx-auto max-w-6xl flex flex-col gap-12">
+  <section
+    class="border-outline-variant/40 bg-surface-container-low/30 border-t px-4 py-16 md:py-24"
+  >
+    <div class="mx-auto flex max-w-6xl flex-col gap-12">
       <div class="flex flex-col items-center gap-3 text-center">
-        <div class="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+        <div
+          class="border-primary/20 bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold"
+        >
           Workflow
         </div>
-        <h2 class="text-3xl font-extrabold tracking-tight text-on-surface sm:text-4xl">
+        <h2 class="text-on-surface text-3xl font-extrabold tracking-tight sm:text-4xl">
           From client onboarding to getting paid
         </h2>
-        <p class="max-w-2xl text-sm text-on-surface-variant sm:text-base">
-          See how Agency OS connects every stage of your agency's client delivery cycle in three intuitive steps.
+        <p class="text-on-surface-variant max-w-2xl text-sm sm:text-base">
+          See how Agency OS connects every stage of your agency's client delivery cycle in three
+          intuitive steps.
         </p>
       </div>
 
       <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
         <!-- Step 1 -->
-        <div class="flex flex-col gap-4 rounded-2xl border border-outline-variant/50 bg-surface-container-low p-6">
+        <div
+          class="border-outline-variant/50 bg-surface-container-low flex flex-col gap-4 rounded-2xl border p-6"
+        >
           <div class="flex items-center justify-between">
-            <span class="flex size-9 items-center justify-center rounded-full bg-primary font-bold text-on-primary text-sm">1</span>
-            <aos-icons name="lucideUsers" class="size-6 text-primary" />
+            <span
+              class="bg-primary text-on-primary flex size-9 items-center justify-center rounded-full text-sm font-bold"
+              >1</span
+            >
+            <aos-icons name="lucideUsers" class="text-primary size-6" />
           </div>
-          <h3 class="text-lg font-bold text-on-surface">Capture & Onboard</h3>
-          <p class="text-sm text-on-surface-variant leading-relaxed">
-            Add your clients, establish rate cards, and initialize projects with customized task lists and sprint milestones.
+          <h3 class="text-on-surface text-lg font-bold">Capture & Onboard</h3>
+          <p class="text-on-surface-variant text-sm leading-relaxed">
+            Add your clients, establish rate cards, and initialize projects with customized task
+            lists and sprint milestones.
           </p>
         </div>
 
         <!-- Step 2 -->
-        <div class="flex flex-col gap-4 rounded-2xl border border-outline-variant/50 bg-surface-container-low p-6">
+        <div
+          class="border-outline-variant/50 bg-surface-container-low flex flex-col gap-4 rounded-2xl border p-6"
+        >
           <div class="flex items-center justify-between">
-            <span class="flex size-9 items-center justify-center rounded-full bg-primary font-bold text-on-primary text-sm">2</span>
-            <aos-icons name="lucideFolderKanban" class="size-6 text-primary" />
+            <span
+              class="bg-primary text-on-primary flex size-9 items-center justify-center rounded-full text-sm font-bold"
+              >2</span
+            >
+            <aos-icons name="lucideFolderKanban" class="text-primary size-6" />
           </div>
-          <h3 class="text-lg font-bold text-on-surface">Execute & Track</h3>
-          <p class="text-sm text-on-surface-variant leading-relaxed">
-            Move tasks across Kanban stages, sync deadlines to the live calendar, and track precise team hours with live timers.
+          <h3 class="text-on-surface text-lg font-bold">Execute & Track</h3>
+          <p class="text-on-surface-variant text-sm leading-relaxed">
+            Move tasks across Kanban stages, sync deadlines to the live calendar, and track precise
+            team hours with live timers.
           </p>
         </div>
 
         <!-- Step 3 -->
-        <div class="flex flex-col gap-4 rounded-2xl border border-outline-variant/50 bg-surface-container-low p-6">
+        <div
+          class="border-outline-variant/50 bg-surface-container-low flex flex-col gap-4 rounded-2xl border p-6"
+        >
           <div class="flex items-center justify-between">
-            <span class="flex size-9 items-center justify-center rounded-full bg-primary font-bold text-on-primary text-sm">3</span>
-            <aos-icons name="lucideReceiptText" class="size-6 text-primary" />
+            <span
+              class="bg-primary text-on-primary flex size-9 items-center justify-center rounded-full text-sm font-bold"
+              >3</span
+            >
+            <aos-icons name="lucideReceiptText" class="text-primary size-6" />
           </div>
-          <h3 class="text-lg font-bold text-on-surface">Invoice & Scale</h3>
-          <p class="text-sm text-on-surface-variant leading-relaxed">
-            Convert logged time and milestones directly into itemized invoices and monitor payments in real-time.
+          <h3 class="text-on-surface text-lg font-bold">Invoice & Scale</h3>
+          <p class="text-on-surface-variant text-sm leading-relaxed">
+            Convert logged time and milestones directly into itemized invoices and monitor payments
+            in real-time.
           </p>
         </div>
       </div>
@@ -358,20 +485,25 @@
   </section>
 
   <!-- Bottom CTA Section -->
-  <section class="py-16 px-4 md:py-24">
-    <div class="mx-auto max-w-5xl rounded-3xl border border-primary/30 bg-gradient-to-b from-primary/15 via-primary/5 to-surface-container-low p-8 text-center sm:p-12 md:p-16">
-      <h2 class="text-3xl font-extrabold tracking-tight text-on-surface sm:text-4xl md:text-5xl">
+  <section class="px-4 py-16 md:py-24">
+    <div
+      class="border-primary/30 from-primary/15 via-primary/5 to-surface-container-low mx-auto max-w-5xl rounded-3xl border bg-gradient-to-b p-8 text-center sm:p-12 md:p-16"
+    >
+      <h2 class="text-on-surface text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
         Ready to scale your agency operations?
       </h2>
-      <p class="mx-auto mt-4 max-w-2xl text-sm text-on-surface-variant sm:text-base">
-        Get started with Agency OS today. Free to self-host, open-source forever, and built for performance.
+      <p class="text-on-surface-variant mx-auto mt-4 max-w-2xl text-sm sm:text-base">
+        Get started with Agency OS today. Free to self-host, open-source forever, and built for
+        performance.
       </p>
 
       <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
-        <aos-button variant="primary" class="h-11">
-          Get Started for Free
-        </aos-button>
-        <aos-button variant="outlined" href="https://github.com/Eyad-Sharkawy/agency-os-back-end" class="h-11">
+        <aos-button variant="primary" class="h-11"> Get Started for Free </aos-button>
+        <aos-button
+          variant="outlined"
+          href="https://github.com/Eyad-Sharkawy/agency-os-back-end"
+          class="h-11"
+        >
           <aos-icons name="simpleGithub" class="size-4" />
           <span class="ml-2">View Source on GitHub</span>
         </aos-button>
@@ -379,4 +511,3 @@
     </div>
   </section>
 </div>
-

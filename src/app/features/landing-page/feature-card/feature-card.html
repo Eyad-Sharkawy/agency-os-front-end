@@ -1,14 +1,17 @@
-<article class="group relative flex h-full w-full flex-col gap-3.5 rounded-xl border border-outline-variant/60 bg-surface-container-low/70 p-5 backdrop-blur-xs transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:bg-surface-container hover:shadow-md">
+<article
+  class="group border-outline-variant/60 bg-surface-container-low/70 hover:border-primary/40 hover:bg-surface-container relative flex h-full w-full flex-col gap-3.5 rounded-xl border p-5 backdrop-blur-xs transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+>
   <div class="flex items-center gap-3">
-    <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-on-primary">
+    <div
+      class="bg-primary/10 text-primary group-hover:bg-primary group-hover:text-on-primary flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors duration-200"
+    >
       <ng-content select="aos-icons" />
     </div>
-    <h3 class="text-base font-semibold text-on-surface">
+    <h3 class="text-on-surface text-base font-semibold">
       <ng-content select="title" />
     </h3>
   </div>
-  <p class="text-sm leading-relaxed text-on-surface-variant">
+  <p class="text-on-surface-variant text-sm leading-relaxed">
     <ng-content select="description" />
   </p>
 </article>
-

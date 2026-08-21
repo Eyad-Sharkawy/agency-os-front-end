@@ -16,4 +16,3 @@ import { lucideExternalLink, lucideHeart } from "@ng-icons/lucide";
 export class Footer {
   readonly currentYear = new Date().getFullYear();
 }
-

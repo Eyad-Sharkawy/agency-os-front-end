@@ -27,4 +27,3 @@ export class Navbar {
     this.isMenuOpen.update(open => !open);
   }
 }
-

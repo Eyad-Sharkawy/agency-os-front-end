@@ -2,7 +2,7 @@
   class="bg-surface-container-lowest relative flex h-16 items-center gap-6 px-6 shadow-sm md:px-15 lg:px-25"
 >
   <a routerLink="/" class="flex items-center gap-1">
-    <aos-logo class="w-6" />
+    <aos-logo class="size-6 shrink-0" />
     <span class="text-primary font-bold">Agency OS</span>
   </a>
 
@@ -37,7 +37,7 @@
         <aos-icons
           name="lucideSun"
           strokeWidth="1.75"
-          class="absolute inset-0 transition-all duration-300 ease-in-out text-amber-500"
+          class="absolute inset-0 text-amber-500 transition-all duration-300 ease-in-out"
           [class.opacity-0]="themeService.theme() === 'light'"
           [class.rotate-90]="themeService.theme() === 'light'"
           [class.scale-75]="themeService.theme() === 'light'"
@@ -48,7 +48,7 @@
         <aos-icons
           name="lucideMoon"
           strokeWidth="1.75"
-          class="absolute inset-0 transition-all duration-300 ease-in-out text-on-surface-variant"
+          class="text-on-surface-variant absolute inset-0 transition-all duration-300 ease-in-out"
           [class.opacity-0]="themeService.theme() === 'dark'"
           [class.-rotate-90]="themeService.theme() === 'dark'"
           [class.scale-75]="themeService.theme() === 'dark'"
@@ -80,7 +80,7 @@
         <aos-icons
           name="lucideSun"
           strokeWidth="1.75"
-          class="absolute inset-0 transition-all duration-300 ease-in-out text-amber-500"
+          class="absolute inset-0 text-amber-500 transition-all duration-300 ease-in-out"
           [class.opacity-0]="themeService.theme() === 'light'"
           [class.rotate-90]="themeService.theme() === 'light'"
           [class.scale-75]="themeService.theme() === 'light'"
@@ -91,7 +91,7 @@
         <aos-icons
           name="lucideMoon"
           strokeWidth="1.75"
-          class="absolute inset-0 transition-all duration-300 ease-in-out text-on-surface-variant"
+          class="text-on-surface-variant absolute inset-0 transition-all duration-300 ease-in-out"
           [class.opacity-0]="themeService.theme() === 'dark'"
           [class.-rotate-90]="themeService.theme() === 'dark'"
           [class.scale-75]="themeService.theme() === 'dark'"
