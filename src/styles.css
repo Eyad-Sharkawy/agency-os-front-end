@@ -95,3 +95,53 @@
   --outline: #8d9199;
   --outline-variant: #43474e;
 }
+
+/* Custom Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-container-highest) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--surface-container-highest);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--outline-variant);
+}
+
+/* Smooth Theme Transition */
+html,
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+nav,
+footer,
+article,
+section,
+.bg-surface,
+.bg-surface-dim,
+.bg-surface-bright,
+.bg-surface-container,
+.bg-surface-container-low,
+.bg-surface-container-lowest,
+.bg-surface-container-high,
+.bg-surface-container-highest {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+

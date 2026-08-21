@@ -3,12 +3,14 @@ import { Button } from "../../../shared/components/button/button";
 import { Icons } from "../../../shared/components/icons/icons";
 import { provideIcons } from "@ng-icons/core";
 import { simpleGithub } from "@ng-icons/simple-icons";
+import { lucideMoon, lucideSun } from "@ng-icons/lucide";
 import { RouterLink, RouterLinkActive } from "@angular/router";
+import { ThemeService } from "../../../core/services/theme.service";
 
 @Component({
   selector: "aos-dropdown-menu",
   imports: [Button, Icons, RouterLink, RouterLinkActive],
-  providers: [provideIcons({ simpleGithub })],
+  providers: [provideIcons({ simpleGithub, lucideSun, lucideMoon })],
   templateUrl: "./dropdown-menu.html",
   styleUrl: "./dropdown-menu.css",
   host: {
@@ -19,6 +21,7 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
 })
 export class DropdownMenu {
   private elementRef = inject(ElementRef);
+  readonly themeService = inject(ThemeService);
 
   readonly isOpen = model<boolean>(false);
 

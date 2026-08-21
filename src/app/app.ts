@@ -1,13 +1,13 @@
 import { Component } from "@angular/core";
 import { provideIcons } from "@ng-icons/core";
-import { Icons } from "./shared/components/icons/icons";
-import { Button } from "./shared/components/button/button";
 import { lucideMenu } from "@ng-icons/lucide";
+import { RouterOutlet } from "@angular/router";
+import { Footer } from "./layout/footer/footer";
 import { Navbar } from "./layout/navbar/navbar";
 
 @Component({
   selector: "aos-root",
-  imports: [Navbar],
+  imports: [RouterOutlet, Navbar, Footer],
   providers: provideIcons({ lucideMenu }),
   templateUrl: "./app.html",
   styleUrl: "./app.css",

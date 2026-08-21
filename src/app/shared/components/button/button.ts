@@ -68,7 +68,7 @@ export class Button {
 
   protected readonly computedClasses = computed<string>(() => {
     const baseClasses =
-      "inline-flex items-center justify-center cursor-pointer text-center font-medium text-sm rounded-md w-full h-9 transition-colors duration-150 ease-in-out disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed";
+      "inline-flex items-center justify-center cursor-pointer text-center font-medium text-sm rounded-md w-full h-full min-h-9 transition-colors duration-150 ease-in-out disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed";
     const paddingClasses = "px-4 py-2";
 
     switch (this.variant()) {

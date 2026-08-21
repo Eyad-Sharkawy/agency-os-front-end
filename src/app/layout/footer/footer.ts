@@ -1,0 +1,19 @@
+import { Component } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { LogoComponent } from "../../shared/components/logo/logo";
+import { Icons } from "../../shared/components/icons/icons";
+import { provideIcons } from "@ng-icons/core";
+import { simpleGithub } from "@ng-icons/simple-icons";
+import { lucideExternalLink, lucideHeart } from "@ng-icons/lucide";
+
+@Component({
+  selector: "aos-footer",
+  imports: [RouterLink, LogoComponent, Icons],
+  providers: [provideIcons({ simpleGithub, lucideHeart, lucideExternalLink })],
+  templateUrl: "./footer.html",
+  styleUrl: "./footer.css",
+})
+export class Footer {
+  readonly currentYear = new Date().getFullYear();
+}
+

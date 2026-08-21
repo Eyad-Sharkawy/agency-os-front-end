@@ -25,7 +25,40 @@
     </a>
   </div>
 
-  <div class="ml-auto hidden gap-1.5 lg:flex">
+  <div class="ml-auto hidden items-center gap-1.5 lg:flex">
+    <!-- Theme Toggle -->
+    <aos-button
+      variant="ghost"
+      class="size-9 rounded-md"
+      [ariaLabel]="themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+      (click)="themeService.toggleTheme()"
+    >
+      <div class="relative flex size-4 items-center justify-center">
+        <aos-icons
+          name="lucideSun"
+          strokeWidth="1.75"
+          class="absolute inset-0 transition-all duration-300 ease-in-out text-amber-500"
+          [class.opacity-0]="themeService.theme() === 'light'"
+          [class.rotate-90]="themeService.theme() === 'light'"
+          [class.scale-75]="themeService.theme() === 'light'"
+          [class.opacity-100]="themeService.theme() === 'dark'"
+          [class.rotate-0]="themeService.theme() === 'dark'"
+          [class.scale-100]="themeService.theme() === 'dark'"
+        />
+        <aos-icons
+          name="lucideMoon"
+          strokeWidth="1.75"
+          class="absolute inset-0 transition-all duration-300 ease-in-out text-on-surface-variant"
+          [class.opacity-0]="themeService.theme() === 'dark'"
+          [class.-rotate-90]="themeService.theme() === 'dark'"
+          [class.scale-75]="themeService.theme() === 'dark'"
+          [class.opacity-100]="themeService.theme() === 'light'"
+          [class.rotate-0]="themeService.theme() === 'light'"
+          [class.scale-100]="themeService.theme() === 'light'"
+        />
+      </div>
+    </aos-button>
+
     <aos-button variant="outlined" href="https://github.com/Eyad-Sharkawy/agency-os-back-end">
       <aos-icons name="simpleGithub" class="size-6" />
       <span class="ml-2">View on Github</span>
@@ -35,39 +68,74 @@
     <aos-button variant="primary">Sign up</aos-button>
   </div>
 
-  <aos-button
-    variant="ghost"
-    class="ml-auto size-8 lg:hidden"
-    [aria-label]="isMenuOpen() ? 'Close navigation menu' : 'Open navigation menu'"
-    [aria-expanded]="isMenuOpen() ? 'true' : 'false'"
-    aria-controls="mobile-nav-menu"
-    (click)="$event.stopPropagation(); toggleMenu()"
-  >
-    <div class="relative size-5 flex items-center justify-center">
-      <aos-icons
-        name="lucideMenu"
-        strokeWidth="1.5"
-        class="absolute inset-0 transition-all duration-300 ease-in-out"
-        [class.opacity-0]="isMenuOpen()"
-        [class.rotate-90]="isMenuOpen()"
-        [class.scale-75]="isMenuOpen()"
-        [class.opacity-100]="!isMenuOpen()"
-        [class.rotate-0]="!isMenuOpen()"
-        [class.scale-100]="!isMenuOpen()"
-      />
-      <aos-icons
-        name="lucideX"
-        strokeWidth="1.5"
-        class="absolute inset-0 transition-all duration-300 ease-in-out"
-        [class.opacity-0]="!isMenuOpen()"
-        [class.-rotate-90]="!isMenuOpen()"
-        [class.scale-75]="!isMenuOpen()"
-        [class.opacity-100]="isMenuOpen()"
-        [class.rotate-0]="isMenuOpen()"
-        [class.scale-100]="isMenuOpen()"
-      />
-    </div>
-  </aos-button>
+  <!-- Mobile Right Controls (Theme Toggle + Hamburger) -->
+  <div class="ml-auto flex items-center gap-1 lg:hidden">
+    <aos-button
+      variant="ghost"
+      class="size-8 rounded-md"
+      [ariaLabel]="themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+      (click)="themeService.toggleTheme()"
+    >
+      <div class="relative flex size-4 items-center justify-center">
+        <aos-icons
+          name="lucideSun"
+          strokeWidth="1.75"
+          class="absolute inset-0 transition-all duration-300 ease-in-out text-amber-500"
+          [class.opacity-0]="themeService.theme() === 'light'"
+          [class.rotate-90]="themeService.theme() === 'light'"
+          [class.scale-75]="themeService.theme() === 'light'"
+          [class.opacity-100]="themeService.theme() === 'dark'"
+          [class.rotate-0]="themeService.theme() === 'dark'"
+          [class.scale-100]="themeService.theme() === 'dark'"
+        />
+        <aos-icons
+          name="lucideMoon"
+          strokeWidth="1.75"
+          class="absolute inset-0 transition-all duration-300 ease-in-out text-on-surface-variant"
+          [class.opacity-0]="themeService.theme() === 'dark'"
+          [class.-rotate-90]="themeService.theme() === 'dark'"
+          [class.scale-75]="themeService.theme() === 'dark'"
+          [class.opacity-100]="themeService.theme() === 'light'"
+          [class.rotate-0]="themeService.theme() === 'light'"
+          [class.scale-100]="themeService.theme() === 'light'"
+        />
+      </div>
+    </aos-button>
+
+    <aos-button
+      variant="ghost"
+      class="size-8"
+      [ariaLabel]="isMenuOpen() ? 'Close navigation menu' : 'Open navigation menu'"
+      [ariaExpanded]="isMenuOpen() ? 'true' : 'false'"
+      ariaControls="mobile-nav-menu"
+      (click)="$event.stopPropagation(); toggleMenu()"
+    >
+      <div class="relative flex size-5 items-center justify-center">
+        <aos-icons
+          name="lucideMenu"
+          strokeWidth="1.5"
+          class="absolute inset-0 transition-all duration-300 ease-in-out"
+          [class.opacity-0]="isMenuOpen()"
+          [class.rotate-90]="isMenuOpen()"
+          [class.scale-75]="isMenuOpen()"
+          [class.opacity-100]="!isMenuOpen()"
+          [class.rotate-0]="!isMenuOpen()"
+          [class.scale-100]="!isMenuOpen()"
+        />
+        <aos-icons
+          name="lucideX"
+          strokeWidth="1.5"
+          class="absolute inset-0 transition-all duration-300 ease-in-out"
+          [class.opacity-0]="!isMenuOpen()"
+          [class.-rotate-90]="!isMenuOpen()"
+          [class.scale-75]="!isMenuOpen()"
+          [class.opacity-100]="isMenuOpen()"
+          [class.rotate-0]="isMenuOpen()"
+          [class.scale-100]="isMenuOpen()"
+        />
+      </div>
+    </aos-button>
+  </div>
 
   <aos-dropdown-menu [(isOpen)]="isMenuOpen" />
 </nav>
