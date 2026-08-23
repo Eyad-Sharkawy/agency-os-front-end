@@ -1,0 +1,208 @@
+<div class="bg-surface relative min-h-screen">
+  <!-- Decorative Background Glow -->
+  <div
+    class="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden"
+  >
+    <div
+      class="from-primary/10 via-primary/5 h-[400px] w-[800px] rounded-full bg-gradient-to-b to-transparent blur-3xl"
+    ></div>
+  </div>
+
+  <!-- Top Navigation Bar -->
+  <header
+    class="border-outline-variant/50 bg-surface/80 sticky top-0 z-40 w-full border-b backdrop-blur-md"
+  >
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <div class="flex items-center gap-3">
+        <aos-logo variant="icon" class="size-8" />
+        <span class="text-on-surface font-mono text-sm font-bold tracking-tight">Agency OS</span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="text-right">
+          <p class="text-on-surface text-xs font-semibold sm:text-sm">
+            {{ authStore.firstName() }} {{ authStore.lastName() }}
+          </p>
+          <p class="text-on-surface-variant max-w-[160px] truncate text-[11px] sm:max-w-[240px]">
+            {{ authStore.userEmail() }}
+          </p>
+        </div>
+        <div
+          class="bg-primary text-on-primary flex size-9 items-center justify-center rounded-full text-xs font-bold shadow-xs"
+        >
+          {{ authStore.initials() }}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+    <!-- Header Title Section -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <div
+          class="border-primary/25 bg-primary/10 text-primary mb-2 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold"
+        >
+          <aos-icons name="lucideBuilding2" class="size-3.5" />
+          <span>Multi-Tenant Directory</span>
+        </div>
+        <h1 class="text-on-surface text-2xl font-extrabold tracking-tight sm:text-3xl">
+          Select Your Workspace
+        </h1>
+        <p class="text-on-surface-variant mt-1 text-sm sm:text-base">
+          Choose an organization to continue or launch a new isolated workspace.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <aos-button variant="primary" routerLink="/workspaces/create">
+          <aos-icons name="lucidePlus" class="mr-1.5 size-4" />
+          <span>Create Workspace</span>
+        </aos-button>
+      </div>
+    </div>
+
+    <!-- Extracted Pending Invitations Banner -->
+    <aos-workspace-invitations
+      [invitations]="pendingInvitations()"
+      [processingId]="processingInvitationId()"
+      (accept)="acceptInvitation($event)"
+      (decline)="declineInvitation($event)"
+    />
+
+    <!-- Search / Filter Bar -->
+    @if (hasWorkspaces()) {
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="relative w-full max-w-md">
+          <aos-icons
+            name="lucideSearch"
+            class="text-on-surface-variant pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+          />
+          <input
+            type="text"
+            placeholder="Search workspaces by name or tenant ID..."
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+            class="border-outline-variant/60 bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary focus:ring-primary/20 w-full rounded-xl border py-2.5 pr-4 pl-9 text-xs transition-all focus:ring-2 focus:outline-none sm:text-sm"
+          />
+        </div>
+
+        <div class="text-on-surface-variant flex items-center gap-2 text-xs font-medium">
+          <span
+            >Showing {{ filteredWorkspaces().length }} of
+            {{ workspacesList().length }} workspaces</span
+          >
+          <aos-button
+            variant="ghost"
+            class="size-8"
+            ariaLabel="Refresh directory"
+            (click)="reloadAll()"
+          >
+            <aos-icons name="lucideRefreshCw" class="size-3.5" />
+          </aos-button>
+        </div>
+      </div>
+    }
+
+    <!-- Loading State -->
+    @if (workspacesResource.isLoading()) {
+      <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @for (i of [1, 2, 3]; track i) {
+          <div
+            class="border-outline-variant/50 bg-surface-container-low/40 animate-pulse rounded-2xl border p-5"
+          >
+            <div class="flex items-center gap-3">
+              <div class="bg-surface-container-high size-12 rounded-xl"></div>
+              <div class="flex-1 space-y-2">
+                <div class="bg-surface-container-high h-4 w-3/4 rounded"></div>
+                <div class="bg-surface-container-high h-3 w-1/2 rounded"></div>
+              </div>
+            </div>
+            <div class="bg-surface-container-high mt-6 h-8 w-full rounded-lg"></div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Error State -->
+    @else if (workspacesResource.error()) {
+      <div
+        class="border-error/30 bg-error/10 mt-8 flex flex-col items-center justify-center gap-3 rounded-2xl border p-8 text-center"
+      >
+        <aos-icons name="lucideAlertCircle" class="text-error size-8" />
+        <h3 class="text-on-surface text-base font-bold">Failed to load workspaces</h3>
+        <p class="text-on-surface-variant max-w-md text-xs">
+          An unexpected error occurred while fetching your organization directory. Please check your
+          network connection.
+        </p>
+        <aos-button variant="outlined" (click)="reloadAll()" class="mt-2">
+          <aos-icons name="lucideRefreshCw" class="mr-1.5 size-3.5" />
+          <span>Try Again</span>
+        </aos-button>
+      </div>
+    }
+
+    <!-- Empty State (No workspaces at all) -->
+    @else if (!hasWorkspaces()) {
+      <div
+        class="border-outline-variant/60 bg-surface-container-low/30 mt-8 flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed p-10 text-center sm:p-16"
+      >
+        <div
+          class="bg-primary/10 text-primary flex size-16 items-center justify-center rounded-2xl shadow-inner"
+        >
+          <aos-icons name="lucideBriefcase" class="size-8" />
+        </div>
+        <div class="max-w-md space-y-1">
+          <h3 class="text-on-surface text-lg font-bold">No Workspaces Found</h3>
+          <p class="text-on-surface-variant text-xs sm:text-sm">
+            You don't have access to any workspaces yet. Create a brand new workspace organization
+            to get started.
+          </p>
+        </div>
+        <aos-button variant="primary" routerLink="/workspaces/create" class="mt-2">
+          <aos-icons name="lucidePlus" class="mr-1.5 size-4" />
+          <span>Create Your First Workspace</span>
+        </aos-button>
+      </div>
+    }
+
+    <!-- Empty Search Results -->
+    @else if (filteredWorkspaces().length === 0) {
+      <div
+        class="border-outline-variant/50 bg-surface-container-low mt-8 flex flex-col items-center justify-center gap-2 rounded-2xl border p-8 text-center"
+      >
+        <aos-icons name="lucideSearch" class="text-on-surface-variant size-6" />
+        <h3 class="text-on-surface text-sm font-bold">No matching workspaces</h3>
+        <p class="text-on-surface-variant text-xs">
+          No organizations matched your search query "{{ searchQuery() }}".
+        </p>
+      </div>
+    }
+
+    <!-- Extracted Workspaces Grid using WorkspaceCard -->
+    @else {
+      <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        @for (ws of filteredWorkspaces(); track ws.id) {
+          <aos-workspace-card
+            [workspace]="ws"
+            [isActive]="isCurrentActive(ws)"
+            (selected)="selectWorkspace($event)"
+            (manage)="openManageModal($event)"
+          />
+        }
+      </div>
+    }
+  </main>
+
+  <!-- Extracted Manage Workspace Modal Component -->
+  <aos-workspace-manage-modal
+    [workspace]="selectedManageWorkspace()"
+    [isOpen]="isManageModalOpen()"
+    [initialTab]="selectedManageTab()"
+    (closed)="closeManageModal()"
+    (tabChange)="onManageTabChange($event)"
+    (updated)="onWorkspaceUpdated($event)"
+    (deleted)="onWorkspaceDeleted($event)"
+  />
+</div>

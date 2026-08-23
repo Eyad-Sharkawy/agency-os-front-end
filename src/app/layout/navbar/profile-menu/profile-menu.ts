@@ -1,13 +1,14 @@
 import { Component, ElementRef, inject, signal } from "@angular/core";
+import { RouterLink } from "@angular/router";
 import { AuthStore } from "../../../core/auth/auth.store";
 import { Icons } from "../../../shared/components/icons/icons";
 import { provideIcons } from "@ng-icons/core";
-import { lucideLogOut } from "@ng-icons/lucide";
+import { lucideBuilding2, lucideLogOut } from "@ng-icons/lucide";
 
 @Component({
   selector: "aos-profile-menu",
-  imports: [Icons],
-  providers: [provideIcons({ lucideLogOut })],
+  imports: [Icons, RouterLink],
+  providers: [provideIcons({ lucideLogOut, lucideBuilding2 })],
   templateUrl: "./profile-menu.html",
   styleUrl: "./profile-menu.css",
   host: {

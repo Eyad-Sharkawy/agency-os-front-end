@@ -25,7 +25,20 @@
       }
     </div>
 
-    <div class="p-1">
+    <div class="space-y-0.5 p-1">
+      <a
+        routerLink="/workspaces"
+        (click)="close()"
+        class="text-on-surface hover:bg-surface-container-high flex w-full cursor-pointer items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors"
+      >
+        <aos-icons
+          name="lucideBuilding2"
+          strokeWidth="1.75"
+          class="text-on-surface-variant size-4"
+        />
+        <span>Workspaces</span>
+      </a>
+
       <button
         type="button"
         role="menuitem"

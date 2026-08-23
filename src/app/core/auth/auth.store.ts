@@ -1,9 +1,25 @@
-import { AuthState } from "./auth.models";
-import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
 import { computed, inject } from "@angular/core";
-import { ENVIRONMENT } from "../tokens/environment.token";
+import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
 import Keycloak from "keycloak-js";
+import { ENVIRONMENT } from "../tokens/environment.token";
 import { Theme } from "../services/theme";
+
+export interface UserProfile {
+  id: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface AuthState {
+  isAuthenticated: boolean;
+  user: UserProfile | null;
+  roles: string[];
+  token: string | null;
+  isLoading: boolean;
+  error: string | null;
+}
 
 const initialState: AuthState = {
   isAuthenticated: false,
@@ -23,9 +39,11 @@ export const AuthStore = signalStore(
     firstName: computed(() => store.user()?.firstName ?? ""),
     lastName: computed(() => store.user()?.lastName ?? ""),
     initials: computed(() => {
-      const first = store.user()?.firstName?.trim()?.charAt(0) ?? "";
-      const last = store.user()?.lastName?.trim()?.charAt(0) ?? "";
-      return `${first}${last}`.toUpperCase();
+      const user = store.user();
+      if (!user) return "";
+      const first = user.firstName?.[0] ?? "";
+      const last = user.lastName?.[0] ?? "";
+      return (first + last).toUpperCase() || user.username?.slice(0, 2).toUpperCase() || "";
     }),
     hasRole: computed(() => (role: string) => store.roles().includes(role)),
   })),
@@ -38,13 +56,12 @@ export const AuthStore = signalStore(
 
     return {
       async init(): Promise<boolean> {
-        patchState(store, { isLoading: true, error: null });
-
         try {
+          patchState(store, { isLoading: true, error: null });
+
           const authenticated = await keycloak.init({
             onLoad: "check-sso",
             silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
-            silentCheckSsoFallback: false,
             checkLoginIframe: false,
             pkceMethod: "S256",
           });
@@ -56,21 +73,26 @@ export const AuthStore = signalStore(
               token: keycloak.token ?? null,
               roles: keycloak.realmAccess?.roles ?? [],
               user: {
-                id: profile.id,
-                username: profile.username,
-                email: profile.email,
-                firstName: profile.firstName,
-                lastName: profile.lastName,
+                id: profile.id ?? "",
+                username: profile.username ?? "",
+                email: profile.email ?? "",
+                firstName: profile.firstName ?? "",
+                lastName: profile.lastName ?? "",
               },
               isLoading: false,
             });
+            return true;
           } else {
-            patchState(store, { isAuthenticated: false, isLoading: false });
+            patchState(store, {
+              isAuthenticated: false,
+              user: null,
+              roles: [],
+              token: null,
+              isLoading: false,
+            });
+            return false;
           }
-
-          return authenticated;
         } catch (err: unknown) {
-          console.error("Failed to init Keycloak", err);
           patchState(store, {
             isAuthenticated: false,
             isLoading: false,
@@ -82,7 +104,7 @@ export const AuthStore = signalStore(
 
       async login(redirectUri?: string): Promise<void> {
         const loginUrl = await keycloak.createLoginUrl({
-          redirectUri: redirectUri || window.location.origin,
+          redirectUri: redirectUri || `${window.location.origin}/workspaces`,
         });
 
         const url = new URL(loginUrl);
@@ -92,7 +114,7 @@ export const AuthStore = signalStore(
 
       async register(redirectUri?: string): Promise<void> {
         const registerUrl = await keycloak.createRegisterUrl({
-          redirectUri: redirectUri || window.location.origin,
+          redirectUri: redirectUri || `${window.location.origin}/workspaces`,
         });
 
         const url = new URL(registerUrl);
@@ -108,14 +130,23 @@ export const AuthStore = signalStore(
       },
 
       async getValidToken(): Promise<string | null> {
+        if (!store.token()) {
+          return null;
+        }
+
         try {
           if (keycloak.isTokenExpired(30)) {
             await keycloak.updateToken(30);
             patchState(store, { token: keycloak.token ?? null });
           }
-          return keycloak.token ?? null;
+          return store.token();
         } catch {
-          patchState(store, { isAuthenticated: false, token: null });
+          patchState(store, {
+            isAuthenticated: false,
+            user: null,
+            roles: [],
+            token: null,
+          });
           return null;
         }
       },

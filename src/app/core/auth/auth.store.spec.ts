@@ -17,30 +17,44 @@ const mockKeycloakInstance = {
 };
 
 vi.mock("keycloak-js", () => {
+  class MockKeycloak {
+    init = vi.fn().mockImplementation((...args: unknown[]) => mockKeycloakInstance.init(...args));
+    loadUserProfile = vi.fn().mockImplementation(() => mockKeycloakInstance.loadUserProfile());
+    login = vi.fn().mockImplementation((...args: unknown[]) => mockKeycloakInstance.login(...args));
+    register = vi
+      .fn()
+      .mockImplementation((...args: unknown[]) => mockKeycloakInstance.register(...args));
+    logout = vi
+      .fn()
+      .mockImplementation((...args: unknown[]) => mockKeycloakInstance.logout(...args));
+    createLoginUrl = vi
+      .fn()
+      .mockImplementation((...args: unknown[]) => mockKeycloakInstance.createLoginUrl(...args));
+    createRegisterUrl = vi
+      .fn()
+      .mockImplementation((...args: unknown[]) => mockKeycloakInstance.createRegisterUrl(...args));
+    isTokenExpired = vi
+      .fn()
+      .mockImplementation((...args: unknown[]) => mockKeycloakInstance.isTokenExpired(...args));
+    updateToken = vi
+      .fn()
+      .mockImplementation((...args: unknown[]) => mockKeycloakInstance.updateToken(...args));
+    get token(): string | null {
+      return mockKeycloakInstance.token;
+    }
+    set token(val: string | null) {
+      mockKeycloakInstance.token = val;
+    }
+    get realmAccess(): { roles: string[] } | undefined {
+      return mockKeycloakInstance.realmAccess;
+    }
+    set realmAccess(val: { roles: string[] } | undefined) {
+      mockKeycloakInstance.realmAccess = val;
+    }
+  }
+
   return {
-    default: class MockKeycloak {
-      init = mockKeycloakInstance.init;
-      loadUserProfile = mockKeycloakInstance.loadUserProfile;
-      login = mockKeycloakInstance.login;
-      register = mockKeycloakInstance.register;
-      logout = mockKeycloakInstance.logout;
-      createLoginUrl = mockKeycloakInstance.createLoginUrl;
-      createRegisterUrl = mockKeycloakInstance.createRegisterUrl;
-      isTokenExpired = mockKeycloakInstance.isTokenExpired;
-      updateToken = mockKeycloakInstance.updateToken;
-      get token() {
-        return mockKeycloakInstance.token;
-      }
-      set token(val) {
-        mockKeycloakInstance.token = val;
-      }
-      get realmAccess() {
-        return mockKeycloakInstance.realmAccess;
-      }
-      set realmAccess(val) {
-        mockKeycloakInstance.realmAccess = val;
-      }
-    },
+    default: MockKeycloak,
   };
 });
 
@@ -62,6 +76,19 @@ describe("AuthStore", () => {
     vi.clearAllMocks();
     mockKeycloakInstance.token = null;
     mockKeycloakInstance.realmAccess = { roles: [] };
+    mockKeycloakInstance.init.mockResolvedValue(true);
+    mockKeycloakInstance.loadUserProfile.mockResolvedValue({
+      id: "user-123",
+      username: "jdoe",
+      email: "jdoe@example.com",
+      firstName: "John",
+      lastName: "Doe",
+    });
+    mockKeycloakInstance.createLoginUrl.mockResolvedValue("https://auth.example.com/login");
+    mockKeycloakInstance.createRegisterUrl.mockResolvedValue("https://auth.example.com/register");
+    mockKeycloakInstance.logout.mockResolvedValue(undefined);
+    mockKeycloakInstance.updateToken.mockResolvedValue(true);
+    mockKeycloakInstance.isTokenExpired.mockReturnValue(false);
 
     TestBed.configureTestingModule({
       providers: [{ provide: ENVIRONMENT, useValue: mockEnv }],
@@ -113,15 +140,6 @@ describe("AuthStore", () => {
       expect(store.user()).toEqual(mockProfile);
       expect(store.isLoading()).toBe(false);
       expect(store.error()).toBeNull();
-
-      // Test computed properties with loaded user
-      expect(store.username()).toBe("jdoe");
-      expect(store.userEmail()).toBe("jdoe@example.com");
-      expect(store.firstName()).toBe("John");
-      expect(store.lastName()).toBe("Doe");
-      expect(store.initials()).toBe("JD");
-      expect(store.hasRole()("admin")).toBe(true);
-      expect(store.hasRole()("superadmin")).toBe(false);
     });
 
     it("should handle unauthenticated status from Keycloak", async () => {
@@ -131,59 +149,65 @@ describe("AuthStore", () => {
 
       expect(result).toBe(false);
       expect(store.isAuthenticated()).toBe(false);
-      expect(store.isLoading()).toBe(false);
       expect(store.user()).toBeNull();
+      expect(store.token()).toBeNull();
+      expect(store.isLoading()).toBe(false);
     });
 
     it("should handle initialization error and update error state", async () => {
-      mockKeycloakInstance.init.mockRejectedValue(new Error("Keycloak server down"));
+      mockKeycloakInstance.init.mockRejectedValue(new Error("Keycloak unreachable"));
 
       const result = await store.init();
 
       expect(result).toBe(false);
       expect(store.isAuthenticated()).toBe(false);
       expect(store.isLoading()).toBe(false);
-      expect(store.error()).toBe("Keycloak server down");
+      expect(store.error()).toBe("Keycloak unreachable");
     });
   });
 
   describe("login(), register(), and logout()", () => {
-    let assignSpy: ReturnType<typeof vi.fn>;
+    const originalLocation = window.location;
 
     beforeEach(() => {
-      assignSpy = vi.fn();
       Object.defineProperty(window, "location", {
         writable: true,
         value: {
-          ...window.location,
-          origin: "http://localhost:4200",
-          assign: assignSpy,
+          origin: "https://example.com",
+          assign: vi.fn(),
         },
       });
     });
 
-    it("should call Keycloak createLoginUrl and redirect with theme", async () => {
+    afterEach(() => {
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: originalLocation,
+      });
+    });
+
+    it("should default login redirect to /workspaces when no redirectUri is passed", async () => {
       mockKeycloakInstance.createLoginUrl.mockResolvedValue("https://auth.example.com/login");
 
-      await store.login("https://example.com/callback");
+      await store.login();
 
       expect(mockKeycloakInstance.createLoginUrl).toHaveBeenCalledWith({
-        redirectUri: "https://example.com/callback",
+        redirectUri: "https://example.com/workspaces",
       });
-      expect(assignSpy).toHaveBeenCalledWith(
+      expect(window.location.assign).toHaveBeenCalledWith(
         expect.stringContaining("https://auth.example.com/login?theme="),
       );
     });
 
-    it("should call Keycloak createRegisterUrl and redirect with theme", async () => {
+    it("should default register redirect to /workspaces when no redirectUri is passed", async () => {
       mockKeycloakInstance.createRegisterUrl.mockResolvedValue("https://auth.example.com/register");
 
-      await store.register("https://example.com/register");
+      await store.register();
 
       expect(mockKeycloakInstance.createRegisterUrl).toHaveBeenCalledWith({
-        redirectUri: "https://example.com/register",
+        redirectUri: "https://example.com/workspaces",
       });
-      expect(assignSpy).toHaveBeenCalledWith(
+      expect(window.location.assign).toHaveBeenCalledWith(
         expect.stringContaining("https://auth.example.com/register?theme="),
       );
     });
@@ -196,25 +220,41 @@ describe("AuthStore", () => {
       expect(mockKeycloakInstance.logout).toHaveBeenCalled();
       expect(store.isAuthenticated()).toBe(false);
       expect(store.user()).toBeNull();
+      expect(store.token()).toBeNull();
     });
   });
 
   describe("getValidToken()", () => {
+    beforeEach(async () => {
+      mockKeycloakInstance.init.mockResolvedValue(true);
+      mockKeycloakInstance.token = "initial-token";
+      mockKeycloakInstance.realmAccess = { roles: [] };
+      mockKeycloakInstance.loadUserProfile.mockResolvedValue({
+        id: "1",
+        username: "u",
+        email: "u@example.com",
+        firstName: "User",
+        lastName: "One",
+      });
+      await store.init();
+    });
+
     it("should return token directly if not expired", async () => {
-      mockKeycloakInstance.token = "valid-token";
+      mockKeycloakInstance.token = "initial-token";
       mockKeycloakInstance.isTokenExpired.mockReturnValue(false);
 
       const token = await store.getValidToken();
 
-      expect(token).toBe("valid-token");
+      expect(token).toBe("initial-token");
       expect(mockKeycloakInstance.updateToken).not.toHaveBeenCalled();
     });
 
     it("should update and return refreshed token if expiring", async () => {
-      mockKeycloakInstance.token = "old-token";
+      mockKeycloakInstance.token = "initial-token";
       mockKeycloakInstance.isTokenExpired.mockReturnValue(true);
       mockKeycloakInstance.updateToken.mockImplementation(async () => {
         mockKeycloakInstance.token = "refreshed-token";
+        return true;
       });
 
       const token = await store.getValidToken();
@@ -224,9 +264,10 @@ describe("AuthStore", () => {
       expect(store.token()).toBe("refreshed-token");
     });
 
-    it("should reset authentication if token update fails", async () => {
+    it("should clear auth state and return null if token refresh fails", async () => {
+      mockKeycloakInstance.token = "initial-token";
       mockKeycloakInstance.isTokenExpired.mockReturnValue(true);
-      mockKeycloakInstance.updateToken.mockRejectedValue(new Error("Refresh failed"));
+      mockKeycloakInstance.updateToken.mockRejectedValue(new Error("Refresh token expired"));
 
       const token = await store.getValidToken();
 

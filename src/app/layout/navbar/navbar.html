@@ -1,29 +1,34 @@
 <nav
   class="bg-surface-container-lowest relative flex h-16 items-center gap-6 px-6 shadow-sm md:px-15 lg:px-25"
 >
-  <a routerLink="/" class="flex items-center gap-1">
+  <a
+    [routerLink]="authStore.isAuthenticated() ? '/workspaces' : '/'"
+    class="flex items-center gap-1"
+  >
     <aos-logo class="size-6 shrink-0" />
     <span class="text-primary font-bold">Agency OS</span>
   </a>
 
-  <div class="text-on-surface-variant hidden items-center gap-6 text-sm font-medium md:flex">
-    <a
-      routerLink="/"
-      [routerLinkActiveOptions]="{ exact: true }"
-      routerLinkActive="text-primary after:w-full"
-      class="hover:text-primary after:bg-primary relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-200 hover:after:w-full"
-    >
-      Features
-    </a>
+  @if (!authStore.isAuthenticated()) {
+    <div class="text-on-surface-variant hidden items-center gap-6 text-sm font-medium md:flex">
+      <a
+        routerLink="/"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActive="text-primary after:w-full"
+        class="hover:text-primary after:bg-primary relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-200 hover:after:w-full"
+      >
+        Features
+      </a>
 
-    <a
-      routerLink="/how-it-works"
-      routerLinkActive="text-primary after:w-full"
-      class="hover:text-primary after:bg-primary relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-200 hover:after:w-full"
-    >
-      How It Works
-    </a>
-  </div>
+      <a
+        routerLink="/how-it-works"
+        routerLinkActive="text-primary after:w-full"
+        class="hover:text-primary after:bg-primary relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-200 hover:after:w-full"
+      >
+        How It Works
+      </a>
+    </div>
+  }
 
   <div class="ml-auto hidden items-center gap-1.5 lg:flex">
     <!-- Theme Toggle -->
