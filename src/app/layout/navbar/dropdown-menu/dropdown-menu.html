@@ -77,7 +77,29 @@
       <span class="ml-2">View on Github</span>
     </aos-button>
 
-    <aos-button variant="outlined">Login</aos-button>
-    <aos-button variant="primary">Sign up</aos-button>
+    @if (authStore.isAuthenticated()) {
+      <div
+        class="bg-surface-container-high/40 text-on-surface flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium"
+      >
+        <div
+          class="bg-primary text-on-primary flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold tracking-wider"
+        >
+          {{ authStore.initials() }}
+        </div>
+        <div class="flex flex-col truncate">
+          <span class="font-semibold">Hello, {{ authStore.firstName() }}</span>
+          @if (authStore.userEmail()) {
+            <span class="text-on-surface-variant/75 truncate text-xs">{{
+              authStore.userEmail()
+            }}</span>
+          }
+        </div>
+      </div>
+
+      <aos-button variant="outlined" (click)="onSignOut()">Logout</aos-button>
+    } @else {
+      <aos-button variant="outlined" (click)="onSignIn()">Login</aos-button>
+      <aos-button variant="primary" (click)="onSignUp()">Sign up</aos-button>
+    }
   </div>
 }

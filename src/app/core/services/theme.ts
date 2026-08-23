@@ -1,17 +1,18 @@
-import { Injectable, signal, effect, inject, PLATFORM_ID } from "@angular/core";
+import { signal, effect, inject, PLATFORM_ID, Service } from "@angular/core";
 import { isPlatformBrowser } from "@angular/common";
+import { LOCAL_STORAGE } from "../tokens/storage.token";
 
-export type Theme = "light" | "dark";
+export type ThemeType = "light" | "dark";
 
-@Injectable({
-  providedIn: "root",
-})
-export class ThemeService {
+@Service()
+export class Theme {
+  private readonly storage = inject(LOCAL_STORAGE);
+
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly storageKey = "agency_os_theme";
 
-  readonly theme = signal<Theme>(this.getInitialTheme());
+  readonly theme = signal<ThemeType>(this.getInitialTheme());
 
   constructor() {
     if (this.isBrowser) {
@@ -26,17 +27,17 @@ export class ThemeService {
     this.theme.update(current => (current === "dark" ? "light" : "dark"));
   }
 
-  setTheme(theme: Theme): void {
+  setTheme(theme: ThemeType): void {
     this.theme.set(theme);
   }
 
-  private getInitialTheme(): Theme {
+  private getInitialTheme(): ThemeType {
     if (!this.isBrowser) {
       return "light";
     }
 
     try {
-      const saved = localStorage.getItem(this.storageKey);
+      const saved = this.storage.getItem(this.storageKey);
       if (saved === "light" || saved === "dark") {
         return saved;
       }
@@ -47,7 +48,7 @@ export class ThemeService {
     }
   }
 
-  private applyTheme(theme: Theme): void {
+  private applyTheme(theme: ThemeType): void {
     if (!this.isBrowser) return;
 
     const root = document.documentElement;
@@ -58,7 +59,7 @@ export class ThemeService {
     }
 
     try {
-      localStorage.setItem(this.storageKey, theme);
+      this.storage.setItem(this.storageKey, theme);
     } catch {
       // Ignore localStorage errors
     }

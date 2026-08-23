@@ -11,7 +11,12 @@ import { NgIcon } from "@ng-icons/core";
     "[attr.aria-hidden]": "true",
   },
   template: `
-    <ng-icon [name]="name()" size="100%" [strokeWidth]="strokeWidth()" class="size-full flex items-center justify-center" />
+    <ng-icon
+      [name]="name()"
+      size="100%"
+      [strokeWidth]="strokeWidth()"
+      class="flex size-full items-center justify-center"
+    />
   `,
 })
 export class Icons {

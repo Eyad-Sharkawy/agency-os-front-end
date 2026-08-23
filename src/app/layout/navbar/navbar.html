@@ -64,8 +64,12 @@
       <span class="ml-2">View on Github</span>
     </aos-button>
 
-    <aos-button variant="outlined">Login</aos-button>
-    <aos-button variant="primary">Sign up</aos-button>
+    @if (authStore.isAuthenticated()) {
+      <aos-profile-menu />
+    } @else {
+      <aos-button variant="outlined" (click)="onSignIn()">Login</aos-button>
+      <aos-button variant="primary" (click)="onSignUp()">Sign up</aos-button>
+    }
   </div>
 
   <!-- Mobile Right Controls (Theme Toggle + Hamburger) -->

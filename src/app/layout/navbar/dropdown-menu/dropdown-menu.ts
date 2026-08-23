@@ -5,7 +5,8 @@ import { provideIcons } from "@ng-icons/core";
 import { simpleGithub } from "@ng-icons/simple-icons";
 import { lucideMoon, lucideSun } from "@ng-icons/lucide";
 import { RouterLink, RouterLinkActive } from "@angular/router";
-import { ThemeService } from "../../../core/services/theme.service";
+import { Theme } from "../../../core/services/theme";
+import { AuthStore } from "../../../core/auth/auth.store";
 
 @Component({
   selector: "aos-dropdown-menu",
@@ -21,7 +22,8 @@ import { ThemeService } from "../../../core/services/theme.service";
 })
 export class DropdownMenu {
   private elementRef = inject(ElementRef);
-  readonly themeService = inject(ThemeService);
+  readonly themeService = inject(Theme);
+  readonly authStore = inject(AuthStore);
 
   readonly isOpen = model<boolean>(false);
 
@@ -31,6 +33,21 @@ export class DropdownMenu {
 
   close(): void {
     this.isOpen.set(false);
+  }
+
+  onSignIn(): void {
+    this.close();
+    this.authStore.login();
+  }
+
+  onSignUp(): void {
+    this.close();
+    this.authStore.register();
+  }
+
+  onSignOut(): void {
+    this.close();
+    this.authStore.logout();
   }
 
   onDocumentClick(event: MouseEvent): void {

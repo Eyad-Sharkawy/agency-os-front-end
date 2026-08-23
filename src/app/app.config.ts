@@ -1,11 +1,16 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from "@angular/core";
+import { ApplicationConfig, provideAppInitializer, inject } from "@angular/core";
 import { provideRouter, withInMemoryScrolling } from "@angular/router";
+import { provideHttpClient, withInterceptors } from "@angular/common/http";
 
 import { routes } from "./app.routes";
+import { environment } from "../environments/environment";
+import { AuthStore } from "./core/auth/auth.store";
+import { authInterceptor } from "./core/auth/auth.interceptor";
+import { ENVIRONMENT } from "./core/tokens/environment.token";
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
+    { provide: ENVIRONMENT, useValue: environment },
     provideRouter(
       routes,
       withInMemoryScrolling({
@@ -13,5 +18,10 @@ export const appConfig: ApplicationConfig = {
         scrollPositionRestoration: "enabled",
       }),
     ),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    provideAppInitializer(() => {
+      const authStore = inject(AuthStore);
+      return authStore.init();
+    }),
   ],
 };
