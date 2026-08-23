@@ -3,6 +3,7 @@ import { patchState, signalStore, withComputed, withMethods, withState } from "@
 import { computed, inject } from "@angular/core";
 import { ENVIRONMENT } from "../tokens/environment.token";
 import Keycloak from "keycloak-js";
+import { Theme } from "../services/theme";
 
 const initialState: AuthState = {
   isAuthenticated: false,
@@ -28,7 +29,7 @@ export const AuthStore = signalStore(
     }),
     hasRole: computed(() => (role: string) => store.roles().includes(role)),
   })),
-  withMethods((store, env = inject(ENVIRONMENT)) => {
+  withMethods((store, env = inject(ENVIRONMENT), themeService = inject(Theme)) => {
     const keycloak = new Keycloak({
       url: env.keycloak.url,
       realm: env.keycloak.realm,
@@ -41,6 +42,9 @@ export const AuthStore = signalStore(
 
         try {
           const authenticated = await keycloak.init({
+            onLoad: "check-sso",
+            silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
+            silentCheckSsoFallback: false,
             checkLoginIframe: false,
             pkceMethod: "S256",
           });
@@ -76,16 +80,24 @@ export const AuthStore = signalStore(
         }
       },
 
-      login(redirectUri?: string): Promise<void> {
-        return keycloak.login({
+      async login(redirectUri?: string): Promise<void> {
+        const loginUrl = await keycloak.createLoginUrl({
           redirectUri: redirectUri || window.location.origin,
         });
+
+        const url = new URL(loginUrl);
+        url.searchParams.set("theme", themeService.theme());
+        window.location.assign(url.toString());
       },
 
-      register(redirectUri?: string): Promise<void> {
-        return keycloak.register({
+      async register(redirectUri?: string): Promise<void> {
+        const registerUrl = await keycloak.createRegisterUrl({
           redirectUri: redirectUri || window.location.origin,
         });
+
+        const url = new URL(registerUrl);
+        url.searchParams.set("theme", themeService.theme());
+        window.location.assign(url.toString());
       },
 
       logout(redirectUri?: string): Promise<void> {

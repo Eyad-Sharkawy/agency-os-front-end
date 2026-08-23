@@ -17,7 +17,7 @@
     class="bg-surface-container-lowest border-outline/15 absolute top-full right-0 z-50 mt-2 w-52 rounded-lg border py-1.5 shadow-lg"
   >
     <div class="border-outline/10 border-b px-4 py-2.5">
-      <p class="text-on-surface text-sm font-semibold">Hello, {{ authStore.firstName() }}</p>
+      <p class="text-on-surface text-sm font-semibold">Hello, {{ authStore.firstName() }} {{ authStore.lastName() }}</p>
       @if (authStore.userEmail()) {
         <p class="text-on-surface-variant/75 truncate text-xs">{{ authStore.userEmail() }}</p>
       }
