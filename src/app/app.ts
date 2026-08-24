@@ -10,6 +10,5 @@ import { Navbar } from "./layout/navbar/navbar";
   imports: [RouterOutlet, Navbar, Footer],
   providers: provideIcons({ lucideMenu }),
   templateUrl: "./app.html",
-  styleUrl: "./app.css",
 })
 export class App {}

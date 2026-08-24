@@ -1,7 +1,6 @@
-import { Component, computed, effect, inject, signal } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ActivatedRoute, Router, RouterLink } from "@angular/router";
-import { toSignal } from "@angular/core/rxjs-interop";
+import { RouterLink } from "@angular/router";
 import { provideIcons } from "@ng-icons/core";
 import {
   lucideAlertCircle,
@@ -11,12 +10,8 @@ import {
   lucideRefreshCw,
   lucideSearch,
 } from "@ng-icons/lucide";
-import { WorkspaceResponse } from "../../core/api/models/workspace.models";
-import { WorkspaceInvitationResponse } from "../../core/api/models/invitation.models";
-import { WorkspaceService } from "../../core/api/services/workspace.service";
-import { InvitationService } from "../../core/api/services/invitation.service";
-import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
-import { AuthStore } from "../../core/auth/auth.store";
+import { WorkspaceInvitationResponse, WorkspaceResponse } from "../../core/api/models";
+import { AuthStore } from "../../core/auth/stores/auth.store";
 import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
 import { LogoComponent } from "../../shared/components/logo/logo";
@@ -26,6 +21,7 @@ import {
   WorkspaceManageModal,
 } from "./components/workspace-manage-modal/workspace-manage-modal";
 import { WorkspaceInvitations } from "./components/workspace-invitations/workspace-invitations";
+import { WorkspaceManagement } from "./services/workspace-management";
 
 @Component({
   selector: "aos-workspaces",
@@ -54,177 +50,69 @@ import { WorkspaceInvitations } from "./components/workspace-invitations/workspa
   styleUrl: "./workspaces.css",
 })
 export class Workspaces {
-  private readonly workspaceService = inject(WorkspaceService);
-  private readonly invitationService = inject(InvitationService);
-  readonly workspaceStore = inject(WorkspaceStore);
+  readonly wm = inject(WorkspaceManagement);
   readonly authStore = inject(AuthStore);
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
 
-  private readonly queryParams = toSignal(this.route.queryParams);
+  // Directory & Resource Signals
+  readonly workspacesResource = this.wm.workspacesResource;
+  readonly invitationsResource = this.wm.invitationsResource;
+  readonly workspacesList = this.wm.workspacesList;
+  readonly pendingInvitations = this.wm.pendingInvitations;
+  readonly hasWorkspaces = this.wm.hasWorkspaces;
+  readonly searchQuery = this.wm.searchQuery;
+  readonly filteredWorkspaces = this.wm.filteredWorkspaces;
+  readonly processingInvitationId = this.wm.processingInvitationId;
 
-  // Reactive HTTP Resources (Signals)
-  readonly workspacesResource = this.workspaceService.getWorkspacesResource({ defaultValue: [] });
-  readonly invitationsResource = this.invitationService.getPendingInvitationsResource({
-    defaultValue: [],
-  });
-
-  // Safe computed lists guarding against resource errors
-  readonly workspacesList = computed<WorkspaceResponse[]>(() => {
-    try {
-      if (this.workspacesResource.error()) {
-        return [];
-      }
-      return this.workspacesResource.value() ?? [];
-    } catch {
-      return [];
-    }
-  });
-
-  readonly pendingInvitations = computed<WorkspaceInvitationResponse[]>(() => {
-    try {
-      if (this.invitationsResource.error()) {
-        return [];
-      }
-      return this.invitationsResource.value() ?? [];
-    } catch {
-      return [];
-    }
-  });
-
-  readonly hasWorkspaces = computed(() => this.workspacesList().length > 0);
-
-  // Search & Filter State
-  readonly searchQuery = signal("");
-
-  readonly filteredWorkspaces = computed(() => {
-    const list = this.workspacesList();
-    const query = this.searchQuery().trim().toLowerCase();
-
-    if (!query) {
-      return list;
-    }
-
-    return list.filter(
-      ws =>
-        ws.name.toLowerCase().includes(query) ||
-        ws.tenantId.toLowerCase().includes(query) ||
-        ws.contactEmail?.toLowerCase().includes(query),
-    );
-  });
-
-  // Manage / Edit Workspace Modal State
-  readonly isManageModalOpen = signal(false);
-  readonly selectedManageWorkspace = signal<WorkspaceResponse | null>(null);
-  readonly selectedManageTab = signal<ManageTab>("general");
-
-  // Invitation Processing State
-  readonly processingInvitationId = signal<string | null>(null);
-
-  constructor() {
-    effect(() => {
-      const params = this.queryParams();
-      const manageTenantId = params?.["manage"];
-      const tab = (params?.["tab"] as ManageTab) || "general";
-
-      if (manageTenantId) {
-        const list = this.workspacesList();
-        const ws = list.find(w => w.tenantId === manageTenantId);
-        if (ws) {
-          this.selectedManageWorkspace.set(ws);
-          this.selectedManageTab.set(tab);
-          this.isManageModalOpen.set(true);
-        }
-      } else if (this.isManageModalOpen()) {
-        this.isManageModalOpen.set(false);
-        this.selectedManageWorkspace.set(null);
-      }
-    });
-  }
+  // Manage Modal State Signals
+  readonly isManageModalOpen = this.wm.isManageModalOpen;
+  readonly selectedManageWorkspace = this.wm.selectedManageWorkspace;
+  readonly selectedManageTab = this.wm.selectedManageTab;
 
   selectWorkspace(ws: WorkspaceResponse): void {
-    this.workspaceStore.setActiveWorkspace(ws);
-    this.router.navigate(["/"]);
+    this.wm.selectWorkspace(ws);
   }
 
   isCurrentActive(ws: WorkspaceResponse): boolean {
-    return this.workspaceStore.activeTenantId() === ws.tenantId;
+    return this.wm.isCurrentActive(ws);
   }
 
   openManageModal(ws: WorkspaceResponse, tab: ManageTab = "general"): void {
-    this.selectedManageWorkspace.set(ws);
-    this.selectedManageTab.set(tab);
-    this.isManageModalOpen.set(true);
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { manage: ws.tenantId, tab },
-      queryParamsHandling: "merge",
-    });
+    this.wm.openManageModal(ws, tab);
   }
 
   onManageTabChange(tab: ManageTab): void {
-    this.selectedManageTab.set(tab);
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { tab },
-      queryParamsHandling: "merge",
-    });
+    this.wm.onManageTabChange(tab);
   }
 
   closeManageModal(): void {
-    this.isManageModalOpen.set(false);
-    this.selectedManageWorkspace.set(null);
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { manage: null, tab: null },
-      queryParamsHandling: "merge",
-    });
+    this.wm.closeManageModal();
   }
 
   onWorkspaceUpdated(updatedWs: WorkspaceResponse): void {
-    this.workspacesResource.reload();
-    if (this.workspaceStore.activeTenantId() === updatedWs.tenantId) {
-      this.workspaceStore.setActiveWorkspace(updatedWs);
+    this.wm.selectedManageWorkspace.set(updatedWs);
+    this.wm.workspacesResource.reload();
+    if (this.wm.workspaceStore.activeTenantId() === updatedWs.tenantId) {
+      this.wm.workspaceStore.setActiveWorkspace(updatedWs);
     }
   }
 
   onWorkspaceDeleted(tenantId: string): void {
-    if (this.workspaceStore.activeTenantId() === tenantId) {
-      this.workspaceStore.clear();
+    if (this.wm.workspaceStore.activeTenantId() === tenantId) {
+      this.wm.workspaceStore.clear();
     }
-    this.closeManageModal();
-    this.workspacesResource.reload();
+    this.wm.closeManageModal();
+    this.wm.workspacesResource.reload();
   }
 
   acceptInvitation(invitation: WorkspaceInvitationResponse): void {
-    this.processingInvitationId.set(invitation.id);
-    this.invitationService.acceptInvitation(invitation.id).subscribe({
-      next: () => {
-        this.processingInvitationId.set(null);
-        this.invitationsResource.reload();
-        this.workspacesResource.reload();
-      },
-      error: () => {
-        this.processingInvitationId.set(null);
-      },
-    });
+    this.wm.acceptInvitation(invitation);
   }
 
   declineInvitation(invitation: WorkspaceInvitationResponse): void {
-    this.processingInvitationId.set(invitation.id);
-    this.invitationService.declineInvitation(invitation.id).subscribe({
-      next: () => {
-        this.processingInvitationId.set(null);
-        this.invitationsResource.reload();
-      },
-      error: () => {
-        this.processingInvitationId.set(null);
-      },
-    });
+    this.wm.declineInvitation(invitation);
   }
 
   reloadAll(): void {
-    this.workspacesResource.reload();
-    this.invitationsResource.reload();
+    this.wm.reloadAll();
   }
 }

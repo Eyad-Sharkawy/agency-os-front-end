@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { signal, WritableSignal } from "@angular/core";
 import { provideRouter } from "@angular/router";
 import { DropdownMenu } from "./dropdown-menu";
-import { ENVIRONMENT } from "../../../core/tokens/environment.token";
+import { ENVIRONMENT } from "../../../core/tokens/enviroment/environment.token";
 import { environment } from "../../../../environments/environment";
-import { AuthStore } from "../../../core/auth/auth.store";
+import { AuthStore } from "../../../core/auth/stores/auth.store";
 
 describe("DropdownMenu Component", () => {
   let fixture: ComponentFixture<DropdownMenu>;

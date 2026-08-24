@@ -6,14 +6,13 @@ import { simpleGithub } from "@ng-icons/simple-icons";
 import { lucideMoon, lucideSun } from "@ng-icons/lucide";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { Theme } from "../../../core/services/theme";
-import { AuthStore } from "../../../core/auth/auth.store";
+import { AuthStore } from "../../../core/auth/stores/auth.store";
 
 @Component({
   selector: "aos-dropdown-menu",
   imports: [Button, Icons, RouterLink, RouterLinkActive],
   providers: [provideIcons({ simpleGithub, lucideSun, lucideMoon })],
   templateUrl: "./dropdown-menu.html",
-  styleUrl: "./dropdown-menu.css",
   host: {
     class: "contents",
     "(document:click)": "onDocumentClick($event)",

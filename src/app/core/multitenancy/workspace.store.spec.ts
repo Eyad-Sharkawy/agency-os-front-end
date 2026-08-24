@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { WorkspaceStore } from "./workspace.store";
-import { WorkspaceService } from "../api/services/workspace.service";
-import { LOCAL_STORAGE } from "../tokens/storage.token";
+import { WorkspaceApi } from "../api/services/workspace/workspace-api";
+import { LOCAL_STORAGE } from "../tokens/local-storage/local-storage.token";
 import { of, throwError } from "rxjs";
 import { WorkspaceResponse } from "../api/models/workspace.models";
 
@@ -55,7 +55,7 @@ describe("WorkspaceStore", () => {
     TestBed.configureTestingModule({
       providers: [
         WorkspaceStore,
-        { provide: WorkspaceService, useValue: workspaceService },
+        { provide: WorkspaceApi, useValue: workspaceService },
         { provide: LOCAL_STORAGE, useValue: mockStorage },
       ],
     });

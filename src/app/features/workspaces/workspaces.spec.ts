@@ -2,14 +2,15 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter, Router } from "@angular/router";
 import { of } from "rxjs";
 import { Workspaces } from "./workspaces";
-import { WorkspaceService } from "../../core/api/services/workspace.service";
-import { InvitationService } from "../../core/api/services/invitation.service";
+import { WorkspaceApi } from "../../core/api/services/workspace/workspace-api";
+import { InvitationApi } from "../../core/api/services/invitation/invitation-api";
 import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
-import { AuthStore } from "../../core/auth/auth.store";
-import { ENVIRONMENT } from "../../core/tokens/environment.token";
-import { LOCAL_STORAGE } from "../../core/tokens/storage.token";
+import { AuthStore } from "../../core/auth/stores/auth.store";
+import { ENVIRONMENT } from "../../core/tokens/enviroment/environment.token";
+import { LOCAL_STORAGE } from "../../core/tokens/local-storage/local-storage.token";
 import { WorkspaceResponse } from "../../core/api/models/workspace.models";
 import { WorkspaceInvitationResponse } from "../../core/api/models/invitation.models";
+import { WorkspaceManagement } from "./services/workspace-management";
 
 describe("Workspaces Component", () => {
   let component: Workspaces;
@@ -31,6 +32,10 @@ describe("Workspaces Component", () => {
     updateWorkspace: ReturnType<typeof vi.fn>;
     deleteWorkspace: ReturnType<typeof vi.fn>;
     getWorkspaces: ReturnType<typeof vi.fn>;
+    getMembers: ReturnType<typeof vi.fn>;
+    updateMemberRole: ReturnType<typeof vi.fn>;
+    removeMember: ReturnType<typeof vi.fn>;
+    transferOwnership: ReturnType<typeof vi.fn>;
   };
   let invitationServiceMock: {
     getPendingInvitationsResource: ReturnType<typeof vi.fn>;
@@ -121,6 +126,10 @@ describe("Workspaces Component", () => {
       ),
       deleteWorkspace: vi.fn().mockReturnValue(of(undefined)),
       getWorkspaces: vi.fn().mockReturnValue(of(mockWorkspaces)),
+      getMembers: vi.fn().mockReturnValue(of([])),
+      updateMemberRole: vi.fn().mockReturnValue(of(undefined)),
+      removeMember: vi.fn().mockReturnValue(of(undefined)),
+      transferOwnership: vi.fn().mockReturnValue(of(mockWorkspaces[0])),
     };
 
     invitationServiceMock = {
@@ -142,8 +151,9 @@ describe("Workspaces Component", () => {
       imports: [Workspaces],
       providers: [
         provideRouter([]),
-        { provide: WorkspaceService, useValue: workspaceServiceMock },
-        { provide: InvitationService, useValue: invitationServiceMock },
+        WorkspaceManagement,
+        { provide: WorkspaceApi, useValue: workspaceServiceMock },
+        { provide: InvitationApi, useValue: invitationServiceMock },
         { provide: ENVIRONMENT, useValue: mockEnv },
         { provide: LOCAL_STORAGE, useValue: mockStorage },
         WorkspaceStore,

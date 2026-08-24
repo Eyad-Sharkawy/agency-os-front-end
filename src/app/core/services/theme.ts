@@ -1,12 +1,15 @@
 import { signal, effect, inject, PLATFORM_ID, Service } from "@angular/core";
-import { isPlatformBrowser } from "@angular/common";
-import { LOCAL_STORAGE } from "../tokens/storage.token";
+import { isPlatformBrowser, DOCUMENT } from "@angular/common";
+import { LOCAL_STORAGE } from "../tokens/local-storage/local-storage.token";
+import { WINDOW } from "../tokens/window/window.token";
 
 export type ThemeType = "light" | "dark";
 
 @Service()
 export class Theme {
   private readonly storage = inject(LOCAL_STORAGE);
+  private readonly document = inject(DOCUMENT);
+  private readonly win = inject(WINDOW);
 
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
@@ -42,7 +45,7 @@ export class Theme {
         return saved;
       }
 
-      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      return this.win.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light";
     } catch {
       return "light";
     }
@@ -51,7 +54,7 @@ export class Theme {
   private applyTheme(theme: ThemeType): void {
     if (!this.isBrowser) return;
 
-    const root = document.documentElement;
+    const root = this.document.documentElement;
     if (theme === "dark") {
       root.classList.add("dark");
     } else {

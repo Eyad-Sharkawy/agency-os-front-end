@@ -75,11 +75,13 @@
     @if (hasWorkspaces()) {
       <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div class="relative w-full max-w-md">
+          <label for="searchWorkspaces" class="sr-only">Search workspaces</label>
           <aos-icons
             name="lucideSearch"
             class="text-on-surface-variant pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
           />
           <input
+            id="searchWorkspaces"
             type="text"
             placeholder="Search workspaces by name or tenant ID..."
             [ngModel]="searchQuery()"
@@ -98,6 +100,7 @@
             class="size-8"
             ariaLabel="Refresh directory"
             (click)="reloadAll()"
+            (keydown.enter)="reloadAll()"
           >
             <aos-icons name="lucideRefreshCw" class="size-3.5" />
           </aos-button>
@@ -136,7 +139,12 @@
           An unexpected error occurred while fetching your organization directory. Please check your
           network connection.
         </p>
-        <aos-button variant="outlined" (click)="reloadAll()" class="mt-2">
+        <aos-button
+          variant="outlined"
+          (click)="reloadAll()"
+          (keydown.enter)="reloadAll()"
+          class="mt-2"
+        >
           <aos-icons name="lucideRefreshCw" class="mr-1.5 size-3.5" />
           <span>Try Again</span>
         </aos-button>
@@ -196,13 +204,5 @@
   </main>
 
   <!-- Extracted Manage Workspace Modal Component -->
-  <aos-workspace-manage-modal
-    [workspace]="selectedManageWorkspace()"
-    [isOpen]="isManageModalOpen()"
-    [initialTab]="selectedManageTab()"
-    (closed)="closeManageModal()"
-    (tabChange)="onManageTabChange($event)"
-    (updated)="onWorkspaceUpdated($event)"
-    (deleted)="onWorkspaceDeleted($event)"
-  />
+  <aos-workspace-manage-modal />
 </div>

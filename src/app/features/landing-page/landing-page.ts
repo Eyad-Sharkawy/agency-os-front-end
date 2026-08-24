@@ -54,6 +54,5 @@ import { simpleGithub } from "@ng-icons/simple-icons";
     }),
   ],
   templateUrl: "./landing-page.html",
-  styleUrl: "./landing-page.css",
 })
 export class LandingPage {}

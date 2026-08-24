@@ -6,6 +6,5 @@ import { Sidebar } from "../sidebar/sidebar";
   selector: "aos-dashboard-dashboard-shell",
   imports: [RouterOutlet, Sidebar],
   templateUrl: "./dashboard-shell.html",
-  styleUrl: "./dashboard-shell.css",
 })
 export class DashboardShell {}

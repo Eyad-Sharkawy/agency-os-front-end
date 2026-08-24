@@ -32,37 +32,7 @@
 
   <div class="ml-auto hidden items-center gap-1.5 lg:flex">
     <!-- Theme Toggle -->
-    <aos-button
-      variant="ghost"
-      class="size-9 rounded-md"
-      [ariaLabel]="themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
-      (click)="themeService.toggleTheme()"
-    >
-      <div class="relative flex size-4 items-center justify-center">
-        <aos-icons
-          name="lucideSun"
-          strokeWidth="1.75"
-          class="absolute inset-0 text-amber-500 transition-all duration-300 ease-in-out"
-          [class.opacity-0]="themeService.theme() === 'light'"
-          [class.rotate-90]="themeService.theme() === 'light'"
-          [class.scale-75]="themeService.theme() === 'light'"
-          [class.opacity-100]="themeService.theme() === 'dark'"
-          [class.rotate-0]="themeService.theme() === 'dark'"
-          [class.scale-100]="themeService.theme() === 'dark'"
-        />
-        <aos-icons
-          name="lucideMoon"
-          strokeWidth="1.75"
-          class="text-on-surface-variant absolute inset-0 transition-all duration-300 ease-in-out"
-          [class.opacity-0]="themeService.theme() === 'dark'"
-          [class.-rotate-90]="themeService.theme() === 'dark'"
-          [class.scale-75]="themeService.theme() === 'dark'"
-          [class.opacity-100]="themeService.theme() === 'light'"
-          [class.rotate-0]="themeService.theme() === 'light'"
-          [class.scale-100]="themeService.theme() === 'light'"
-        />
-      </div>
-    </aos-button>
+    <aos-theme-toggle buttonClass="size-9 rounded-md" />
 
     <aos-button variant="outlined" href="https://github.com/Eyad-Sharkawy/agency-os-back-end">
       <aos-icons name="simpleGithub" class="size-6" />
@@ -72,44 +42,18 @@
     @if (authStore.isAuthenticated()) {
       <aos-profile-menu />
     } @else {
-      <aos-button variant="outlined" (click)="onSignIn()">Login</aos-button>
-      <aos-button variant="primary" (click)="onSignUp()">Sign up</aos-button>
+      <aos-button variant="outlined" (click)="onSignIn()" (keydown.enter)="onSignIn()"
+        >Login</aos-button
+      >
+      <aos-button variant="primary" (click)="onSignUp()" (keydown.enter)="onSignUp()"
+        >Sign up</aos-button
+      >
     }
   </div>
 
   <!-- Mobile Right Controls (Theme Toggle + Hamburger) -->
   <div class="ml-auto flex items-center gap-1 lg:hidden">
-    <aos-button
-      variant="ghost"
-      class="size-8 rounded-md"
-      [ariaLabel]="themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
-      (click)="themeService.toggleTheme()"
-    >
-      <div class="relative flex size-4 items-center justify-center">
-        <aos-icons
-          name="lucideSun"
-          strokeWidth="1.75"
-          class="absolute inset-0 text-amber-500 transition-all duration-300 ease-in-out"
-          [class.opacity-0]="themeService.theme() === 'light'"
-          [class.rotate-90]="themeService.theme() === 'light'"
-          [class.scale-75]="themeService.theme() === 'light'"
-          [class.opacity-100]="themeService.theme() === 'dark'"
-          [class.rotate-0]="themeService.theme() === 'dark'"
-          [class.scale-100]="themeService.theme() === 'dark'"
-        />
-        <aos-icons
-          name="lucideMoon"
-          strokeWidth="1.75"
-          class="text-on-surface-variant absolute inset-0 transition-all duration-300 ease-in-out"
-          [class.opacity-0]="themeService.theme() === 'dark'"
-          [class.-rotate-90]="themeService.theme() === 'dark'"
-          [class.scale-75]="themeService.theme() === 'dark'"
-          [class.opacity-100]="themeService.theme() === 'light'"
-          [class.rotate-0]="themeService.theme() === 'light'"
-          [class.scale-100]="themeService.theme() === 'light'"
-        />
-      </div>
-    </aos-button>
+    <aos-theme-toggle buttonClass="size-8 rounded-md" />
 
     <aos-button
       variant="ghost"
@@ -118,6 +62,7 @@
       [ariaExpanded]="isMenuOpen() ? 'true' : 'false'"
       ariaControls="mobile-nav-menu"
       (click)="$event.stopPropagation(); toggleMenu()"
+      (keydown.enter)="$event.stopPropagation(); toggleMenu()"
     >
       <div class="relative flex size-5 items-center justify-center">
         <aos-icons

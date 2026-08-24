@@ -98,10 +98,16 @@
         </div>
       </div>
 
-      <aos-button variant="outlined" (click)="onSignOut()">Logout</aos-button>
+      <aos-button variant="outlined" (click)="onSignOut()" (keydown.enter)="onSignOut()"
+        >Logout</aos-button
+      >
     } @else {
-      <aos-button variant="outlined" (click)="onSignIn()">Login</aos-button>
-      <aos-button variant="primary" (click)="onSignUp()">Sign up</aos-button>
+      <aos-button variant="outlined" (click)="onSignIn()" (keydown.enter)="onSignIn()"
+        >Login</aos-button
+      >
+      <aos-button variant="primary" (click)="onSignUp()" (keydown.enter)="onSignUp()"
+        >Sign up</aos-button
+      >
     }
   </div>
 }

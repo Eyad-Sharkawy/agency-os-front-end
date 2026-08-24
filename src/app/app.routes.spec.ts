@@ -1,8 +1,8 @@
 import { routes } from "./app.routes";
 import { LandingPage } from "./features/landing-page/landing-page";
 import { DashboardShell } from "./layout/dashboard-shell/dashboard-shell";
-import { authGuard } from "./core/auth/auth.guard";
-import { redirectIfAuthenticatedGuard } from "./core/auth/redirect-if-authenticated.guard";
+import { authGuard } from "./core/auth/guards/auth.guard";
+import { redirectIfAuthenticatedGuard } from "./core/auth/guards/redirect-if-authenticated.guard";
 
 describe("App Routes Configuration", () => {
   it("should have correct route paths defined", () => {

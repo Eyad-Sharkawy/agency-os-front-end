@@ -11,7 +11,6 @@ import { lucideExternalLink, lucideHeart } from "@ng-icons/lucide";
   imports: [RouterLink, LogoComponent, Icons],
   providers: [provideIcons({ simpleGithub, lucideHeart, lucideExternalLink })],
   templateUrl: "./footer.html",
-  styleUrl: "./footer.css",
 })
 export class Footer {
   readonly currentYear = new Date().getFullYear();

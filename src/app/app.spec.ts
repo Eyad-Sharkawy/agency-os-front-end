@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { App } from "./app";
-import { ENVIRONMENT } from "./core/tokens/environment.token";
+import { ENVIRONMENT } from "./core/tokens/enviroment/environment.token";
 import { environment } from "../environments/environment";
 
 describe("App", () => {

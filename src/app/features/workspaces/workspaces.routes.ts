@@ -1,8 +1,10 @@
 import { Routes } from "@angular/router";
+import { WorkspaceManagement } from "./services/workspace-management";
 
 export const WORKSPACE_ROUTES: Routes = [
   {
     path: "",
+    providers: [WorkspaceManagement],
     children: [
       {
         path: "",
@@ -13,7 +15,7 @@ export const WORKSPACE_ROUTES: Routes = [
         path: "create",
         title: "Agency OS - Create workspace",
         loadComponent: () =>
-          import("./create-workspace/create-workspace").then(m => m.CreateWorkspace),
+          import("./components/create-workspace/create-workspace").then(m => m.CreateWorkspace),
       },
     ],
   },

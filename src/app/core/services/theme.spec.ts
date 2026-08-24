@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { Theme } from "./theme";
-import { LOCAL_STORAGE } from "../tokens/storage.token";
+import { LOCAL_STORAGE } from "../tokens/local-storage/local-storage.token";
 import { PLATFORM_ID } from "@angular/core";
 
 describe("Theme Service", () => {

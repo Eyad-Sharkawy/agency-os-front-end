@@ -1,8 +1,8 @@
 import { Routes } from "@angular/router";
 import { DashboardShell } from "./layout/dashboard-shell/dashboard-shell";
 import { LandingPage } from "./features/landing-page/landing-page";
-import { authGuard } from "./core/auth/auth.guard";
-import { redirectIfAuthenticatedGuard } from "./core/auth/redirect-if-authenticated.guard";
+import { authGuard } from "./core/auth/guards/auth.guard";
+import { redirectIfAuthenticatedGuard } from "./core/auth/guards/redirect-if-authenticated.guard";
 
 export const routes: Routes = [
   {

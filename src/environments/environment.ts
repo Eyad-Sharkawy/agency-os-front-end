@@ -1,4 +1,4 @@
-import { AppEnvironment } from "../app/core/tokens/environment.token";
+import { AppEnvironment } from "../app/core/tokens/enviroment/environment.token";
 
 export const environment: AppEnvironment = {
   production: true,

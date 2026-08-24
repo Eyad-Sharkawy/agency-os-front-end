@@ -73,7 +73,14 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "isolate": true,
-            "coverageReporters": ["lcov", "text-summary", "html"]
+            "coverageReporters": ["lcov", "text-summary", "html"],
+            "coverageExclude": [
+              "src/main.ts",
+              "src/environments/**",
+              "src/app/app.config.ts",
+              "src/**/*.routes.ts",
+              "src/app/core/tokens/**"
+            ]
           }
         },
         "lint": {

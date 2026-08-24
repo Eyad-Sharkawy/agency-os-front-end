@@ -68,6 +68,7 @@ import { Button } from "../../../../shared/components/button/button";
                 <aos-button
                   variant="primary"
                   (click)="onAccept(invitation)"
+                  (keydown.enter)="onAccept(invitation)"
                   [disabled]="processingId() === invitation.id"
                   class="flex-1"
                 >
@@ -82,6 +83,7 @@ import { Button } from "../../../../shared/components/button/button";
                 <aos-button
                   variant="outlined"
                   (click)="onDecline(invitation)"
+                  (keydown.enter)="onDecline(invitation)"
                   [disabled]="processingId() === invitation.id"
                   class="flex-1"
                 >

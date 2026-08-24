@@ -4,9 +4,9 @@ import { provideHttpClient, withInterceptors } from "@angular/common/http";
 
 import { routes } from "./app.routes";
 import { environment } from "../environments/environment";
-import { AuthStore } from "./core/auth/auth.store";
-import { authInterceptor } from "./core/auth/auth.interceptor";
-import { ENVIRONMENT } from "./core/tokens/environment.token";
+import { AuthStore } from "./core/auth/stores/auth.store";
+import { authInterceptor } from "./core/auth/interceptors/auth.interceptor";
+import { ENVIRONMENT } from "./core/tokens/enviroment/environment.token";
 
 export const appConfig: ApplicationConfig = {
   providers: [

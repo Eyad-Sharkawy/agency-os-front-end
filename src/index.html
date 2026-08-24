@@ -17,7 +17,9 @@
           } else {
             document.documentElement.classList.remove("dark");
           }
-        } catch (e) {}
+        } catch (error) {
+          console.warn("Failed to initialize theme from localStorage:", error);
+        }
       })();
     </script>
 

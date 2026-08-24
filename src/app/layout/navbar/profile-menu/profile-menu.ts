@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { AuthStore } from "../../../core/auth/auth.store";
+import { AuthStore } from "../../../core/auth/stores/auth.store";
 import { Icons } from "../../../shared/components/icons/icons";
 import { provideIcons } from "@ng-icons/core";
 import { lucideBuilding2, lucideLogOut } from "@ng-icons/lucide";
@@ -10,7 +10,6 @@ import { lucideBuilding2, lucideLogOut } from "@ng-icons/lucide";
   imports: [Icons, RouterLink],
   providers: [provideIcons({ lucideLogOut, lucideBuilding2 })],
   templateUrl: "./profile-menu.html",
-  styleUrl: "./profile-menu.css",
   host: {
     class: "relative inline-block",
     "(document:click)": "onDocumentClick($event)",

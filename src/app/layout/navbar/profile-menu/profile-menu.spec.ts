@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ProfileMenu } from "./profile-menu";
-import { ENVIRONMENT } from "../../../core/tokens/environment.token";
+import { ENVIRONMENT } from "../../../core/tokens/enviroment/environment.token";
 import { environment } from "../../../../environments/environment";
-import { AuthStore } from "../../../core/auth/auth.store";
+import { AuthStore } from "../../../core/auth/stores/auth.store";
 
 describe("ProfileMenu", () => {
   let component: ProfileMenu;

@@ -2,8 +2,8 @@ import { computed, inject } from "@angular/core";
 import { patchState, signalStore, withComputed, withMethods, withState } from "@ngrx/signals";
 import { firstValueFrom } from "rxjs";
 import { WorkspaceResponse } from "../api/models/workspace.models";
-import { WorkspaceService } from "../api/services/workspace.service";
-import { LOCAL_STORAGE } from "../tokens/storage.token";
+import { WorkspaceApi } from "../api/services/workspace/workspace-api";
+import { LOCAL_STORAGE } from "../tokens/local-storage/local-storage.token";
 
 export interface WorkspaceState {
   workspaces: WorkspaceResponse[];
@@ -31,7 +31,7 @@ export const WorkspaceStore = signalStore(
     workspaceCount: computed(() => store.workspaces().length),
   })),
   withMethods(
-    (store, workspaceService = inject(WorkspaceService), storage = inject(LOCAL_STORAGE)) => ({
+    (store, workspaceService = inject(WorkspaceApi), storage = inject(LOCAL_STORAGE)) => ({
       async loadWorkspaces(): Promise<WorkspaceResponse[]> {
         patchState(store, { isLoading: true, error: null });
         try {

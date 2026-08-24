@@ -69,6 +69,7 @@ import { Button } from "../../../../shared/components/button/button";
                 class="border-outline-variant/60 hover:border-primary/30 size-7.5 rounded-lg border"
                 ariaLabel="Edit & Manage Workspace"
                 (click)="onManageClick($event)"
+                (keydown.enter)="onManageClick($event)"
               >
                 <aos-icons name="lucideSettings" class="size-3.5" />
               </aos-button>
