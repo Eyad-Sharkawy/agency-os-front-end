@@ -20,7 +20,7 @@ import { AuthStore } from "../../../core/auth/stores/auth.store";
   },
 })
 export class DropdownMenu {
-  private elementRef = inject(ElementRef);
+  private readonly elementRef = inject(ElementRef);
   readonly themeService = inject(Theme);
   readonly authStore = inject(AuthStore);
 

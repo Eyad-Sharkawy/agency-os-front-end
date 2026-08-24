@@ -3,7 +3,7 @@
   class="bg-primary text-on-primary ring-offset-surface-container-lowest focus-visible:ring-primary flex size-9 cursor-pointer items-center justify-center rounded-full text-xs font-bold tracking-wider shadow-xs transition-all hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
   [attr.aria-expanded]="isOpen()"
   aria-haspopup="menu"
-  aria-label="User profile menu"
+  [attr.aria-label]="authStore.initials() + ' - User profile menu'"
   (click)="toggleMenu($event)"
 >
   {{ authStore.initials() }}
