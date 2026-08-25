@@ -1,0 +1,67 @@
+<form (ngSubmit)="submitInviteUser()" class="space-y-4">
+  @if (inviteSuccess()) {
+    <div
+      class="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs font-medium text-emerald-600 dark:text-emerald-400"
+    >
+      <aos-icons name="lucideCheckCircle2" class="size-4 shrink-0" />
+      <span>{{ inviteSuccess() }}</span>
+    </div>
+  }
+
+  @if (inviteError()) {
+    <div
+      class="border-error/30 bg-error/10 text-error flex items-center gap-2 rounded-xl border p-3 text-xs font-medium"
+    >
+      <aos-icons name="lucideAlertCircle" class="size-4 shrink-0" />
+      <span>{{ inviteError() }}</span>
+    </div>
+  }
+
+  <div>
+    <label for="modalInviteTargetInput" class="text-on-surface block text-xs font-bold sm:text-sm">
+      Username or Email Address
+    </label>
+    <p class="text-on-surface-variant text-[11px]">
+      Enter the teammate's registered username or email to send an invitation.
+    </p>
+    <div class="relative mt-1.5">
+      <aos-icons
+        name="lucideUserPlus"
+        class="text-on-surface-variant pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2"
+      />
+      <input
+        id="modalInviteTargetInput"
+        type="text"
+        placeholder="e.g. alex_dev or teammate@example.com"
+        [ngModel]="inviteTarget()"
+        (ngModelChange)="inviteTarget.set($event)"
+        name="inviteTarget"
+        required
+        [disabled]="isInviting()"
+        class="border-outline-variant/70 bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/40 focus:border-primary focus:ring-primary/20 w-full rounded-xl border py-2.5 pr-4 pl-10 text-xs transition-all focus:ring-2 focus:outline-none sm:text-sm"
+      />
+    </div>
+  </div>
+
+  <div>
+    <span class="text-on-surface mb-1.5 block text-xs font-bold sm:text-sm"> Workspace Role </span>
+    <aos-select
+      [options]="getInviteRoleOptions()"
+      [value]="inviteRole()"
+      [disabled]="isInviting()"
+      (valueChange)="inviteRole.set($event)"
+    />
+  </div>
+
+  <div class="flex justify-end pt-2">
+    <aos-button variant="primary" type="submit" [disabled]="isInviting() || !inviteTarget().trim()">
+      @if (isInviting()) {
+        <aos-icons name="lucideLoader2" class="mr-1.5 size-3.5 animate-spin" />
+        <span>Sending Invitation...</span>
+      } @else {
+        <aos-icons name="lucideSend" class="mr-1.5 size-3.5" />
+        <span>Send Invitation</span>
+      }
+    </aos-button>
+  </div>
+</form>

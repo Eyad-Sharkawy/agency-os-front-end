@@ -134,32 +134,39 @@ describe("WorkspaceManageModal Component", () => {
     expect(component.activeTab()).toBe("general");
   });
 
-  it("should delegate tab changes, role changes, and actions to WorkspaceManagement", () => {
+  it("should delegate tab changes and close modal to WorkspaceManagement", () => {
     const tabSpy = vi.spyOn(wm, "onManageTabChange");
     component.setTab("members");
     expect(tabSpy).toHaveBeenCalledWith("members");
-
-    const updateSpy = vi.spyOn(wm, "submitUpdateName");
-    component.submitUpdateName();
-    expect(updateSpy).toHaveBeenCalled();
-
-    const inviteSpy = vi.spyOn(wm, "submitInviteUser");
-    component.submitInviteUser();
-    expect(inviteSpy).toHaveBeenCalled();
-
-    const deleteSpy = vi.spyOn(wm, "submitDeleteWorkspace");
-    component.submitDeleteWorkspace();
-    expect(deleteSpy).toHaveBeenCalled();
 
     const closeSpy = vi.spyOn(wm, "closeManageModal");
     component.onClose();
     expect(closeSpy).toHaveBeenCalled();
   });
 
-  it("should delegate role permission checks and invite options to WorkspaceManagement", () => {
-    expect(component.getInviteRoleOptions()).toEqual(wm.getInviteRoleOptions());
-    expect(component.isSelf(mockMembers[0])).toBe(wm.isSelf(mockMembers[0]));
-    expect(component.canModifyRole(mockMembers[1])).toBe(wm.canModifyRole(mockMembers[1]));
-    expect(component.canRemoveMember(mockMembers[1])).toBe(wm.canRemoveMember(mockMembers[1]));
+  it("should render general tab content when activeTab is general", () => {
+    const generalEl = fixture.nativeElement.querySelector("aos-workspace-general-tab");
+    expect(generalEl).not.toBeNull();
+  });
+
+  it("should render members tab when activeTab is members", () => {
+    wm.selectedManageTab.set("members");
+    fixture.detectChanges();
+    const membersEl = fixture.nativeElement.querySelector("aos-workspace-members-tab");
+    expect(membersEl).not.toBeNull();
+  });
+
+  it("should render invite tab when activeTab is invite", () => {
+    wm.selectedManageTab.set("invite");
+    fixture.detectChanges();
+    const inviteEl = fixture.nativeElement.querySelector("aos-workspace-invite-tab");
+    expect(inviteEl).not.toBeNull();
+  });
+
+  it("should render danger tab when activeTab is danger and role is OWNER", () => {
+    wm.selectedManageTab.set("danger");
+    fixture.detectChanges();
+    const dangerEl = fixture.nativeElement.querySelector("aos-workspace-danger-tab");
+    expect(dangerEl).not.toBeNull();
   });
 });

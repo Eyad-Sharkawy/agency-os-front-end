@@ -1,0 +1,58 @@
+<form (ngSubmit)="submitDeleteWorkspace()" class="space-y-4">
+  @if (deleteError()) {
+    <div
+      class="border-error/30 bg-error/10 text-error flex items-center gap-2 rounded-xl border p-3 text-xs font-medium"
+    >
+      <aos-icons name="lucideAlertCircle" class="size-4 shrink-0" />
+      <span>{{ deleteError() }}</span>
+    </div>
+  }
+
+  <div class="border-error/30 bg-error/10 rounded-2xl border p-4">
+    <div class="flex items-start gap-2.5">
+      <aos-icons name="lucideAlertTriangle" class="text-error size-5 shrink-0" />
+      <div>
+        <h3 class="text-error text-xs font-bold sm:text-sm">Delete this workspace</h3>
+        <p class="text-on-surface-variant mt-1 text-[11px] leading-relaxed">
+          Once deleted, all isolated tenant schemas, CRM contacts, Kanban boards, and invoices
+          associated with <strong>{{ workspace()?.name }}</strong> will be permanently removed. This
+          action cannot be undone.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <label for="modalDeleteConfirmInput" class="text-on-surface block text-xs font-bold">
+      Type
+      <span class="text-error font-mono font-bold select-all">{{ workspace()?.name }}</span>
+      to confirm:
+    </label>
+    <input
+      id="modalDeleteConfirmInput"
+      type="text"
+      [ngModel]="deleteConfirmName()"
+      (ngModelChange)="deleteConfirmName.set($event)"
+      name="deleteConfirm"
+      placeholder="Enter workspace name exactly"
+      [disabled]="isDeleting()"
+      class="border-error/50 bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/40 focus:border-error focus:ring-error/20 mt-1.5 w-full rounded-xl border px-3.5 py-2.5 text-xs transition-all focus:ring-2 focus:outline-none sm:text-sm"
+    />
+  </div>
+
+  <div class="flex justify-end pt-2">
+    <aos-button
+      variant="danger"
+      type="submit"
+      [disabled]="isDeleting() || deleteConfirmName().trim() !== workspace()?.name"
+    >
+      @if (isDeleting()) {
+        <aos-icons name="lucideLoader2" class="mr-1.5 size-3.5 animate-spin" />
+        <span>Deleting Workspace...</span>
+      } @else {
+        <aos-icons name="lucideTrash2" class="mr-1.5 size-3.5" />
+        <span>Delete Workspace</span>
+      }
+    </aos-button>
+  </div>
+</form>
