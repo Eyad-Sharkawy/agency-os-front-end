@@ -1,1 +1,256 @@
-<p>sidebar works!</p>
+<aside
+  class="bg-canvas border-hairline flex h-full w-64 flex-col justify-between border-r text-sm select-none"
+>
+  <!-- TOP SECTION -->
+  <div class="flex flex-col gap-4 p-4">
+    <!-- Brand / Mobile Header Close Row -->
+    <div class="flex items-center justify-between pb-2">
+      <a
+        [routerLink]="
+          activeWorkspace()?.tenantId ? ['/w', activeWorkspace()?.tenantId] : '/workspaces'
+        "
+        class="group flex items-center gap-2"
+      >
+        <aos-logo class="size-6 shrink-0" />
+        <span class="text-ink font-display text-base font-semibold tracking-tight">
+          Agency OS
+        </span>
+      </a>
+
+      <!-- Mobile Close Trigger -->
+      <button
+        type="button"
+        (click)="closeMobile.emit()"
+        class="text-muted hover:text-ink cursor-pointer p-1 lg:hidden"
+        aria-label="Close sidebar"
+      >
+        <aos-icons name="lucideX" class="size-5" />
+      </button>
+    </div>
+
+    <!-- Workspace Switcher Dropdown -->
+    <div class="relative w-full">
+      <button
+        type="button"
+        (click)="toggleWorkspaceMenu()"
+        class="border-hairline bg-soft-stone/40 hover:bg-soft-stone/70 focus:border-ink flex w-full cursor-pointer items-center justify-between gap-2 rounded-sm border p-2.5 text-left transition-colors focus:outline-none"
+        [attr.aria-expanded]="isWorkspaceMenuOpen()"
+      >
+        <div class="flex min-w-0 items-center gap-2.5">
+          <div
+            class="bg-primary text-on-primary flex size-7 shrink-0 items-center justify-center rounded-sm font-mono text-xs font-bold"
+          >
+            {{ activeInitials() }}
+          </div>
+          <div class="flex min-w-0 flex-col">
+            <span class="text-ink truncate font-mono text-xs font-semibold">
+              {{ activeWorkspace()?.name || "Select Workspace" }}
+            </span>
+            <span class="text-muted truncate font-mono text-[10px]">
+              {{ activeWorkspace()?.tenantId || "No active tenant" }}
+            </span>
+          </div>
+        </div>
+
+        <aos-icons
+          name="lucideChevronDown"
+          class="text-muted size-3.5 shrink-0 transition-transform duration-150"
+          [class.rotate-180]="isWorkspaceMenuOpen()"
+        />
+      </button>
+
+      <!-- Workspace Switcher Popover -->
+      @if (isWorkspaceMenuOpen()) {
+        <div
+          class="border-hairline bg-canvas animate-in fade-in zoom-in-95 absolute top-full left-0 z-50 mt-1.5 w-full rounded-sm border p-1 shadow-lg"
+        >
+          <div
+            class="text-muted border-hairline border-b px-2 py-1.5 font-mono text-[10px] uppercase"
+          >
+            Workspaces ({{ workspaces().length }})
+          </div>
+
+          <div class="max-h-48 overflow-y-auto py-1">
+            @for (ws of workspaces(); track ws.tenantId) {
+              <button
+                type="button"
+                (click)="selectWorkspace(ws)"
+                class="hover:bg-soft-stone flex w-full cursor-pointer items-center justify-between rounded-xs px-2 py-1.5 text-left text-xs transition-colors"
+                [class.bg-soft-stone]="ws.tenantId === activeWorkspace()?.tenantId"
+                [class.font-semibold]="ws.tenantId === activeWorkspace()?.tenantId"
+              >
+                <div class="flex min-w-0 items-center gap-2">
+                  <span class="text-ink truncate font-mono text-xs">{{ ws.name }}</span>
+                </div>
+                @if (ws.tenantId === activeWorkspace()?.tenantId) {
+                  <aos-icons name="lucideCheck" class="text-brand-green size-3.5 shrink-0" />
+                }
+              </button>
+            }
+          </div>
+
+          <div class="border-hairline mt-1 border-t pt-1">
+            <a
+              routerLink="/workspaces/create"
+              (click)="isWorkspaceMenuOpen.set(false); closeMobile.emit()"
+              class="text-body-muted hover:text-ink hover:bg-soft-stone flex items-center gap-2 rounded-xs px-2 py-1.5 font-mono text-[11px] transition-colors"
+            >
+              <aos-icons name="lucidePlus" class="size-3.5" />
+              <span>Create workspace</span>
+            </a>
+            <a
+              routerLink="/workspaces"
+              (click)="isWorkspaceMenuOpen.set(false); closeMobile.emit()"
+              class="text-body-muted hover:text-ink hover:bg-soft-stone flex items-center gap-2 rounded-xs px-2 py-1.5 font-mono text-[11px] transition-colors"
+            >
+              <aos-icons name="lucideBuilding2" class="size-3.5" />
+              <span>All workspaces</span>
+            </a>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Main Navigation List -->
+    <nav class="mt-2 flex flex-col gap-0.5" aria-label="Main Workspace Navigation">
+      <span class="text-muted px-2 py-1 font-mono text-[10px] font-medium tracking-wider uppercase">
+        Workspace Operations
+      </span>
+
+      @for (item of navItems(); track item.route) {
+        <a
+          [routerLink]="item.route"
+          [routerLinkActiveOptions]="{ exact: !!item.exact }"
+          routerLinkActive="bg-primary text-on-primary font-medium"
+          [class]="
+            'group flex items-center gap-2.5 rounded-sm px-2.5 py-2 font-mono text-xs transition-colors ' +
+            'text-ink hover:bg-soft-stone'
+          "
+          (click)="closeMobile.emit()"
+        >
+          <aos-icons [name]="item.icon" class="size-4 shrink-0" />
+          <span class="truncate">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+  </div>
+
+  <!-- BOTTOM SECTION -->
+  <div class="border-hairline flex flex-col gap-1 border-t p-3">
+    <!-- Manage Current Workspace (if admin/owner) -->
+    @if (canManageActiveWorkspace() && activeWorkspace(); as ws) {
+      <a
+        [routerLink]="['/workspaces']"
+        [queryParams]="{ manage: ws.tenantId, tab: 'general' }"
+        (click)="closeMobile.emit()"
+        class="text-body-muted hover:text-ink hover:bg-soft-stone flex items-center gap-2 rounded-sm px-2 py-1.5 font-mono text-xs transition-colors"
+      >
+        <aos-icons name="lucideSettings" class="size-3.5" />
+        <span>Workspace Settings</span>
+      </a>
+    }
+
+    <!-- Workspaces Directory Link -->
+    <a
+      routerLink="/workspaces"
+      (click)="closeMobile.emit()"
+      class="text-body-muted hover:text-ink hover:bg-soft-stone flex items-center gap-2 rounded-sm px-2 py-1.5 font-mono text-xs transition-colors"
+    >
+      <aos-icons name="lucideBuilding2" class="size-3.5" />
+      <span>Switch Workspace</span>
+    </a>
+
+    <!-- Theme Switcher Button -->
+    <button
+      type="button"
+      (click)="themeService.toggleTheme()"
+      (keydown.enter)="themeService.toggleTheme()"
+      class="text-body-muted hover:text-ink hover:bg-soft-stone flex w-full cursor-pointer items-center justify-between rounded-sm px-2 py-1.5 font-mono text-xs transition-colors select-none focus:outline-none"
+      [attr.aria-label]="
+        themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+      "
+    >
+      <div class="flex items-center gap-2">
+        <aos-icons
+          [name]="themeService.theme() === 'dark' ? 'lucideMoon' : 'lucideSun'"
+          class="text-muted size-3.5"
+        />
+        <span>Theme</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="text-muted font-mono text-[10px] uppercase">
+          {{ themeService.theme() === "dark" ? "Dark" : "Light" }}
+        </span>
+        <div class="pointer-events-none relative flex size-4 items-center justify-center">
+          <aos-icons
+            name="lucideSun"
+            class="absolute size-4 text-amber-500 transition-all duration-200"
+            [class.opacity-0]="themeService.theme() === 'light'"
+            [class.scale-75]="themeService.theme() === 'light'"
+            [class.opacity-100]="themeService.theme() === 'dark'"
+            [class.scale-100]="themeService.theme() === 'dark'"
+          />
+          <aos-icons
+            name="lucideMoon"
+            class="text-ink absolute size-4 transition-all duration-200"
+            [class.opacity-0]="themeService.theme() === 'dark'"
+            [class.scale-75]="themeService.theme() === 'dark'"
+            [class.opacity-100]="themeService.theme() === 'light'"
+            [class.scale-100]="themeService.theme() === 'light'"
+          />
+        </div>
+      </div>
+    </button>
+
+    <!-- Current User Profile Bar -->
+    <div class="border-hairline mt-2 flex items-center justify-between border-t pt-3 pr-1 pl-1.5">
+      <div class="flex min-w-0 flex-1 items-center gap-2 pr-1">
+        <div
+          class="bg-primary text-on-primary flex size-7 shrink-0 items-center justify-center rounded-sm font-mono text-[11px] font-bold"
+        >
+          {{ userInitials() }}
+        </div>
+        <div class="flex min-w-0 flex-col">
+          <span class="text-ink truncate font-sans text-xs font-semibold">
+            {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+          </span>
+          <div class="flex items-center gap-1">
+            @if (currentUser()?.username) {
+              <span class="text-brand-green truncate font-mono text-[10px]">
+                &#64;{{ currentUser()?.username }}
+              </span>
+            }
+            <span class="text-muted text-[10px]">&bull;</span>
+            <span class="text-muted truncate font-mono text-[10px]">
+              {{ activeWorkspace()?.role || "Member" }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex shrink-0 items-center gap-0.5">
+        <button
+          type="button"
+          (click)="onManageAccount()"
+          (keydown.enter)="onManageAccount()"
+          class="text-muted hover:text-ink hover:bg-soft-stone cursor-pointer rounded-sm p-1.5 transition-colors"
+          aria-label="Account Settings"
+          title="Account Settings"
+        >
+          <aos-icons name="lucideSettings" class="size-3.5" />
+        </button>
+
+        <button
+          type="button"
+          (click)="onSignOut()"
+          (keydown.enter)="onSignOut()"
+          class="text-muted hover:text-error hover:bg-soft-stone cursor-pointer rounded-sm p-1.5 transition-colors"
+          aria-label="Sign out"
+          title="Sign out"
+        >
+          <aos-icons name="lucideLogOut" class="size-3.5" />
+        </button>
+      </div>
+    </div>
+  </div>
+</aside>

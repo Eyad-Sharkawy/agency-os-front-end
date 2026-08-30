@@ -116,7 +116,7 @@ export class WorkspaceInvitations {
       case "OWNER":
         return "bg-brand-green/10 text-brand-green border border-brand-green/30";
       case "ADMIN":
-        return "bg-action-blue/10 text-action-blue border border-action-blue/30";
+        return "bg-primary/10 text-primary border border-primary/20 dark:bg-white/10 dark:text-white dark:border-white/20";
       case "MEMBER":
         return "bg-soft-stone text-ink border border-hairline";
       case "CLIENT":

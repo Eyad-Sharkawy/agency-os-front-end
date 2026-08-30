@@ -7,6 +7,7 @@ import { lucideMenu, lucideX } from "@ng-icons/lucide";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { DropdownMenu } from "./dropdown-menu/dropdown-menu";
 import { ProfileMenu } from "./profile-menu/profile-menu";
+import { ProfileModal } from "../../features/profile/profile-modal";
 import { ThemeToggle } from "./theme-toggle/theme-toggle";
 import { simpleGithub } from "@ng-icons/simple-icons";
 import { AuthStore } from "../../core/auth/stores/auth.store";
@@ -22,6 +23,7 @@ import { AuthStore } from "../../core/auth/stores/auth.store";
     ProfileMenu,
     RouterLinkActive,
     ThemeToggle,
+    ProfileModal,
   ],
   providers: [provideIcons({ lucideMenu, lucideX, simpleGithub })],
   templateUrl: "./navbar.html",

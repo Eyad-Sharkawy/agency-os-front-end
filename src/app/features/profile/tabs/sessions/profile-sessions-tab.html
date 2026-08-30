@@ -1,0 +1,116 @@
+<div class="space-y-4">
+  <!-- Feedback Notifications -->
+  @if (successMessage()) {
+    <div
+      class="border-brand-green/30 bg-brand-green/10 text-brand-green flex items-center gap-2 rounded-sm border p-3 font-mono text-xs"
+    >
+      <aos-icons name="lucideCheckCircle2" class="size-4 shrink-0" />
+      <span>{{ successMessage() }}</span>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div
+      class="border-error/30 bg-error/10 text-error flex items-center gap-2 rounded-sm border p-3 font-mono text-xs"
+    >
+      <aos-icons name="lucideAlertCircle" class="size-4 shrink-0" />
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <!-- Overview Header -->
+  <div
+    class="border-hairline bg-soft-stone/30 flex items-start justify-between gap-3 rounded-sm border p-3.5"
+  >
+    <div class="flex min-w-0 items-start gap-3">
+      <aos-icons name="lucideMonitor" class="text-brand-green mt-0.5 size-5 shrink-0" />
+      <div>
+        <h4 class="text-ink font-sans text-xs font-semibold sm:text-sm">Active Browser Sessions</h4>
+        <p class="text-body-muted mt-0.5 text-xs leading-relaxed">
+          Review all devices and browsers where your Agency OS account is currently signed in. You
+          can terminate remote sessions if you suspect unauthorized activity.
+        </p>
+      </div>
+    </div>
+
+    <aos-button
+      variant="outlined"
+      size="sm"
+      [disabled]="isLoading()"
+      (click)="loadSessions()"
+      (keydown.enter)="loadSessions()"
+      ariaLabel="Refresh sessions"
+      class="shrink-0"
+    >
+      <aos-icons name="lucideRefreshCw" class="size-3.5" [class.animate-spin]="isLoading()" />
+      <span class="ml-1.5 hidden sm:inline">Refresh</span>
+    </aos-button>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="text-body-muted flex flex-col items-center justify-center py-8">
+      <aos-icons name="lucideLoader2" class="text-ink mb-2 size-6 animate-spin" />
+      <span class="font-mono text-xs">Loading active sessions...</span>
+    </div>
+  } @else {
+    <!-- Sessions Listing -->
+    <div class="border-hairline divide-hairline bg-canvas divide-y rounded-sm border">
+      @for (sess of sessions(); track sess.id) {
+        <div
+          class="hover:bg-soft-stone/20 flex flex-col justify-between gap-3 p-3.5 transition-colors sm:flex-row sm:items-center"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="border-hairline bg-soft-stone text-ink flex size-9 shrink-0 items-center justify-center rounded-sm border"
+            >
+              <aos-icons name="lucideMonitor" class="size-4" />
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-ink font-sans text-xs font-semibold sm:text-sm">
+                  {{ sess.browser || "Web Browser" }}
+                </span>
+                @if (sess.current) {
+                  <span
+                    class="border-brand-green/30 bg-brand-green/10 text-brand-green py-0.2 inline-flex items-center rounded-full border px-2 font-mono text-[10px] font-semibold"
+                  >
+                    Current Session
+                  </span>
+                }
+              </div>
+              <div class="text-muted flex items-center gap-2 font-mono text-[11px]">
+                @if (sess.ipAddress) {
+                  <span>IP: {{ sess.ipAddress }}</span>
+                  <span>&bull;</span>
+                }
+                <span>Started: {{ formatDate(sess.started) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-2 self-end sm:self-center">
+            @if (!sess.current) {
+              <aos-button
+                variant="danger"
+                size="sm"
+                [disabled]="terminatingId() !== null"
+                (click)="onTerminate(sess)"
+                (keydown.enter)="onTerminate(sess)"
+              >
+                @if (terminatingId() === sess.id) {
+                  <aos-icons name="lucideLoader2" class="mr-1.5 size-3 animate-spin" />
+                  <span>Terminating...</span>
+                } @else {
+                  <aos-icons name="lucideTrash2" class="mr-1.5 size-3" />
+                  <span>Sign out</span>
+                }
+              </aos-button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

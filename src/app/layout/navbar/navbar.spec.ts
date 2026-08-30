@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { provideHttpClient } from "@angular/common/http";
 import { signal, WritableSignal } from "@angular/core";
 import { provideRouter } from "@angular/router";
 import { Navbar } from "./navbar";
@@ -38,6 +39,7 @@ describe("Navbar", () => {
       imports: [Navbar],
       providers: [
         provideRouter([]),
+        provideHttpClient(),
         { provide: ENVIRONMENT, useValue: environment },
         { provide: AuthStore, useValue: mockAuthStore },
       ],

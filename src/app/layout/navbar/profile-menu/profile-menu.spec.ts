@@ -3,6 +3,7 @@ import { ProfileMenu } from "./profile-menu";
 import { ENVIRONMENT } from "../../../core/tokens/enviroment/environment.token";
 import { environment } from "../../../../environments/environment";
 import { AuthStore } from "../../../core/auth/stores/auth.store";
+import { ProfileModalService } from "../../../features/profile/services/profile-modal.service";
 
 describe("ProfileMenu", () => {
   let component: ProfileMenu;
@@ -47,6 +48,15 @@ describe("ProfileMenu", () => {
     Object.defineProperty(mockEvent, "target", { value: outsideElement });
     component.onDocumentClick(mockEvent);
     expect(component.isOpen()).toBe(false);
+  });
+
+  it("should trigger account management on manage account click", () => {
+    const profileModalService = TestBed.inject(ProfileModalService);
+    const openSpy = vi.spyOn(profileModalService, "open");
+    component.isOpen.set(true);
+    component.onManageAccount();
+    expect(component.isOpen()).toBe(false);
+    expect(openSpy).toHaveBeenCalledWith("personal");
   });
 
   it("should logout on sign out", () => {

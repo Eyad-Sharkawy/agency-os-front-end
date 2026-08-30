@@ -1,7 +1,82 @@
-<div class="flex flex-1">
-  <aos-sidebar />
-
-  <div class="flex-1 p-6">
-    <router-outlet />
+<div class="flex min-h-screen flex-1">
+  <!-- Desktop Sticky Sidebar -->
+  <div class="hidden shrink-0 lg:flex">
+    <aos-sidebar />
   </div>
+
+  <!-- Mobile Off-Canvas Sidebar Modal -->
+  @if (isMobileSidebarOpen()) {
+    <div
+      class="fixed inset-0 z-50 flex bg-black/60 backdrop-blur-xs lg:hidden"
+      role="button"
+      tabindex="0"
+      (click)="closeMobileSidebar()"
+      (keydown.escape)="closeMobileSidebar()"
+      aria-label="Close mobile sidebar backdrop"
+      animate.enter="backdrop-enter"
+      animate.leave="backdrop-leave"
+    >
+      <div
+        class="bg-canvas border-hairline relative h-full w-64 border-r shadow-2xl"
+        role="dialog"
+        aria-modal="true"
+        tabindex="-1"
+        (click)="$event.stopPropagation()"
+        (keydown)="$event.stopPropagation()"
+        animate.enter="drawer-enter"
+        animate.leave="drawer-leave"
+      >
+        <aos-sidebar (closeMobile)="closeMobileSidebar()" />
+      </div>
+    </div>
+  }
+
+  <!-- Main Viewport Area -->
+  <div class="flex min-w-0 flex-1 flex-col">
+    <!-- Top Workspace Sub-Header Bar -->
+    <header
+      class="bg-canvas border-hairline sticky top-0 z-30 flex h-14 items-center justify-between border-b px-4 md:px-8"
+    >
+      <div class="flex items-center gap-3">
+        <!-- Mobile Sidebar Toggle -->
+        <button
+          type="button"
+          (click)="toggleMobileSidebar()"
+          class="text-muted hover:text-ink cursor-pointer p-1.5 lg:hidden"
+          aria-label="Open sidebar menu"
+        >
+          <aos-icons name="lucideMenu" class="size-5" />
+        </button>
+
+        <!-- Breadcrumb / Section Heading -->
+        <div class="flex items-center gap-2">
+          <span class="text-muted hidden font-mono text-xs sm:inline">
+            {{ activeWorkspace()?.name || "Workspace" }}
+          </span>
+          <span class="text-muted hidden sm:inline">/</span>
+          <h2 class="text-ink font-sans text-sm font-semibold">
+            {{ currentSectionTitle() }}
+          </h2>
+        </div>
+      </div>
+
+      <!-- Quick Action / Theme Status -->
+      <div class="flex items-center gap-3">
+        @if (activeWorkspace()?.role) {
+          <span
+            class="bg-soft-stone text-muted border-hairline hidden rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-medium tracking-wider uppercase sm:inline-flex"
+          >
+            {{ activeWorkspace()?.role }}
+          </span>
+        }
+      </div>
+    </header>
+
+    <!-- Main Dynamic Content Canvas -->
+    <main class="mx-auto w-full max-w-7xl flex-1 p-4 md:p-8">
+      <router-outlet />
+    </main>
+  </div>
+
+  <aos-profile-modal />
 </div>

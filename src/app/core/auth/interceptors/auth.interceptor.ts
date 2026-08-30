@@ -10,7 +10,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const workspaceStore = inject(WorkspaceStore, { optional: true });
   const env = inject(ENVIRONMENT);
 
-  if (!req.url.startsWith(env.apiUrl)) {
+  const isApiRequest = req.url.startsWith(env.apiUrl);
+  const isKeycloakRequest = Boolean(env.keycloak.url && req.url.startsWith(env.keycloak.url));
+
+  if (!isApiRequest && !isKeycloakRequest) {
     return next(req);
   }
 
@@ -22,13 +25,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         headers = headers.set("Authorization", `Bearer ${token}`);
       }
 
-      const tenantId = workspaceStore?.activeTenantId?.() ?? null;
-      const isGlobalWorkspaceEndpoint =
-        req.url === `${env.apiUrl}/workspaces` ||
-        req.url.startsWith(`${env.apiUrl}/workspaces/invitations`);
+      if (isApiRequest) {
+        const tenantId = workspaceStore?.activeTenantId?.() ?? null;
+        const isGlobalWorkspaceEndpoint =
+          req.url === `${env.apiUrl}/workspaces` ||
+          req.url.startsWith(`${env.apiUrl}/workspaces/invitations`);
 
-      if (tenantId && !isGlobalWorkspaceEndpoint && !headers.has("X-Tenant-ID")) {
-        headers = headers.set("X-Tenant-ID", tenantId);
+        if (tenantId && !isGlobalWorkspaceEndpoint && !headers.has("X-Tenant-ID")) {
+          headers = headers.set("X-Tenant-ID", tenantId);
+        }
       }
 
       const clonedReq = req.clone({ headers });

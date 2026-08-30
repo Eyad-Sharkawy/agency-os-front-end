@@ -80,34 +80,65 @@
     </aos-button>
 
     @if (authStore.isAuthenticated()) {
-      <div
-        class="bg-surface-container-high/40 text-on-surface flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium"
-      >
-        <div
-          class="bg-primary text-on-primary flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold tracking-wider"
-        >
-          {{ authStore.initials() }}
+      <div class="border-hairline bg-soft-stone flex flex-col gap-2 rounded-sm border p-3">
+        <div class="flex items-center gap-3">
+          <div
+            class="bg-primary text-on-primary flex size-9 shrink-0 items-center justify-center rounded-sm font-mono text-xs font-bold"
+          >
+            {{ authStore.initials() }}
+          </div>
+          <div class="flex flex-col truncate">
+            <span class="text-ink truncate font-sans text-xs font-semibold">
+              {{ authStore.firstName() }} {{ authStore.lastName() }}
+            </span>
+            @if (authStore.username()) {
+              <span class="text-brand-green truncate font-mono text-[11px]">
+                &#64;{{ authStore.username() }}
+              </span>
+            }
+            @if (authStore.userEmail()) {
+              <span class="text-muted truncate font-mono text-[10px]">
+                {{ authStore.userEmail() }}
+              </span>
+            }
+          </div>
         </div>
-        <div class="flex flex-col truncate">
-          <span class="font-semibold">Hello, {{ authStore.firstName() }}</span>
-          @if (authStore.userEmail()) {
-            <span class="text-on-surface-variant/75 truncate text-xs">{{
-              authStore.userEmail()
-            }}</span>
-          }
+
+        <div class="border-hairline flex flex-col gap-1.5 border-t pt-2">
+          <button
+            type="button"
+            (click)="onManageAccount()"
+            (keydown.enter)="onManageAccount()"
+            class="text-ink hover:bg-canvas flex cursor-pointer items-center justify-between rounded-xs px-2.5 py-1.5 font-mono text-xs transition-colors"
+          >
+            <span class="flex items-center gap-2">
+              <aos-icons name="lucideSettings" class="text-muted size-3.5" />
+              <span>Account Settings</span>
+            </span>
+            <aos-icons name="lucideChevronRight" class="text-muted size-3" />
+          </button>
+
+          <a
+            routerLink="/workspaces"
+            (click)="close()"
+            class="text-ink hover:bg-canvas flex cursor-pointer items-center gap-2 rounded-xs px-2.5 py-1.5 font-mono text-xs transition-colors"
+          >
+            <aos-icons name="lucideBuilding2" class="text-muted size-3.5" />
+            <span>Workspaces</span>
+          </a>
         </div>
       </div>
 
-      <aos-button variant="outlined" (click)="onSignOut()" (keydown.enter)="onSignOut()"
-        >Logout</aos-button
-      >
+      <aos-button variant="outlined" (click)="onSignOut()" (keydown.enter)="onSignOut()">
+        Sign out
+      </aos-button>
     } @else {
-      <aos-button variant="outlined" (click)="onSignIn()" (keydown.enter)="onSignIn()"
-        >Login</aos-button
-      >
-      <aos-button variant="primary" (click)="onSignUp()" (keydown.enter)="onSignUp()"
-        >Sign up</aos-button
-      >
+      <aos-button variant="outlined" (click)="onSignIn()" (keydown.enter)="onSignIn()">
+        Login
+      </aos-button>
+      <aos-button variant="primary" (click)="onSignUp()" (keydown.enter)="onSignUp()">
+        Sign up
+      </aos-button>
     }
   </div>
 }

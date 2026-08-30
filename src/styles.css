@@ -25,8 +25,6 @@
   --color-muted: var(--muted, #93939f);
   --color-slate: var(--slate, #75758a);
   --color-body-muted: var(--body-muted, #616161);
-  --color-action-blue: var(--action-blue, #1863dc);
-  --color-focus-blue: var(--focus-blue, #4c6ee6);
   --color-form-focus: var(--form-focus, #9b60aa);
 
   /* Semantic UI Surfaces */
@@ -90,8 +88,6 @@
   --muted: #93939f;
   --slate: #75758a;
   --body-muted: #616161;
-  --action-blue: #1863dc;
-  --focus-blue: #4c6ee6;
   --form-focus: #9b60aa;
 
   /* Semantic Surfaces */
@@ -146,8 +142,6 @@
   --muted: #93939f;
   --slate: #9ba1b0;
   --body-muted: #a0a0ab;
-  --action-blue: #4c6ee6;
-  --focus-blue: #4c6ee6;
   --form-focus: #9b60aa;
 
   /* Semantic Surfaces */
@@ -290,4 +284,87 @@ body {
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
+}
+
+/* Modal and Drawer Animations */
+@keyframes drawer-slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawer-slide-out {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes backdrop-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes menu-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes menu-leave {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+}
+
+.drawer-enter {
+  animation: drawer-slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.drawer-leave {
+  animation: drawer-slide-out 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.backdrop-enter {
+  animation: backdrop-fade-in 0.2s ease-out forwards;
+}
+
+.backdrop-leave {
+  animation: backdrop-fade-out 0.15s ease-in forwards;
+}
+
+.menu-enter {
+  animation: menu-enter 0.15s ease-out forwards;
+}
+
+.menu-leave {
+  animation: menu-leave 0.1s ease-in forwards;
 }

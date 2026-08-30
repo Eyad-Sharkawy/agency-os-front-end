@@ -188,13 +188,13 @@ describe("Workspaces Component", () => {
     expect(component.filteredWorkspaces().length).toBe(0);
   });
 
-  it("should select workspace, update WorkspaceStore and navigate to root", () => {
+  it("should select workspace, update WorkspaceStore and navigate to /w/:workspaceId", () => {
     const setActiveSpy = vi.spyOn(workspaceStore, "setActiveWorkspace");
 
     component.selectWorkspace(mockWorkspaces[0]);
 
     expect(setActiveSpy).toHaveBeenCalledWith(mockWorkspaces[0]);
-    expect(router.navigate).toHaveBeenCalledWith(["/"]);
+    expect(router.navigate).toHaveBeenCalledWith(["/w", mockWorkspaces[0].tenantId]);
   });
 
   it("should open and close manage workspace modal with query params navigation", () => {

@@ -134,7 +134,7 @@ export class WorkspaceManagement {
 
   selectWorkspace(ws: WorkspaceResponse): void {
     this.workspaceStore.setActiveWorkspace(ws);
-    void this.router.navigate(["/"]);
+    void this.router.navigate(["/w", ws.tenantId]);
   }
 
   isCurrentActive(ws: WorkspaceResponse): boolean {

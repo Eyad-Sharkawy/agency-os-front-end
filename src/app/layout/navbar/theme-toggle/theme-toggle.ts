@@ -1,23 +1,27 @@
 import { Component, inject, input } from "@angular/core";
-import { Button } from "../../../shared/components/button/button";
-import { Icons } from "../../../shared/components/icons/icons";
 import { provideIcons } from "@ng-icons/core";
 import { lucideMoon, lucideSun } from "@ng-icons/lucide";
 import { Theme } from "../../../core/services/theme";
+import { Icons } from "../../../shared/components/icons/icons";
 
 @Component({
   selector: "aos-theme-toggle",
-  imports: [Button, Icons],
+  imports: [Icons],
   providers: [provideIcons({ lucideSun, lucideMoon })],
   template: `
-    <aos-button
-      variant="ghost"
-      [class]="buttonClass()"
-      [ariaLabel]="themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+    <button
+      type="button"
+      [class]="
+        'flex cursor-pointer items-center justify-center transition-colors select-none focus:outline-none ' +
+        buttonClass()
+      "
+      [attr.aria-label]="
+        themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+      "
       (click)="themeService.toggleTheme()"
       (keydown.enter)="themeService.toggleTheme()"
     >
-      <div class="relative flex size-5.5 items-center justify-center">
+      <div class="pointer-events-none relative flex size-5.5 items-center justify-center">
         <aos-icons
           name="lucideSun"
           strokeWidth="2"
@@ -41,7 +45,7 @@ import { Theme } from "../../../core/services/theme";
           [class.scale-100]="themeService.theme() === 'light'"
         />
       </div>
-    </aos-button>
+    </button>
   `,
 })
 export class ThemeToggle {

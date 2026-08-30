@@ -57,6 +57,28 @@ describe("authInterceptor", () => {
     req.flush({});
   });
 
+  it("should add Authorization header for requests targeting keycloak.url without X-Tenant-ID", async () => {
+    vi.spyOn(authStore, "getValidToken").mockResolvedValue("test-valid-token");
+    workspaceStore.setActiveWorkspace({
+      id: "w-1",
+      name: "Acme",
+      tenantId: "tenant_acme_123",
+      contactEmail: "admin@acme.com",
+      isActive: true,
+      createdAt: "2026-01-01T00:00:00Z",
+      updatedAt: "2026-01-01T00:00:00Z",
+    });
+
+    httpClient.get("https://auth.example.com/realms/test-realm/account").subscribe();
+
+    await Promise.resolve();
+
+    const req = httpTesting.expectOne("https://auth.example.com/realms/test-realm/account");
+    expect(req.request.headers.get("Authorization")).toBe("Bearer test-valid-token");
+    expect(req.request.headers.has("X-Tenant-ID")).toBe(false);
+    req.flush({});
+  });
+
   it("should add X-Tenant-ID header when activeTenantId is present and endpoint is tenant-scoped", async () => {
     vi.spyOn(authStore, "getValidToken").mockResolvedValue("test-valid-token");
     workspaceStore.setActiveWorkspace({

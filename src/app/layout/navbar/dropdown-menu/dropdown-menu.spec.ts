@@ -5,6 +5,7 @@ import { DropdownMenu } from "./dropdown-menu";
 import { ENVIRONMENT } from "../../../core/tokens/enviroment/environment.token";
 import { environment } from "../../../../environments/environment";
 import { AuthStore } from "../../../core/auth/stores/auth.store";
+import { ProfileModalService } from "../../../features/profile/services/profile-modal.service";
 
 describe("DropdownMenu Component", () => {
   let fixture: ComponentFixture<DropdownMenu>;
@@ -14,11 +15,13 @@ describe("DropdownMenu Component", () => {
     isAuthenticated: WritableSignal<boolean>;
     firstName: WritableSignal<string>;
     lastName: WritableSignal<string>;
+    username: WritableSignal<string>;
     userEmail: WritableSignal<string>;
     initials: WritableSignal<string>;
     login: ReturnType<typeof vi.fn>;
     register: ReturnType<typeof vi.fn>;
     logout: ReturnType<typeof vi.fn>;
+    accountManagement: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
@@ -27,11 +30,13 @@ describe("DropdownMenu Component", () => {
       isAuthenticated: isAuthSignal,
       firstName: signal("John"),
       lastName: signal("Doe"),
+      username: signal("jdoe"),
       userEmail: signal("john@example.com"),
       initials: signal("JD"),
       login: vi.fn().mockImplementation(() => Promise.resolve()),
       register: vi.fn().mockImplementation(() => Promise.resolve()),
       logout: vi.fn().mockImplementation(() => Promise.resolve()),
+      accountManagement: vi.fn().mockImplementation(() => Promise.resolve()),
     };
 
     await TestBed.configureTestingModule({
@@ -106,6 +111,14 @@ describe("DropdownMenu Component", () => {
     component.onSignUp();
     expect(component.isOpen()).toBe(false);
     expect(mockAuthStore.register).toHaveBeenCalled();
+
+    const profileModalService = TestBed.inject(ProfileModalService);
+    const openSpy = vi.spyOn(profileModalService, "open");
+
+    component.isOpen.set(true);
+    component.onManageAccount();
+    expect(component.isOpen()).toBe(false);
+    expect(openSpy).toHaveBeenCalledWith("personal");
 
     component.isOpen.set(true);
     component.onSignOut();

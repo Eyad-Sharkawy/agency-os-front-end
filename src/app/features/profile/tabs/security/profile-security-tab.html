@@ -1,0 +1,141 @@
+<div class="space-y-4">
+  <!-- Feedback Notifications -->
+  @if (successMessage()) {
+    <div
+      class="border-brand-green/30 bg-brand-green/10 text-brand-green flex items-center gap-2 rounded-sm border p-3 font-mono text-xs"
+    >
+      <aos-icons name="lucideCheckCircle2" class="size-4 shrink-0" />
+      <span>{{ successMessage() }}</span>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div
+      class="border-error/30 bg-error/10 text-error flex items-center gap-2 rounded-sm border p-3 font-mono text-xs"
+    >
+      <aos-icons name="lucideAlertCircle" class="size-4 shrink-0" />
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <!-- Security Overview Banner -->
+  <div class="border-hairline bg-soft-stone/30 flex items-start gap-3 rounded-sm border p-3.5">
+    <aos-icons name="lucideShieldCheck" class="text-brand-green mt-0.5 size-5 shrink-0" />
+    <div>
+      <h4 class="text-ink font-sans text-xs font-semibold sm:text-sm">Account Password</h4>
+      <p class="text-body-muted mt-0.5 text-xs leading-relaxed">
+        Update your authentication credentials. Use a strong password containing at least 8
+        characters, mixed casing, numbers, and symbols.
+      </p>
+    </div>
+  </div>
+
+  <!-- Password Change Form -->
+  <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()" class="space-y-3.5">
+    <!-- Current Password -->
+    <div>
+      <label for="current-password" class="text-ink mb-1 block font-mono text-xs font-medium">
+        Current Password
+      </label>
+      <div class="relative">
+        <input
+          id="current-password"
+          [type]="showCurrentPassword() ? 'text' : 'password'"
+          formControlName="currentPassword"
+          placeholder="Enter current password"
+          [disabled]="isSaving()"
+          class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-sm border px-3 py-2 pr-9 font-sans text-xs transition-all focus:outline-none"
+        />
+        <button
+          type="button"
+          (click)="showCurrentPassword.update(v => !v)"
+          class="text-muted hover:text-ink absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer p-1 transition-colors"
+          [attr.aria-label]="showCurrentPassword() ? 'Hide password' : 'Show password'"
+        >
+          <aos-icons
+            [name]="showCurrentPassword() ? 'lucideEyeOff' : 'lucideEye'"
+            class="size-3.5"
+          />
+        </button>
+      </div>
+    </div>
+
+    <!-- New Password -->
+    <div>
+      <label for="new-password" class="text-ink mb-1 block font-mono text-xs font-medium">
+        New Password
+      </label>
+      <div class="relative">
+        <input
+          id="new-password"
+          [type]="showNewPassword() ? 'text' : 'password'"
+          formControlName="newPassword"
+          placeholder="Enter new password (min. 8 characters)"
+          [disabled]="isSaving()"
+          class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-sm border px-3 py-2 pr-9 font-sans text-xs transition-all focus:outline-none"
+        />
+        <button
+          type="button"
+          (click)="showNewPassword.update(v => !v)"
+          class="text-muted hover:text-ink absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer p-1 transition-colors"
+          [attr.aria-label]="showNewPassword() ? 'Hide password' : 'Show password'"
+        >
+          <aos-icons [name]="showNewPassword() ? 'lucideEyeOff' : 'lucideEye'" class="size-3.5" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Confirm New Password -->
+    <div>
+      <label for="confirm-password" class="text-ink mb-1 block font-mono text-xs font-medium">
+        Confirm New Password
+      </label>
+      <div class="relative">
+        <input
+          id="confirm-password"
+          [type]="showConfirmPassword() ? 'text' : 'password'"
+          formControlName="confirmation"
+          placeholder="Re-enter new password"
+          [disabled]="isSaving()"
+          class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-sm border px-3 py-2 pr-9 font-sans text-xs transition-all focus:outline-none"
+        />
+        <button
+          type="button"
+          (click)="showConfirmPassword.update(v => !v)"
+          class="text-muted hover:text-ink absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer p-1 transition-colors"
+          [attr.aria-label]="showConfirmPassword() ? 'Hide password' : 'Show password'"
+        >
+          <aos-icons
+            [name]="showConfirmPassword() ? 'lucideEyeOff' : 'lucideEye'"
+            class="size-3.5"
+          />
+        </button>
+      </div>
+      @if (
+        passwordForm.get("confirmation")?.touched &&
+        passwordForm.get("newPassword")?.value &&
+        !passwordsMatch
+      ) {
+        <p class="text-error mt-1 font-mono text-[11px]">Passwords do not match.</p>
+      }
+    </div>
+
+    <!-- Action Button -->
+    <div class="border-hairline flex items-center justify-end border-t pt-3">
+      <aos-button
+        type="submit"
+        variant="primary"
+        size="sm"
+        [disabled]="passwordForm.invalid || !passwordsMatch || isSaving()"
+      >
+        @if (isSaving()) {
+          <aos-icons name="lucideLoader2" class="mr-1.5 size-3.5 animate-spin" />
+          <span>Updating Password...</span>
+        } @else {
+          <aos-icons name="lucideLock" class="mr-1.5 size-3.5" />
+          <span>Update Password</span>
+        }
+      </aos-button>
+    </div>
+  </form>
+</div>

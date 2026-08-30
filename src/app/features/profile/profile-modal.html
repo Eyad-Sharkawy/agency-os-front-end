@@ -1,0 +1,113 @@
+@if (isOpen()) {
+  <dialog
+    open
+    aria-labelledby="manage-profile-title"
+    class="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center border-0 bg-black/60 p-4 backdrop-blur-xs"
+  >
+    <div
+      class="border-hairline bg-canvas text-ink flex w-full max-w-xl flex-col overflow-hidden rounded-sm border shadow-2xl transition-all"
+    >
+      <!-- Modal Header -->
+      <div class="border-hairline bg-canvas flex items-center justify-between border-b px-6 py-4">
+        <div class="flex items-center gap-3">
+          <div
+            class="bg-primary text-on-primary flex size-8 items-center justify-center rounded-sm"
+          >
+            <aos-icons name="lucideUser" class="size-4" />
+          </div>
+          <div>
+            <h2 id="manage-profile-title" class="text-ink font-sans text-base font-semibold">
+              Account Settings
+            </h2>
+            <p class="text-muted font-mono text-xs">
+              {{ authStore.userEmail() || authStore.username() }}
+            </p>
+          </div>
+        </div>
+
+        <aos-button
+          variant="ghost"
+          class="size-8"
+          ariaLabel="Close modal"
+          (click)="onClose()"
+          (keydown.enter)="onClose()"
+        >
+          <aos-icons name="lucideX" class="size-4" />
+        </aos-button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="border-hairline bg-canvas flex overflow-x-auto border-b px-6 pt-2">
+        <button
+          type="button"
+          (click)="setTab('personal')"
+          [class.border-ink]="activeTab() === 'personal'"
+          [class.text-ink]="activeTab() === 'personal'"
+          [class.border-transparent]="activeTab() !== 'personal'"
+          [class.text-muted]="activeTab() !== 'personal'"
+          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+        >
+          <aos-icons name="lucideUser" class="size-3.5" />
+          <span>Personal Info</span>
+        </button>
+
+        <button
+          type="button"
+          (click)="setTab('security')"
+          [class.border-ink]="activeTab() === 'security'"
+          [class.text-ink]="activeTab() === 'security'"
+          [class.border-transparent]="activeTab() !== 'security'"
+          [class.text-muted]="activeTab() !== 'security'"
+          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+        >
+          <aos-icons name="lucideKey" class="size-3.5" />
+          <span>Security</span>
+        </button>
+
+        <button
+          type="button"
+          (click)="setTab('sessions')"
+          [class.border-ink]="activeTab() === 'sessions'"
+          [class.text-ink]="activeTab() === 'sessions'"
+          [class.border-transparent]="activeTab() !== 'sessions'"
+          [class.text-muted]="activeTab() !== 'sessions'"
+          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+        >
+          <aos-icons name="lucideMonitor" class="size-3.5" />
+          <span>Active Sessions</span>
+        </button>
+
+        <button
+          type="button"
+          (click)="setTab('advanced')"
+          [class.border-ink]="activeTab() === 'advanced'"
+          [class.text-ink]="activeTab() === 'advanced'"
+          [class.border-transparent]="activeTab() !== 'advanced'"
+          [class.text-muted]="activeTab() !== 'advanced'"
+          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+        >
+          <aos-icons name="lucideSlidersHorizontal" class="size-3.5" />
+          <span>Advanced</span>
+        </button>
+      </div>
+
+      <!-- Modal Body Content -->
+      <div class="max-h-[70vh] overflow-y-auto p-6 pb-20">
+        @switch (activeTab()) {
+          @case ("personal") {
+            <aos-profile-personal-tab />
+          }
+          @case ("security") {
+            <aos-profile-security-tab />
+          }
+          @case ("sessions") {
+            <aos-profile-sessions-tab />
+          }
+          @case ("advanced") {
+            <aos-profile-linked-accounts-tab />
+          }
+        }
+      </div>
+    </div>
+  </dialog>
+}

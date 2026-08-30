@@ -22,8 +22,6 @@ colors:
   muted: "#93939f"
   slate: "#75758a"
   body-muted: "#616161"
-  action-blue: "#1863dc"
-  focus-blue: "#4c6ee6"
   form-focus: "#9b60aa"
   on-primary: "#ffffff"
   on-dark: "#ffffff"
@@ -200,7 +198,7 @@ components:
 
 Cohere's current web presence feels like a sober enterprise AI command center with editorial restraint. The home page opens on a huge typographic declaration over a white canvas, then uses photography, dark product mockups, trust logos, and generous empty space to make AI infrastructure feel controlled rather than speculative. Product pages invert the tone into deep green-black or dark navy bands, while blog and research pages move toward publishing-system clarity: large filters, thin rules, dense lists, and pale technical backgrounds.
 
-What makes the system distinctive is the mix of austere black-and-white UI with bursts of tactile brand imagery. The site avoids decorative chrome in the normal interface; color arrives through photography, abstract 3D media, brand green taxonomy chips, blue research links, and dark product environments. Cards are rounded but not cute. Type is large, tight, and almost monospaced in spirit, creating a research-lab cadence across marketing, product, and editorial surfaces.
+What makes the system distinctive is the mix of austere black-and-white UI with bursts of tactile brand imagery. The site avoids decorative chrome in the normal interface; color arrives through photography, abstract 3D media, brand green taxonomy chips, and dark product environments. Cards are rounded but not cute. Type is large, tight, and almost monospaced in spirit, creating a research-lab cadence across marketing, product, and editorial surfaces.
 
 **Key Characteristics:**
 
@@ -221,9 +219,6 @@ What makes the system distinctive is the mix of austere black-and-white UI with 
 - **Agency OS Brand Green** (`#059669` / `#10b981` / `#047857`): Primary brand identity accent derived from the Agency OS mark. Applied to trust checkmarks, active workspace status badges, live progress fills, settlement indicators, and advantage bento grid highlights.
 - **Deep Enterprise Green** (`#003c33`): Product hero bands for North and Command-style dark sections.
 - **Dark Navy** (`#071829`): Financial-services, security, and live agent console mockup containers.
-- **Action Blue** (`#1863dc`): Editorial links, pagination, and secondary action emphasis.
-- **Coral** (`#ff7759`): Blog category chips, taxonomy outlines, and warm product markers.
-- **Soft Coral** (`#ffad9b`): Pale chip borders and segmented article-label details.
 
 ### Surface & Background
 
@@ -283,7 +278,7 @@ Cohere does not use gradients as a generic UI fill. Gradients and color fields a
 - Keep display type tight. Hero copy should feel compact and carved, not airy.
 - Avoid heavy bold weights. Size, spacing, and surface contrast do most of the hierarchy work.
 - Use uppercase mono labels for category and system markers, especially on product and research pages.
-- Editorial pages can use brand green chips and blue links, but the base typography remains black and measured.
+- Editorial pages use brand green chips and taxonomy badges, with base typography remaining black and measured.
 
 ## Layout
 
@@ -407,7 +402,7 @@ Dark footer subscription block with brand green "AI moves fast" label, white hea
 
 ### Don't
 
-- Do not turn brand green or blue into broad decorative surface colors.
+- Do not turn brand green into broad decorative surface colors.
 - Do not add heavy drop shadows to cards.
 - Do not make every section card-based; Cohere often uses unframed rows, rules, and open space.
 - Do not use rounded cards below 8px for major media.

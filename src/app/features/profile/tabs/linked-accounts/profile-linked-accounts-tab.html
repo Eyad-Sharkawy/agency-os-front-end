@@ -1,0 +1,97 @@
+<div class="space-y-6">
+  <!-- Hero Intro Card -->
+  <div class="border-hairline bg-canvas relative overflow-hidden rounded-md border p-6">
+    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="bg-brand-green size-2 rounded-full"></span>
+          <span class="text-muted font-mono text-[11px] tracking-wider uppercase">
+            Federated Identity Management
+          </span>
+        </div>
+        <h3 class="text-ink font-display text-base font-semibold sm:text-lg">
+          Linked Accounts & Social Sign-In
+        </h3>
+        <p class="text-body-muted text-xs leading-relaxed">
+          Manage your connected Google, GitHub, Microsoft, and enterprise identity providers
+          securely through Keycloak's centralized account console.
+        </p>
+      </div>
+
+      <div class="shrink-0">
+        <a [href]="keycloakConsoleUrl()" target="_blank" rel="noopener noreferrer">
+          <aos-button variant="primary" size="md">
+            <aos-icons name="lucideExternalLink" class="mr-2 size-4" />
+            <span>Open in Keycloak</span>
+          </aos-button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bento Features Highlights -->
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <!-- Card 1: Social Providers -->
+    <div class="border-hairline bg-soft-stone/20 rounded-sm border p-4">
+      <div
+        class="border-hairline bg-canvas text-ink mb-2.5 flex size-8 items-center justify-center rounded-sm border shadow-xs"
+      >
+        <aos-icons name="lucideGlobe" class="size-4" />
+      </div>
+      <h4 class="text-ink font-sans text-xs font-semibold">Social Logins</h4>
+      <p class="text-muted mt-1 text-[11px] leading-relaxed">
+        Connect or unlink Google, GitHub, Microsoft, and GitLab accounts for 1-click SSO.
+      </p>
+    </div>
+
+    <!-- Card 2: Two-Factor / MFA -->
+    <div class="border-hairline bg-soft-stone/20 rounded-sm border p-4">
+      <div
+        class="border-hairline bg-canvas text-ink mb-2.5 flex size-8 items-center justify-center rounded-sm border shadow-xs"
+      >
+        <aos-icons name="lucideShieldCheck" class="size-4" />
+      </div>
+      <h4 class="text-ink font-sans text-xs font-semibold">Security & MFA</h4>
+      <p class="text-muted mt-1 text-[11px] leading-relaxed">
+        Configure two-factor authenticators (TOTP), hardware keys, and passwordless authentication.
+      </p>
+    </div>
+
+    <!-- Card 3: Authorizations -->
+    <div class="border-hairline bg-soft-stone/20 rounded-sm border p-4">
+      <div
+        class="border-hairline bg-canvas text-ink mb-2.5 flex size-8 items-center justify-center rounded-sm border shadow-xs"
+      >
+        <aos-icons name="lucideKey" class="size-4" />
+      </div>
+      <h4 class="text-ink font-sans text-xs font-semibold">App Permissions</h4>
+      <p class="text-muted mt-1 text-[11px] leading-relaxed">
+        Review and revoke OAuth client applications authorized to access your profile.
+      </p>
+    </div>
+  </div>
+
+  <!-- Direct Console Link Row -->
+  <div
+    class="border-hairline bg-soft-stone/30 flex flex-col justify-between gap-3 rounded-sm border p-4 sm:flex-row sm:items-center"
+  >
+    <div class="flex min-w-0 items-center gap-2.5">
+      <aos-icons name="lucideLink2" class="text-muted size-4 shrink-0" />
+      <div class="truncate">
+        <span class="text-ink font-sans text-xs font-medium">Direct Console URL:</span>
+        <span class="text-muted ml-2 truncate font-mono text-[11px]">{{
+          keycloakConsoleUrl()
+        }}</span>
+      </div>
+    </div>
+    <a
+      [href]="keycloakConsoleUrl()"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-brand-green hover:text-brand-green-dark dark:hover:text-brand-green-light inline-flex shrink-0 items-center gap-1 font-mono text-xs font-medium transition-colors"
+    >
+      <span>Launch Console</span>
+      <aos-icons name="lucideExternalLink" class="size-3" />
+    </a>
+  </div>
+</div>

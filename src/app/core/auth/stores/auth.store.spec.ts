@@ -10,6 +10,7 @@ const mockKeycloakInstance = {
   logout: vi.fn(),
   createLoginUrl: vi.fn(),
   createRegisterUrl: vi.fn(),
+  createAccountUrl: vi.fn(),
   isTokenExpired: vi.fn(),
   updateToken: vi.fn(),
   token: null as string | null,
@@ -33,6 +34,9 @@ vi.mock("keycloak-js", () => {
     createRegisterUrl = vi
       .fn()
       .mockImplementation((...args: unknown[]) => mockKeycloakInstance.createRegisterUrl(...args));
+    createAccountUrl = vi
+      .fn()
+      .mockImplementation((...args: unknown[]) => mockKeycloakInstance.createAccountUrl(...args));
     isTokenExpired = vi
       .fn()
       .mockImplementation((...args: unknown[]) => mockKeycloakInstance.isTokenExpired(...args));
@@ -210,6 +214,31 @@ describe("AuthStore", () => {
       expect(window.location.assign).toHaveBeenCalledWith(
         expect.stringContaining("https://auth.example.com/register?theme="),
       );
+    });
+
+    it("should redirect to Keycloak account management URL when accountManagement is called", async () => {
+      mockKeycloakInstance.createAccountUrl.mockResolvedValue("https://auth.example.com/account");
+
+      await store.accountManagement();
+
+      expect(mockKeycloakInstance.createAccountUrl).toHaveBeenCalledWith({
+        redirectUri: "https://example.com/workspaces",
+      });
+      expect(window.location.assign).toHaveBeenCalledWith(
+        expect.stringContaining("https://auth.example.com/account?theme="),
+      );
+    });
+
+    it("should update user in state when updateUser is called", async () => {
+      await store.init();
+      expect(store.firstName()).toBe("John");
+      expect(store.lastName()).toBe("Doe");
+
+      store.updateUser({ firstName: "Jane", lastName: "Smith" });
+
+      expect(store.firstName()).toBe("Jane");
+      expect(store.lastName()).toBe("Smith");
+      expect(store.initials()).toBe("JS");
     });
 
     it("should call Keycloak logout and reset state to initialState", async () => {

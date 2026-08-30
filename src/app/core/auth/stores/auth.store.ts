@@ -135,6 +135,37 @@ export const AuthStore = signalStore(
           });
         },
 
+        async accountManagement(redirectUri?: string): Promise<void> {
+          const origin = win.location?.origin || "";
+          try {
+            const accountUrl = await keycloak.createAccountUrl({
+              redirectUri: redirectUri || `${origin}/workspaces`,
+            });
+            if (accountUrl) {
+              const url = new URL(accountUrl);
+              url.searchParams.set("theme", themeService.theme());
+              win.location?.assign(url.toString());
+              return;
+            }
+          } catch {
+            // fallback if createAccountUrl fails
+          }
+          const fallbackUrl = `${env.keycloak.url}/realms/${env.keycloak.realm}/account`;
+          win.location?.assign(fallbackUrl);
+        },
+
+        updateUser(updated: Partial<UserProfile>): void {
+          const current = store.user();
+          if (current) {
+            patchState(store, {
+              user: {
+                ...current,
+                ...updated,
+              },
+            });
+          }
+        },
+
         async getValidToken(): Promise<string | null> {
           if (!store.token()) {
             return null;

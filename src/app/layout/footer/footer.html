@@ -22,7 +22,9 @@
             class="flex max-w-md items-center rounded-full border border-white/20 bg-white/10 p-1 transition-colors focus-within:border-white"
             (submit)="$event.preventDefault()"
           >
+            <label for="newsletter-email" class="sr-only">Work email address</label>
             <input
+              id="newsletter-email"
               type="email"
               placeholder="Enter your work email..."
               class="w-full bg-transparent px-4 py-2 font-sans text-xs text-white placeholder:text-zinc-400 focus:outline-none"

@@ -133,12 +133,12 @@ describe("WorkspaceManagement Service", () => {
     expect(service.filteredWorkspaces().length).toBe(1);
   });
 
-  it("should select active workspace and navigate to root", () => {
+  it("should select active workspace and navigate to /w/:workspaceId", () => {
     const navigateSpy = vi.spyOn(router, "navigate").mockResolvedValue(true);
     service.selectWorkspace(mockWorkspace);
 
     expect(service.isCurrentActive(mockWorkspace)).toBe(true);
-    expect(navigateSpy).toHaveBeenCalledWith(["/"]);
+    expect(navigateSpy).toHaveBeenCalledWith(["/w", mockWorkspace.tenantId]);
   });
 
   it("should accept and decline invitations", () => {

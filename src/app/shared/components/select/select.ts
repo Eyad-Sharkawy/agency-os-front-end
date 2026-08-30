@@ -63,7 +63,7 @@ export type SELECT_VARIANTS = "outlined" | "filled" | "ghost";
         <div
           role="listbox"
           [attr.aria-activedescendant]="activeOptionId()"
-          class="border-outline-variant/60 bg-surface-container-lowest text-on-surface animate-in fade-in zoom-in-95 absolute z-50 mt-1.5 max-h-60 w-full min-w-[140px] overflow-auto rounded-xl border p-1 shadow-xl backdrop-blur-md duration-100 focus:outline-none"
+          class="border-hairline bg-canvas text-ink animate-in fade-in zoom-in-95 absolute right-0 z-[60] mt-1.5 max-h-60 w-full min-w-[150px] overflow-auto rounded-sm border p-1 shadow-2xl duration-100 focus:outline-none"
         >
           @for (option of options(); track option.value; let idx = $index) {
             <div
@@ -75,24 +75,22 @@ export type SELECT_VARIANTS = "outlined" | "filled" | "ghost";
               (click)="selectOption(option)"
               (keydown.enter)="selectOption(option)"
               (keydown.space)="selectOption(option)"
-              class="focus:bg-surface-container-high flex cursor-pointer items-center justify-between rounded-lg px-2.5 py-2 text-xs font-medium transition-colors focus:outline-none"
-              [class.bg-primary/10]="isSelected(option.value)"
-              [class.text-primary]="isSelected(option.value)"
-              [class.hover:bg-surface-container-high]="
-                !isSelected(option.value) && !option.disabled
-              "
+              class="hover:bg-soft-stone focus:bg-soft-stone flex cursor-pointer items-center justify-between rounded-xs px-2.5 py-2 font-mono text-xs transition-colors focus:outline-none"
+              [class.bg-soft-stone]="isSelected(option.value)"
+              [class.font-semibold]="isSelected(option.value)"
+              [class.text-brand-green]="isSelected(option.value)"
               [class.opacity-40]="option.disabled"
               [class.cursor-not-allowed]="option.disabled"
             >
               <div class="flex min-w-0 flex-col pr-2">
-                <span class="truncate font-semibold">{{ option.label }}</span>
+                <span class="truncate font-medium">{{ option.label }}</span>
                 @if (option.description) {
-                  <span class="text-on-surface-variant text-[10px]">{{ option.description }}</span>
+                  <span class="text-muted text-[10px]">{{ option.description }}</span>
                 }
               </div>
 
               @if (isSelected(option.value)) {
-                <aos-icons name="lucideCheck" class="text-primary size-3.5 shrink-0" />
+                <aos-icons name="lucideCheck" class="text-brand-green size-3.5 shrink-0" />
               }
             </div>
           }
@@ -133,28 +131,28 @@ export class Select<T = unknown> {
 
   protected readonly triggerClasses = computed<string>(() => {
     const base =
-      "flex items-center justify-between gap-2 rounded-xl text-left transition-all duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-40 disabled:cursor-not-allowed";
+      "flex items-center justify-between gap-2 rounded-full text-left transition-all duration-150 cursor-pointer focus:outline-none focus:ring-1 focus:ring-brand-green/40 disabled:opacity-40 disabled:cursor-not-allowed";
 
     const widthClass = this.fullWidth() ? "w-full" : "w-auto";
 
-    let sizeClasses = "px-3.5 py-2 text-xs sm:text-sm";
+    let sizeClasses = "px-3.5 py-2 text-xs sm:text-sm font-mono";
     if (this.size() === "sm") {
-      sizeClasses = "px-2.5 py-1.5 text-xs";
+      sizeClasses = "px-3 py-1 text-xs font-mono";
     } else if (this.size() === "lg") {
-      sizeClasses = "px-4 py-3 text-sm sm:text-base";
+      sizeClasses = "px-4 py-2.5 text-sm sm:text-base font-mono";
     }
 
     let variantClasses =
-      "border border-outline-variant/70 bg-surface-container-low text-on-surface hover:border-outline focus:border-primary";
+      "border border-hairline bg-canvas text-ink hover:border-ink focus:border-ink";
     if (this.variant() === "filled") {
       variantClasses =
-        "border border-transparent bg-surface-container-high text-on-surface hover:bg-surface-container-highest focus:border-primary";
+        "border border-transparent bg-soft-stone text-ink hover:bg-soft-stone/80 focus:border-ink";
     } else if (this.variant() === "ghost") {
       variantClasses =
-        "border border-transparent bg-transparent text-on-surface hover:bg-surface-container-high focus:border-outline";
+        "border border-transparent bg-transparent text-ink hover:bg-soft-stone focus:border-hairline";
     }
 
-    const openClasses = this.isOpen() ? "border-primary ring-2 ring-primary/20" : "";
+    const openClasses = this.isOpen() ? "border-ink ring-1 ring-brand-green/30" : "";
 
     return `${base} ${widthClass} ${sizeClasses} ${variantClasses} ${openClasses}`;
   });

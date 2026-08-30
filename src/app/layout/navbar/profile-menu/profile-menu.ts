@@ -1,14 +1,29 @@
 import { Component, ElementRef, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { AuthStore } from "../../../core/auth/stores/auth.store";
-import { Icons } from "../../../shared/components/icons/icons";
 import { provideIcons } from "@ng-icons/core";
-import { lucideBuilding2, lucideLogOut } from "@ng-icons/lucide";
+import {
+  lucideBuilding2,
+  lucideChevronRight,
+  lucideLogOut,
+  lucideSettings,
+  lucideUser,
+} from "@ng-icons/lucide";
+import { AuthStore } from "../../../core/auth/stores/auth.store";
+import { ProfileModalService } from "../../../features/profile/services/profile-modal.service";
+import { Icons } from "../../../shared/components/icons/icons";
 
 @Component({
   selector: "aos-profile-menu",
   imports: [Icons, RouterLink],
-  providers: [provideIcons({ lucideLogOut, lucideBuilding2 })],
+  providers: [
+    provideIcons({
+      lucideLogOut,
+      lucideBuilding2,
+      lucideUser,
+      lucideSettings,
+      lucideChevronRight,
+    }),
+  ],
   templateUrl: "./profile-menu.html",
   host: {
     class: "relative inline-block",
@@ -18,6 +33,7 @@ import { lucideBuilding2, lucideLogOut } from "@ng-icons/lucide";
 })
 export class ProfileMenu {
   private readonly elementRef = inject(ElementRef);
+  private readonly profileModalService = inject(ProfileModalService);
   readonly authStore = inject(AuthStore);
 
   readonly isOpen = signal(false);
@@ -41,6 +57,11 @@ export class ProfileMenu {
     if (this.isOpen()) {
       this.close();
     }
+  }
+
+  onManageAccount(): void {
+    this.close();
+    this.profileModalService.open("personal");
   }
 
   onSignOut(): void {
