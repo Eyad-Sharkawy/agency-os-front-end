@@ -7,7 +7,7 @@ import { DashboardShell } from "./layout/dashboard-shell/dashboard-shell";
 
 describe("App Routes Configuration", () => {
   it("should have correct route paths defined", () => {
-    expect(routes.length).toBe(6);
+    expect(routes).toHaveLength(6);
 
     // Root landing page route
     const rootRoute = routes[0];
@@ -31,7 +31,7 @@ describe("App Routes Configuration", () => {
     expect(workspaceShellRoute.path).toBe("w/:workspaceId");
     expect(workspaceShellRoute.component).toBe(DashboardShell);
     expect(workspaceShellRoute.canActivate).toEqual([authGuard, tenantGuard]);
-    expect(workspaceShellRoute.children?.length).toBe(6);
+    expect(workspaceShellRoute.children).toHaveLength(6);
 
     // App backwards compatibility route
     const appRoute = routes[4];

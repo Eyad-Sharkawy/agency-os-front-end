@@ -181,11 +181,11 @@ describe("Workspaces Component", () => {
 
   it("should filter workspaces based on search query", () => {
     component.searchQuery.set("stark");
-    expect(component.filteredWorkspaces().length).toBe(1);
+    expect(component.filteredWorkspaces()).toHaveLength(1);
     expect(component.filteredWorkspaces()[0].name).toBe("Stark Industries");
 
     component.searchQuery.set("non-existent");
-    expect(component.filteredWorkspaces().length).toBe(0);
+    expect(component.filteredWorkspaces()).toHaveLength(0);
   });
 
   it("should select workspace, update WorkspaceStore and navigate to /w/:workspaceId", () => {

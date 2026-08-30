@@ -18,16 +18,15 @@ import { Button } from "../../../../shared/components/button/button";
     }),
   ],
   template: `
-    <div
-      role="button"
-      tabindex="0"
+    <button
+      type="button"
       (click)="selected.emit(workspace())"
       (keydown.enter)="selected.emit(workspace())"
       (keydown.space)="selected.emit(workspace())"
       [class.border-ink]="isActive()"
       [class.ring-1]="isActive()"
       [class.ring-ink]="isActive()"
-      class="group border-hairline bg-canvas hover:bg-soft-stone/30 relative flex cursor-pointer flex-col justify-between rounded-sm border p-6 transition-all duration-150 focus:outline-none"
+      class="group border-hairline bg-canvas hover:bg-soft-stone/30 relative flex w-full cursor-pointer flex-col justify-between rounded-sm border p-6 text-left transition-all duration-150 focus:outline-none"
     >
       <!-- Active Workspace Ribbon -->
       @if (isActive()) {
@@ -39,7 +38,7 @@ import { Button } from "../../../../shared/components/button/button";
         </div>
       }
 
-      <div>
+      <div class="w-full">
         <!-- Header -->
         <div class="flex items-start justify-between gap-3">
           <div
@@ -95,7 +94,7 @@ import { Button } from "../../../../shared/components/button/button";
       </div>
 
       <!-- Footer -->
-      <div class="border-hairline mt-6 flex items-center justify-between border-t pt-4">
+      <div class="border-hairline mt-6 flex w-full items-center justify-between border-t pt-4">
         <div class="flex items-center gap-1.5 font-mono text-[11px]">
           @if (workspace().isActive) {
             <span class="bg-brand-green size-2 rounded-full"></span>
@@ -112,7 +111,7 @@ import { Button } from "../../../../shared/components/button/button";
           <span>{{ isActive() ? "Enter" : "Launch" }} &rarr;</span>
         </div>
       </div>
-    </div>
+    </button>
   `,
 })
 export class WorkspaceCard {

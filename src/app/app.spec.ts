@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import { provideRouter } from "@angular/router";
+import { provideRouter, Router } from "@angular/router";
 import { App } from "./app";
 import { ENVIRONMENT } from "./core/tokens/enviroment/environment.token";
 import { environment } from "../environments/environment";
@@ -8,7 +8,14 @@ describe("App", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter([]), { provide: ENVIRONMENT, useValue: environment }],
+      providers: [
+        provideRouter([
+          { path: "w/:workspaceId", component: App },
+          { path: "app", component: App },
+          { path: "workspaces", component: App },
+        ]),
+        { provide: ENVIRONMENT, useValue: environment },
+      ],
     }).compileComponents();
   });
 
@@ -18,12 +25,23 @@ describe("App", () => {
     expect(app).toBeTruthy();
   });
 
-  it("should render navbar, main content outlet, and footer", async () => {
+  it("should evaluate isAppRoute correctly", async () => {
+    const router = TestBed.inject(Router);
     const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector("aos-navbar")).toBeTruthy();
-    expect(compiled.querySelector("router-outlet")).toBeTruthy();
-    expect(compiled.querySelector("aos-footer")).toBeTruthy();
+    const app = fixture.componentInstance;
+
+    expect(app.isAppRoute()).toBe(false);
+
+    await router.navigateByUrl("/w/acme");
+    fixture.detectChanges();
+    expect(app.isAppRoute()).toBe(true);
+
+    await router.navigateByUrl("/app");
+    fixture.detectChanges();
+    expect(app.isAppRoute()).toBe(true);
+
+    await router.navigateByUrl("/workspaces");
+    fixture.detectChanges();
+    expect(app.isAppRoute()).toBe(false);
   });
 });

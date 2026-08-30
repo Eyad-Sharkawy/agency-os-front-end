@@ -85,7 +85,7 @@ describe("Sidebar Component", () => {
   });
 
   it("should render all 6 core navigation items", () => {
-    expect(component.navItems().length).toBe(6);
+    expect(component.navItems()).toHaveLength(6);
     expect(component.navItems().map(i => i.label)).toEqual([
       "Overview",
       "Clients",

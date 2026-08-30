@@ -78,11 +78,18 @@ describe("DashboardShell Component", () => {
     expect(compiled.querySelector("router-outlet")).toBeTruthy();
   });
 
-  it("should toggle mobile sidebar visibility", () => {
+  it("should toggle mobile sidebar visibility and close on backdrop click", () => {
     expect(component.isMobileSidebarOpen()).toBe(false);
     component.toggleMobileSidebar();
+    fixture.detectChanges();
     expect(component.isMobileSidebarOpen()).toBe(true);
-    component.closeMobileSidebar();
+
+    const backdropBtn = fixture.nativeElement.querySelector(
+      'button[aria-label="Close mobile sidebar backdrop"]',
+    ) as HTMLButtonElement;
+    expect(backdropBtn).toBeTruthy();
+    backdropBtn.click();
+    fixture.detectChanges();
     expect(component.isMobileSidebarOpen()).toBe(false);
   });
 });

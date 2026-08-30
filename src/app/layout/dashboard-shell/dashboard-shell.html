@@ -6,29 +6,32 @@
 
   <!-- Mobile Off-Canvas Sidebar Modal -->
   @if (isMobileSidebarOpen()) {
-    <div
-      class="fixed inset-0 z-50 flex bg-black/60 backdrop-blur-xs lg:hidden"
-      role="button"
-      tabindex="0"
-      (click)="closeMobileSidebar()"
-      (keydown.escape)="closeMobileSidebar()"
-      aria-label="Close mobile sidebar backdrop"
-      animate.enter="backdrop-enter"
-      animate.leave="backdrop-leave"
+    <dialog
+      open
+      class="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none border-0 bg-transparent p-0 lg:hidden"
+      aria-label="Mobile Navigation Sidebar"
     >
+      <!-- Backdrop Button -->
+      <button
+        type="button"
+        class="fixed inset-0 cursor-pointer border-0 bg-black/60 p-0 backdrop-blur-xs"
+        (click)="closeMobileSidebar()"
+        (keydown.escape)="closeMobileSidebar()"
+        aria-label="Close mobile sidebar backdrop"
+        animate.enter="backdrop-enter"
+        animate.leave="backdrop-leave"
+      ></button>
+
+      <!-- Off-Canvas Drawer -->
       <div
-        class="bg-canvas border-hairline relative h-full w-64 border-r shadow-2xl"
-        role="dialog"
-        aria-modal="true"
+        class="bg-canvas border-hairline relative z-10 h-full w-64 border-r shadow-2xl"
         tabindex="-1"
-        (click)="$event.stopPropagation()"
-        (keydown)="$event.stopPropagation()"
         animate.enter="drawer-enter"
         animate.leave="drawer-leave"
       >
         <aos-sidebar (closeMobile)="closeMobileSidebar()" />
       </div>
-    </div>
+    </dialog>
   }
 
   <!-- Main Viewport Area -->

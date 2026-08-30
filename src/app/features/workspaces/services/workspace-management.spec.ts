@@ -127,10 +127,10 @@ describe("WorkspaceManagement Service", () => {
     expect(service.filteredWorkspaces()).toEqual([mockWorkspace]);
 
     service.searchQuery.set("Nonexistent");
-    expect(service.filteredWorkspaces().length).toBe(0);
+    expect(service.filteredWorkspaces()).toHaveLength(0);
 
     service.searchQuery.set("acme");
-    expect(service.filteredWorkspaces().length).toBe(1);
+    expect(service.filteredWorkspaces()).toHaveLength(1);
   });
 
   it("should select active workspace and navigate to /w/:workspaceId", () => {
@@ -318,7 +318,7 @@ describe("WorkspaceManagement Service", () => {
     expect(service.isSelf(mockMembers[1])).toBe(false);
 
     // Role options for OWNER
-    expect(service.getInviteRoleOptions().length).toBe(3);
+    expect(service.getInviteRoleOptions()).toHaveLength(3);
 
     // canModifyRole & canRemoveMember
     expect(service.canModifyRole(mockMembers[0])).toBe(false); // self/owner

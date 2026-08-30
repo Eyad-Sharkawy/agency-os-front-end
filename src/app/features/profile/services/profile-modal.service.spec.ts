@@ -63,4 +63,39 @@ describe("ProfileModalService", () => {
     service.setTab("sessions");
     expect(service.activeTab()).toBe("sessions");
   });
+
+  it("should parse query params from URL correctly", () => {
+    const originalSearch = window.location.search;
+    try {
+      Object.defineProperty(window, "location", {
+        value: { search: "?profile=linked-accounts" },
+        writable: true,
+      });
+
+      const s = TestBed.runInInjectionContext(() => new ProfileModalService());
+      expect(s.isOpen()).toBe(true);
+      expect(s.activeTab()).toBe("advanced");
+
+      Object.defineProperty(window, "location", {
+        value: { search: "?profile=personal" },
+        writable: true,
+      });
+      const s2 = TestBed.runInInjectionContext(() => new ProfileModalService());
+      expect(s2.isOpen()).toBe(true);
+      expect(s2.activeTab()).toBe("personal");
+
+      Object.defineProperty(window, "location", {
+        value: { search: "?profile=invalid" },
+        writable: true,
+      });
+      const s3 = TestBed.runInInjectionContext(() => new ProfileModalService());
+      expect(s3.isOpen()).toBe(true);
+      expect(s3.activeTab()).toBe("personal");
+    } finally {
+      Object.defineProperty(window, "location", {
+        value: { search: originalSearch },
+        writable: true,
+      });
+    }
+  });
 });

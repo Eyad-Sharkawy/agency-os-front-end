@@ -92,13 +92,42 @@ describe("ProfilePersonalTab Component", () => {
     expect(component.successMessage()).toBe("Profile updated successfully");
   });
 
+  it("should detect read-only attributes from realm metadata and omit them on submit", () => {
+    mockAccountApi.getProfile.mockReturnValue(
+      of({
+        username: "eyad",
+        email: "eyad@example.com",
+        firstName: "Eyad",
+        lastName: "Sharkawy",
+        userProfileMetadata: {
+          attributes: [
+            { name: "username", readOnly: true },
+            { name: "email", readOnly: true },
+          ],
+        },
+      }),
+    );
+
+    component.loadProfile();
+    expect(component.isUsernameReadOnly()).toBe(true);
+    expect(component.isEmailReadOnly()).toBe(true);
+
+    component.onSubmit();
+
+    expect(mockAccountApi.updateProfile).toHaveBeenCalledWith({
+      firstName: "Eyad",
+      lastName: "Sharkawy",
+    });
+  });
+
   it("should display error message when update fails", () => {
     mockAccountApi.updateProfile.mockReturnValue(
-      throwError(() => ({ error: { errorMessage: "Email already taken" } })),
+      throwError(() => ({ error: { errorMessage: "Email already in use" } })),
     );
 
     component.onSubmit();
 
-    expect(component.errorMessage()).toBe("Email already taken");
+    expect(component.errorMessage()).toBe("Email already in use");
+    expect(component.isSaving()).toBe(false);
   });
 });
