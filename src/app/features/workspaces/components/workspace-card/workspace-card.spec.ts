@@ -35,7 +35,7 @@ describe("WorkspaceCard Component", () => {
     expect(component).toBeTruthy();
     expect(component.initials()).toBe("DA");
     expect(component.canManage()).toBe(true);
-    expect(component.roleBadgeClass()).toContain("bg-primary");
+    expect(component.roleBadgeClass()).toContain("brand-green");
   });
 
   it("should emit selected event when clicked", () => {

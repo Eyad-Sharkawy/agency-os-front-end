@@ -14,7 +14,6 @@ import { WorkspaceInvitationResponse, WorkspaceResponse } from "../../core/api/m
 import { AuthStore } from "../../core/auth/stores/auth.store";
 import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
-import { LogoComponent } from "../../shared/components/logo/logo";
 import { WorkspaceCard } from "./components/workspace-card/workspace-card";
 import {
   ManageTab,
@@ -31,7 +30,6 @@ import { WorkspaceManagement } from "./services/workspace-management";
     RouterLink,
     Button,
     Icons,
-    LogoComponent,
     WorkspaceCard,
     WorkspaceManageModal,
     WorkspaceInvitations,

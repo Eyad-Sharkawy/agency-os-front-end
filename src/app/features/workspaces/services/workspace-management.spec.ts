@@ -291,13 +291,13 @@ describe("WorkspaceManagement Service", () => {
   it("should delete workspace and handle error", () => {
     service.setModalWorkspace(mockWorkspace);
 
-    // Confirmation name mismatch
-    service.deleteConfirmName.set("Wrong Name");
+    // Confirmation mismatch
+    service.deleteConfirmName.set("Wrong_ID");
     service.submitDeleteWorkspace();
     expect(workspaceApiMock.deleteWorkspace).not.toHaveBeenCalled();
 
-    // Matching name
-    service.deleteConfirmName.set("Acme Agency");
+    // Matching workspace tenantId / id
+    service.deleteConfirmName.set("tenant_acme");
     service.submitDeleteWorkspace();
     expect(workspaceApiMock.deleteWorkspace).toHaveBeenCalledWith("tenant_acme");
 
@@ -305,7 +305,7 @@ describe("WorkspaceManagement Service", () => {
       throwError(() => new Error("Cannot delete active workspace")),
     );
     service.setModalWorkspace(mockWorkspace);
-    service.deleteConfirmName.set("Acme Agency");
+    service.deleteConfirmName.set("tenant_acme");
     service.submitDeleteWorkspace();
     expect(service.deleteError()).toBe("Cannot delete active workspace");
   });

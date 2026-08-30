@@ -24,25 +24,26 @@ import { Button } from "../../../../shared/components/button/button";
       (click)="selected.emit(workspace())"
       (keydown.enter)="selected.emit(workspace())"
       (keydown.space)="selected.emit(workspace())"
-      [class.ring-2]="isActive()"
-      [class.ring-primary]="isActive()"
-      class="group border-outline-variant/60 bg-surface-container-lowest hover:border-primary/50 hover:shadow-primary/5 focus:ring-primary/40 relative flex cursor-pointer flex-col justify-between rounded-2xl border p-5 shadow-xs transition-all duration-150 hover:-translate-y-0.5 hover:shadow-lg focus:ring-2 focus:outline-none"
+      [class.border-ink]="isActive()"
+      [class.ring-1]="isActive()"
+      [class.ring-ink]="isActive()"
+      class="group border-hairline bg-canvas hover:bg-soft-stone/30 relative flex cursor-pointer flex-col justify-between rounded-sm border p-6 transition-all duration-150 focus:outline-none"
     >
-      <!-- Active Workspace Indicator Ribbon -->
+      <!-- Active Workspace Ribbon -->
       @if (isActive()) {
         <div
-          class="bg-primary text-on-primary absolute -top-2.5 right-4 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-xs"
+          class="bg-primary text-on-primary absolute -top-2.5 right-4 inline-flex items-center gap-1 rounded-full px-3 py-0.5 font-mono text-[10px] font-semibold"
         >
           <aos-icons name="lucideCheck" class="size-3" />
-          Active
+          ACTIVE
         </div>
       }
 
       <div>
-        <!-- Workspace Avatar & Role Header -->
+        <!-- Header -->
         <div class="flex items-start justify-between gap-3">
           <div
-            class="bg-primary/10 text-primary border-primary/20 flex size-12 shrink-0 items-center justify-center rounded-xl border text-sm font-extrabold tracking-wider shadow-inner"
+            class="bg-primary text-on-primary flex size-12 shrink-0 items-center justify-center rounded-sm font-mono text-sm font-bold tracking-wider"
           >
             {{ initials() }}
           </div>
@@ -52,21 +53,21 @@ import { Button } from "../../../../shared/components/button/button";
               @if (workspace().role) {
                 <span
                   [class]="roleBadgeClass()"
-                  class="rounded-md border px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase"
+                  class="rounded-full px-2.5 py-0.5 font-mono text-[10px] font-medium tracking-wider uppercase"
                 >
                   {{ workspace().role }}
                 </span>
               }
-              <span class="text-on-surface-variant font-mono text-[10px]">
+              <span class="text-muted font-mono text-[10px]">
                 {{ workspace().tenantId }}
               </span>
             </div>
 
-            <!-- Edit / Manage Workspace Button (for Owners & Admins) -->
+            <!-- Edit / Manage Button -->
             @if (canManage()) {
               <aos-button
                 variant="ghost"
-                class="border-outline-variant/60 hover:border-primary/30 size-7.5 rounded-lg border"
+                class="border-hairline hover:border-ink size-7 rounded-full border p-1"
                 ariaLabel="Edit & Manage Workspace"
                 (click)="onManageClick($event)"
                 (keydown.enter)="onManageClick($event)"
@@ -77,42 +78,38 @@ import { Button } from "../../../../shared/components/button/button";
           </div>
         </div>
 
-        <!-- Workspace Info -->
-        <div class="mt-4">
+        <!-- Workspace Name -->
+        <div class="mt-5">
           <h3
-            class="text-on-surface group-hover:text-primary text-base font-bold transition-colors"
+            class="text-ink font-sans text-base font-semibold underline-offset-4 transition-colors group-hover:underline"
           >
             {{ workspace().name }}
           </h3>
           @if (workspace().contactEmail) {
-            <p class="text-on-surface-variant mt-1 flex items-center gap-1.5 text-xs">
-              <aos-icons name="lucideMail" class="size-3.5 shrink-0" />
+            <p class="text-body-muted mt-1 flex items-center gap-1.5 font-mono text-xs">
+              <aos-icons name="lucideMail" class="text-muted size-3.5 shrink-0" />
               <span class="truncate">{{ workspace().contactEmail }}</span>
             </p>
           }
         </div>
       </div>
 
-      <!-- Footer / Action Area -->
-      <div class="border-outline-variant/40 mt-5 flex items-center justify-between border-t pt-4">
-        <div class="flex items-center gap-1.5 text-[11px] font-medium">
+      <!-- Footer -->
+      <div class="border-hairline mt-6 flex items-center justify-between border-t pt-4">
+        <div class="flex items-center gap-1.5 font-mono text-[11px]">
           @if (workspace().isActive) {
-            <span class="size-2 rounded-full bg-emerald-500"></span>
-            <span class="text-success font-semibold">Online</span>
+            <span class="bg-brand-green size-2 rounded-full"></span>
+            <span class="text-brand-green font-medium">Online</span>
           } @else {
-            <span class="size-2 rounded-full bg-zinc-400"></span>
-            <span class="text-on-surface-variant">Archived</span>
+            <span class="bg-muted size-2 rounded-full"></span>
+            <span class="text-muted">Archived</span>
           }
         </div>
 
         <div
-          class="group-hover:text-primary text-on-surface-variant inline-flex items-center gap-1 text-xs font-bold transition-colors"
+          class="text-ink inline-flex items-center gap-1 font-mono text-xs font-medium transition-transform group-hover:translate-x-0.5"
         >
-          <span>{{ isActive() ? "Continue" : "Launch" }}</span>
-          <aos-icons
-            name="lucideArrowRight"
-            class="size-3.5 transition-transform group-hover:translate-x-0.5"
-          />
+          <span>{{ isActive() ? "Enter" : "Launch" }} &rarr;</span>
         </div>
       </div>
     </div>
@@ -144,15 +141,15 @@ export class WorkspaceCard {
     const role: WorkspaceRole | undefined = this.workspace().role;
     switch (role) {
       case "OWNER":
-        return "bg-primary/15 text-primary border-primary/25";
+        return "bg-brand-green/10 text-brand-green border border-brand-green/30";
       case "ADMIN":
-        return "bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/25";
+        return "bg-action-blue/10 text-action-blue border border-action-blue/30";
       case "MEMBER":
-        return "bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/25";
+        return "bg-soft-stone text-ink border border-hairline";
       case "CLIENT":
-        return "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/25";
+        return "bg-soft-stone text-slate border border-hairline";
       default:
-        return "bg-surface-container-high text-on-surface-variant border-outline-variant";
+        return "bg-soft-stone text-muted border border-hairline";
     }
   });
 

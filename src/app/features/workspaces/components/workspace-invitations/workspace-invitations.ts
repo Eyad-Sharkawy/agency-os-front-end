@@ -20,51 +20,49 @@ import { Button } from "../../../../shared/components/button/button";
   ],
   template: `
     @if (invitations().length > 0) {
-      <div class="border-primary/30 bg-primary/5 mt-8 rounded-2xl border p-4 shadow-sm sm:p-6">
-        <div class="flex items-center justify-between pb-3">
-          <div class="flex items-center gap-2">
+      <div class="border-brand-green/40 bg-soft-stone/40 mt-8 rounded-sm border p-6 shadow-xs">
+        <div class="border-hairline flex items-center justify-between border-b pb-3">
+          <div class="flex items-center gap-2.5">
             <div
-              class="bg-primary/20 text-primary flex size-8 items-center justify-center rounded-lg"
+              class="border-brand-green/40 bg-brand-green/10 text-brand-green flex size-8 items-center justify-center rounded-full border"
             >
               <aos-icons name="lucideSend" class="size-4" />
             </div>
             <div>
-              <h2 class="text-on-surface text-sm font-bold sm:text-base">
+              <h2 class="text-ink font-sans text-sm font-semibold sm:text-base">
                 Pending Invitations ({{ invitations().length }})
               </h2>
-              <p class="text-on-surface-variant text-xs">
+              <p class="text-body-muted text-xs">
                 You've been invited to join the following workspaces.
               </p>
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-2 lg:grid-cols-3">
           @for (invitation of invitations(); track invitation.id) {
             <div
-              class="border-outline-variant/60 bg-surface flex flex-col justify-between rounded-xl border p-4 shadow-xs"
+              class="border-hairline bg-canvas flex flex-col justify-between rounded-sm border p-4 shadow-xs"
             >
               <div>
                 <div class="flex items-center justify-between">
-                  <span class="text-on-surface text-sm font-bold">{{
+                  <span class="text-ink font-sans text-sm font-semibold">{{
                     invitation.workspaceName
                   }}</span>
                   <span
                     [class]="getRoleBadgeClass(invitation.role)"
-                    class="rounded-md border px-2 py-0.5 text-[10px] font-bold uppercase"
+                    class="rounded-full px-2 py-0.5 font-mono text-[10px] font-medium uppercase"
                   >
                     {{ invitation.role }}
                   </span>
                 </div>
-                <p class="text-on-surface-variant mt-1 text-xs">
+                <p class="text-body-muted mt-1 font-mono text-xs">
                   Invited by
-                  <span class="text-on-surface font-medium"
-                    >&#64;{{ invitation.invitedByUsername }}</span
-                  >
+                  <span class="text-ink font-medium">&#64;{{ invitation.invitedByUsername }}</span>
                 </p>
               </div>
 
-              <div class="border-outline-variant/40 mt-4 flex items-center gap-2 border-t pt-3">
+              <div class="border-hairline mt-4 flex items-center gap-2 border-t pt-3">
                 <aos-button
                   variant="primary"
                   (click)="onAccept(invitation)"
@@ -116,15 +114,15 @@ export class WorkspaceInvitations {
   getRoleBadgeClass(role?: WorkspaceRole): string {
     switch (role) {
       case "OWNER":
-        return "bg-primary/15 text-primary border-primary/25";
+        return "bg-brand-green/10 text-brand-green border border-brand-green/30";
       case "ADMIN":
-        return "bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/25";
+        return "bg-action-blue/10 text-action-blue border border-action-blue/30";
       case "MEMBER":
-        return "bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/25";
+        return "bg-soft-stone text-ink border border-hairline";
       case "CLIENT":
-        return "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/25";
+        return "bg-soft-stone text-slate border border-hairline";
       default:
-        return "bg-surface-container-high text-on-surface-variant border-outline-variant";
+        return "bg-soft-stone text-muted border border-hairline";
     }
   }
 }

@@ -411,7 +411,10 @@ export class WorkspaceManagement {
 
   submitDeleteWorkspace(): void {
     const ws = this.selectedManageWorkspace();
-    if (this.deleteConfirmName().trim() !== ws?.name) return;
+    if (!ws) return;
+    const confirmInput = this.deleteConfirmName().trim();
+    const matchesId = confirmInput === ws.tenantId || confirmInput === ws.id;
+    if (!matchesId) return;
 
     this.isDeleting.set(true);
     this.deleteError.set(null);

@@ -1,17 +1,22 @@
 <article
-  class="group border-outline-variant/60 bg-surface-container-low/70 hover:border-primary/40 hover:bg-surface-container relative flex h-full w-full flex-col gap-3.5 rounded-xl border p-5 backdrop-blur-xs transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+  class="group border-hairline bg-canvas hover:bg-soft-stone/40 relative flex h-full w-full flex-col justify-between rounded-sm border p-6 transition-colors duration-150"
 >
-  <div class="flex items-center gap-3">
-    <div
-      class="bg-primary/10 text-primary group-hover:bg-primary group-hover:text-on-primary flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors duration-200"
-    >
+  <div class="flex flex-col gap-4">
+    <div class="text-ink flex size-8 items-center justify-start">
       <ng-content select="aos-icons" />
     </div>
-    <h3 class="text-on-surface text-base font-semibold">
+    <h3 class="text-ink font-sans text-lg font-medium tracking-tight">
       <ng-content select="title" />
     </h3>
+    <p class="text-body-muted text-sm leading-relaxed">
+      <ng-content select="description" />
+    </p>
   </div>
-  <p class="text-on-surface-variant text-sm leading-relaxed">
-    <ng-content select="description" />
-  </p>
+  <div class="border-hairline/60 mt-2 border-t pt-4">
+    <span
+      class="text-ink inline-flex items-center gap-1 text-xs font-medium underline-offset-4 group-hover:underline"
+    >
+      Explore capability &rarr;
+    </span>
+  </div>
 </article>

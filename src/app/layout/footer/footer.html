@@ -1,89 +1,128 @@
-<footer class="border-outline-variant/40 bg-surface-container-lowest border-t">
-  <div class="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
-      <!-- Brand & Mission Column -->
-      <div class="flex flex-col gap-4 lg:col-span-2">
-        <a routerLink="/" class="flex items-center gap-2">
-          <aos-logo class="size-6 shrink-0" />
-          <span class="text-primary text-base font-bold">Agency OS</span>
-        </a>
-        <p class="text-on-surface-variant max-w-sm text-xs leading-relaxed">
-          The modern, open-source operating system designed for digital agencies, studios, and
-          consultants to manage work, teams, and billing seamlessly.
+<footer
+  class="border-t border-white/10 bg-[#17171c] text-white transition-colors dark:bg-[#0e0e12]"
+>
+  <div class="mx-auto max-w-7xl px-6 py-16 lg:px-12">
+    <!-- Top Row: Newsletter / Brand Statement -->
+    <div class="grid grid-cols-1 gap-12 border-b border-white/10 pb-14 lg:grid-cols-12">
+      <div class="flex flex-col gap-4 lg:col-span-6">
+        <span class="text-brand-green font-mono text-xs font-semibold tracking-wider uppercase">
+          Agency Operations Evolve Fast
+        </span>
+        <h3
+          class="font-display text-2xl leading-tight font-normal tracking-tight text-white sm:text-3xl lg:text-4xl"
+        >
+          Join the next generation of high-velocity digital agencies.
+        </h3>
+        <p class="max-w-lg text-xs leading-relaxed text-zinc-400 sm:text-sm">
+          Get product changelogs, architecture deep-dives, and agency profitability blueprints
+          delivered directly to your inbox.
         </p>
-        <div class="flex items-center gap-3 pt-2">
-          <a
-            href="https://github.com/Eyad-Sharkawy/agency-os-back-end"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="border-outline-variant/60 bg-surface-container-low text-on-surface hover:border-primary/40 hover:bg-surface-container flex items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors"
+        <div class="pt-2">
+          <form
+            class="flex max-w-md items-center rounded-full border border-white/20 bg-white/10 p-1 transition-colors focus-within:border-white"
+            (submit)="$event.preventDefault()"
           >
-            <aos-icons name="simpleGithub" class="size-4" />
-            <span>GitHub Repository</span>
-          </a>
+            <input
+              type="email"
+              placeholder="Enter your work email..."
+              class="w-full bg-transparent px-4 py-2 font-sans text-xs text-white placeholder:text-zinc-400 focus:outline-none"
+            />
+            <button
+              type="submit"
+              class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white text-[#17171c] transition-transform hover:bg-zinc-200 active:scale-95"
+              aria-label="Subscribe to newsletter"
+            >
+              <aos-icons name="lucideArrowRight" class="size-3.5 text-[#17171c]" />
+            </button>
+          </form>
+          <span class="mt-2 block text-[11px] text-zinc-500"
+            >No spam. Unsubscribe at any time.</span
+          >
         </div>
       </div>
 
-      <!-- Product Links -->
-      <div class="flex flex-col gap-3">
-        <p class="text-on-surface text-xs font-bold tracking-wider uppercase">Product</p>
-        <ul class="text-on-surface-variant flex flex-col gap-2 text-xs">
-          <li>
-            <a routerLink="/" fragment="features" class="hover:text-primary transition-colors"
-              >Features</a
-            >
-          </li>
-          <li>
-            <a routerLink="/how-it-works" class="hover:text-primary transition-colors"
-              >How It Works</a
-            >
-          </li>
-          <li><a routerLink="/" class="hover:text-primary transition-colors">CRM & Pipeline</a></li>
-          <li>
-            <a routerLink="/" class="hover:text-primary transition-colors">Kanban & Calendar</a>
-          </li>
-          <li>
-            <a routerLink="/" class="hover:text-primary transition-colors">Time & Invoicing</a>
-          </li>
-        </ul>
-      </div>
+      <!-- Links Grid Column -->
+      <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-6">
+        <!-- Product Links -->
+        <div class="flex flex-col gap-3">
+          <p class="font-mono text-xs font-semibold tracking-wider text-white uppercase">Product</p>
+          <ul class="flex flex-col gap-2.5 text-xs text-zinc-400">
+            <li>
+              <a routerLink="/" fragment="features" class="transition-colors hover:text-white">
+                Features
+              </a>
+            </li>
+            <li>
+              <a routerLink="/how-it-works" class="transition-colors hover:text-white">
+                How It Works
+              </a>
+            </li>
+            <li><a routerLink="/" class="transition-colors hover:text-white">CRM & Pipeline</a></li>
+            <li><a routerLink="/" class="transition-colors hover:text-white">Live Kanban</a></li>
+            <li>
+              <a routerLink="/" class="transition-colors hover:text-white">Smart Invoicing</a>
+            </li>
+          </ul>
+        </div>
 
-      <!-- Resources Links -->
-      <div class="flex flex-col gap-3">
-        <p class="text-on-surface text-xs font-bold tracking-wider uppercase">Architecture</p>
-        <ul class="text-on-surface-variant flex flex-col gap-2 text-xs">
-          <li><span class="text-on-surface-variant">Spring Boot 3.x Backend</span></li>
-          <li><span class="text-on-surface-variant">Angular Frontend</span></li>
-          <li><span class="text-on-surface-variant">Tailwind CSS</span></li>
-          <li><span class="text-on-surface-variant">PostgreSQL Relational DB</span></li>
-        </ul>
-      </div>
+        <!-- Architecture Links -->
+        <div class="flex flex-col gap-3">
+          <p class="font-mono text-xs font-semibold tracking-wider text-white uppercase">
+            Architecture
+          </p>
+          <ul class="flex flex-col gap-2.5 text-xs text-zinc-400">
+            <li><span>Spring Boot 3.x</span></li>
+            <li><span>Angular Reactive</span></li>
+            <li><span>PostgreSQL Schema</span></li>
+            <li><span>Tailwind Design</span></li>
+          </ul>
+        </div>
 
-      <!-- Legal / Open Source -->
-      <div class="flex flex-col gap-3">
-        <p class="text-on-surface text-xs font-bold tracking-wider uppercase">Community</p>
-        <ul class="text-on-surface-variant flex flex-col gap-2 text-xs">
-          <li><span class="text-on-surface-variant">Open Source Software</span></li>
-          <li><span class="text-on-surface-variant">Self-Hosted Community</span></li>
-          <li>
-            <a
-              href="https://github.com/Eyad-Sharkawy/agency-os-back-end/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="hover:text-primary transition-colors"
-              >Report an Issue</a
-            >
-          </li>
-        </ul>
+        <!-- Community Links -->
+        <div class="flex flex-col gap-3">
+          <p class="font-mono text-xs font-semibold tracking-wider text-white uppercase">
+            Community
+          </p>
+          <ul class="flex flex-col gap-2.5 text-xs text-zinc-400">
+            <li>
+              <a
+                href="https://github.com/Eyad-Sharkawy/agency-os-back-end"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-1.5 transition-colors hover:text-white"
+              >
+                <aos-icons name="simpleGithub" class="size-3.5" />
+                <span>GitHub</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/Eyad-Sharkawy/agency-os-back-end/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="transition-colors hover:text-white"
+              >
+                Report an Issue
+              </a>
+            </li>
+            <li><span>Self-Host Guide</span></li>
+          </ul>
+        </div>
       </div>
     </div>
 
     <!-- Bottom Bar -->
     <div
-      class="border-outline-variant/40 text-on-surface-variant mt-12 flex flex-col items-center justify-between gap-4 border-t pt-6 text-xs sm:flex-row"
+      class="mt-8 flex flex-col items-center justify-between gap-4 text-xs text-zinc-400 sm:flex-row"
     >
-      <p>© {{ currentYear }} Agency OS. Built for modern agencies.</p>
-      <p class="flex items-center gap-1">Crafted with open-source passion</p>
+      <div class="flex items-center gap-2">
+        <aos-logo class="size-5 shrink-0" />
+        <span class="font-medium text-white">Agency OS</span>
+        <span class="text-zinc-500">© {{ currentYear }} All rights reserved.</span>
+      </div>
+      <p class="flex items-center gap-1 text-zinc-400">
+        Enterprise open-source operations platform
+      </p>
     </div>
   </div>
 </footer>

@@ -32,6 +32,11 @@ import { AuthStore } from "../../core/auth/stores/auth.store";
 export class Navbar {
   readonly authStore = inject(AuthStore);
   isMenuOpen = signal(false);
+  showAnnouncement = signal(true);
+
+  dismissAnnouncement(): void {
+    this.showAnnouncement.set(false);
+  }
 
   toggleMenu(): void {
     this.isMenuOpen.update(open => !open);

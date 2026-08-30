@@ -1,21 +1,10 @@
-<div class="bg-surface relative min-h-screen">
-  <!-- Subtle Background Glow -->
-  <div
-    class="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden"
-  >
-    <div
-      class="from-primary/15 via-primary/5 h-[400px] w-[900px] rounded-full bg-gradient-to-b to-transparent blur-3xl"
-    ></div>
-  </div>
-
+<div class="bg-canvas text-ink relative min-h-screen transition-colors">
   <!-- Top Header Navigation -->
-  <header
-    class="border-outline-variant/50 bg-surface/80 sticky top-0 z-40 w-full border-b backdrop-blur-md"
-  >
-    <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
+  <header class="border-hairline bg-canvas sticky top-0 z-40 w-full border-b backdrop-blur-md">
+    <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
       <div class="flex items-center gap-3">
-        <aos-logo variant="icon" class="size-8" />
-        <span class="text-on-surface font-mono text-sm font-bold tracking-tight">Agency OS</span>
+        <aos-logo variant="icon" class="size-7" />
+        <span class="font-display text-ink text-base font-semibold tracking-tight">Agency OS</span>
       </div>
 
       <aos-button variant="ghost" routerLink="/workspaces">
@@ -26,124 +15,125 @@
   </header>
 
   <!-- Main Content Container -->
-  <main class="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
+  <main class="mx-auto max-w-5xl px-6 py-10 sm:py-14">
     <!-- Header Title -->
-    <div class="mb-8 max-w-2xl">
+    <div class="mb-10 max-w-2xl">
       <div
-        class="border-primary/25 bg-primary/10 text-primary mb-2.5 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold"
+        class="border-hairline bg-soft-stone/50 text-ink mb-3 inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs"
       >
-        <aos-icons name="lucideSparkles" class="size-3.5" />
-        <span>Organization Setup</span>
+        <span class="bg-brand-green size-1.5 rounded-full"></span>
+        <span class="text-slate font-mono text-[11px] tracking-wider uppercase"
+          >Organization Provisioning</span
+        >
       </div>
-      <h1 class="text-on-surface text-2xl font-extrabold tracking-tight sm:text-3xl">
+      <h1 class="font-display text-ink text-3xl font-normal tracking-tight sm:text-4xl">
         Create a New Workspace
       </h1>
-      <p class="text-on-surface-variant mt-1.5 text-sm sm:text-base">
-        Spin up an isolated PostgreSQL schema for your agency, team, or client projects.
+      <p class="text-body-muted mt-2 text-sm font-normal sm:text-base">
+        Provision an isolated PostgreSQL tenant schema for your agency operations.
       </p>
     </div>
 
     <!-- Error Alert Banner -->
     @if (errorMessage()) {
       <div
-        class="border-error/30 bg-error/10 text-error mb-6 flex items-start gap-3 rounded-2xl border p-4 text-xs"
+        class="border-error/30 bg-error/5 text-error mb-6 flex items-start gap-3 rounded-sm border p-4 font-mono text-xs"
       >
         <aos-icons name="lucideAlertCircle" class="size-5 shrink-0" />
         <div>
-          <p class="font-bold">Creation Error</p>
+          <p class="font-bold">Provisioning Error</p>
           <p class="mt-0.5">{{ errorMessage() }}</p>
         </div>
       </div>
     }
 
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
-      <!-- Left Column: Form -->
+    <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
+      <!-- Left Column: Form (contact-form-card style) -->
       <div class="lg:col-span-7">
-        <div
-          class="border-outline-variant/60 bg-surface-container-lowest rounded-3xl border p-6 shadow-sm sm:p-8"
-        >
-          <form (ngSubmit)="onSubmit()" class="space-y-5">
+        <div class="border-hairline bg-canvas rounded-[22px] border p-6 shadow-xs sm:p-8">
+          <form (ngSubmit)="onSubmit()" class="space-y-6">
             <!-- Workspace Name Field -->
             <div>
-              <label for="workspaceName" class="text-on-surface block text-xs font-bold sm:text-sm">
+              <label
+                for="workspaceName"
+                class="text-ink block font-sans text-xs font-semibold sm:text-sm"
+              >
                 Workspace / Organization Name <span class="text-error">*</span>
               </label>
-              <p class="text-on-surface-variant text-[11px] sm:text-xs">
-                The public name of your agency or organization.
+              <p class="text-body-muted mt-0.5 text-xs">
+                The display and entity title of your agency.
               </p>
               <div class="relative mt-2">
                 <aos-icons
                   name="lucideBuilding2"
-                  class="text-on-surface-variant pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2"
+                  class="text-muted pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2"
                 />
                 <input
                   id="workspaceName"
                   type="text"
                   name="workspaceName"
-                  placeholder="e.g. Apex Digital Labs"
+                  placeholder="e.g. Apex Digital Studio"
                   [ngModel]="workspaceName()"
                   (ngModelChange)="workspaceName.set($event)"
                   [disabled]="isSubmitting()"
                   required
                   minlength="2"
-                  class="border-outline-variant/70 bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/40 focus:border-primary focus:ring-primary/20 w-full rounded-xl border py-2.5 pr-4 pl-10 text-xs transition-all focus:ring-2 focus:outline-none sm:text-sm"
+                  class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-sm border py-2.5 pr-4 pl-10 font-sans text-xs transition-all focus:outline-none sm:text-sm"
                 />
               </div>
             </div>
 
-            <!-- Associated Email (Read-Only Info Box) -->
+            <!-- Associated Email Box -->
             <div>
-              <span class="text-on-surface block text-xs font-bold sm:text-sm">
+              <span class="text-ink block font-sans text-xs font-semibold sm:text-sm">
                 Associated Account Email
               </span>
-              <p class="text-on-surface-variant text-[11px] sm:text-xs">
-                The workspace will automatically be linked to your account.
+              <p class="text-body-muted mt-0.5 text-xs">
+                Workspace ownership will be assigned to your active credentials.
               </p>
               <div
-                class="border-outline-variant/60 bg-surface-container-low/80 text-on-surface-variant mt-2 flex items-center justify-between rounded-xl border px-3.5 py-2.5 text-xs sm:text-sm"
+                class="border-hairline bg-soft-stone/40 text-body-muted mt-2 flex items-center justify-between rounded-sm border px-3.5 py-2.5 font-mono text-xs sm:text-sm"
               >
                 <div class="flex min-w-0 items-center gap-2.5">
-                  <aos-icons name="lucideMail" class="text-primary size-4 shrink-0" />
-                  <span class="text-on-surface truncate font-medium">{{
-                    authStore.userEmail()
-                  }}</span>
+                  <aos-icons name="lucideMail" class="text-ink size-4 shrink-0" />
+                  <span class="text-ink truncate">{{ authStore.userEmail() }}</span>
                 </div>
                 <span
-                  class="border-primary/30 bg-primary/10 text-primary ml-2 inline-flex shrink-0 items-center gap-1 rounded-md border px-2 py-0.5 text-[10px] font-semibold"
+                  class="border-brand-green/30 bg-brand-green/10 text-brand-green ml-2 inline-flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-medium"
                 >
                   <aos-icons name="lucideLock" class="size-3" />
-                  Owner Account
+                  OWNER
                 </span>
               </div>
             </div>
 
-            <!-- Architecture Feature Pills -->
-            <div class="border-outline-variant/40 space-y-2.5 border-t pt-5">
+            <!-- Architecture Specifications -->
+            <div class="border-hairline space-y-3 border-t pt-5">
               <div class="flex items-center gap-2.5 text-xs">
-                <aos-icons name="lucideShieldCheck" class="text-primary size-4 shrink-0" />
-                <span class="text-on-surface-variant">
-                  <strong class="text-on-surface">Isolated PostgreSQL Schema:</strong> Your client
-                  records and data remain strictly segregated.
+                <aos-icons name="lucideShieldCheck" class="text-ink size-4 shrink-0" />
+                <span class="text-body-muted">
+                  <strong class="text-ink">PostgreSQL Schema Isolation:</strong> Dedicated database
+                  partition per organization.
                 </span>
               </div>
               <div class="flex items-center gap-2.5 text-xs">
-                <aos-icons name="lucideLock" class="text-primary size-4 shrink-0" />
-                <span class="text-on-surface-variant">
-                  <strong class="text-on-surface">Automatic Owner Role:</strong> You will be granted
-                  full administrative authority.
+                <aos-icons name="lucideLock" class="text-ink size-4 shrink-0" />
+                <span class="text-body-muted">
+                  <strong class="text-ink">Owner Authority:</strong> Instant administrative controls
+                  and member invitation access.
                 </span>
               </div>
               <div class="flex items-center gap-2.5 text-xs">
-                <aos-icons name="lucideLayers" class="text-primary size-4 shrink-0" />
-                <span class="text-on-surface-variant">
-                  <strong class="text-on-surface">Ready-to-use Modules:</strong> Pre-wired with CRM,
-                  Kanban, Timers, and Invoicing.
+                <aos-icons name="lucideLayers" class="text-ink size-4 shrink-0" />
+                <span class="text-body-muted">
+                  <strong class="text-ink">Pre-Wired Capabilities:</strong> CRM, live Kanban, task
+                  timers, and automated billing.
                 </span>
               </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex items-center justify-end gap-3 pt-4">
+            <div class="border-hairline flex items-center justify-end gap-3 border-t pt-4">
               <aos-button variant="outlined" routerLink="/workspaces"> Cancel </aos-button>
 
               <aos-button
@@ -167,81 +157,74 @@
       <!-- Right Column: Real-time Live Card Preview -->
       <div class="flex flex-col gap-4 lg:col-span-5">
         <div
-          class="text-on-surface-variant flex items-center justify-between text-xs font-bold tracking-wider uppercase"
+          class="text-slate flex items-center justify-between font-mono text-xs tracking-wider uppercase"
         >
-          <span>Directory Card Preview</span>
-          <span class="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-[10px] font-bold"
-            >Live Sync</span
+          <span>Live Directory Card Preview</span>
+          <span class="border-hairline bg-soft-stone rounded-full border px-2 py-0.5 text-[10px]"
+            >SYNC</span
           >
         </div>
 
         <!-- Preview Card -->
         <div
-          class="border-primary/40 bg-surface-container-lowest relative flex flex-col justify-between rounded-3xl border-2 p-6 shadow-xl"
+          class="border-hairline bg-canvas relative flex flex-col justify-between rounded-sm border p-6 shadow-sm"
         >
-          <!-- Active Ribbon Mockup -->
           <div
-            class="bg-primary text-on-primary absolute -top-2.5 right-6 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold shadow-xs"
+            class="bg-primary text-on-primary absolute -top-2.5 right-6 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold"
           >
             <aos-icons name="lucideCheck" class="size-3" />
-            New Workspace
+            NEW
           </div>
 
           <div>
             <div class="flex items-start justify-between gap-3">
               <div
-                class="bg-primary/10 text-primary border-primary/20 flex size-14 shrink-0 items-center justify-center rounded-2xl border text-base font-extrabold tracking-wider shadow-inner"
+                class="bg-primary text-on-primary flex size-12 shrink-0 items-center justify-center rounded-sm font-mono text-sm font-bold tracking-wider"
               >
                 {{ initialsPreview() }}
               </div>
 
               <div class="flex flex-col items-end gap-1">
                 <span
-                  class="bg-primary/15 text-primary border-primary/25 rounded-md border px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase"
+                  class="bg-brand-green/10 text-brand-green border-brand-green/30 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-medium tracking-wider uppercase"
                 >
                   OWNER
                 </span>
-                <span class="text-on-surface-variant font-mono text-[10px]">
+                <span class="text-muted font-mono text-[10px]">
                   {{ slugPreview() }}
                 </span>
               </div>
             </div>
 
             <div class="mt-5">
-              <h3 class="text-on-surface text-lg font-bold">
+              <h3 class="text-ink font-sans text-base font-semibold">
                 {{ workspaceName() || "Your Organization Name" }}
               </h3>
-              <p class="text-on-surface-variant mt-1 flex items-center gap-1.5 text-xs">
-                <aos-icons name="lucideMail" class="size-3.5 shrink-0" />
+              <p class="text-body-muted mt-1 flex items-center gap-1.5 font-mono text-xs">
+                <aos-icons name="lucideMail" class="text-muted size-3.5 shrink-0" />
                 <span class="truncate">{{ authStore.userEmail() || "contact@example.com" }}</span>
               </p>
             </div>
           </div>
 
-          <div
-            class="border-outline-variant/40 mt-6 flex items-center justify-between border-t pt-4"
-          >
-            <div class="flex items-center gap-1.5 text-[11px] font-medium">
-              <span class="size-2 rounded-full bg-emerald-500"></span>
-              <span class="text-success font-semibold">Ready to Launch</span>
+          <div class="border-hairline mt-6 flex items-center justify-between border-t pt-4">
+            <div class="flex items-center gap-1.5 font-mono text-[11px]">
+              <span class="bg-brand-green size-2 rounded-full"></span>
+              <span class="text-brand-green font-medium">Ready to Launch</span>
             </div>
 
-            <div class="text-primary inline-flex items-center gap-1 text-xs font-bold">
-              <span>Launch</span>
-              <aos-icons name="lucideArrowRight" class="size-3.5" />
+            <div class="text-ink inline-flex items-center gap-1 font-mono text-xs font-medium">
+              <span>Launch &rarr;</span>
             </div>
           </div>
         </div>
 
         <!-- Help Info Box -->
-        <div
-          class="border-outline-variant/50 bg-surface-container-low/60 rounded-2xl border p-4 text-xs"
-        >
-          <p class="text-on-surface font-semibold">What happens after creation?</p>
-          <p class="text-on-surface-variant mt-1 leading-relaxed">
-            Your workspace tenant identifier is registered in Keycloak and PostgreSQL, automatically
-            set as your active organization, and you are redirected directly into your new agency
-            dashboard.
+        <div class="border-hairline bg-soft-stone/40 rounded-sm border p-4 text-xs">
+          <p class="text-ink font-sans font-medium">What happens after creation?</p>
+          <p class="text-body-muted mt-1 leading-relaxed">
+            Your workspace tenant identifier is configured in PostgreSQL and Keycloak, automatically
+            set as your active workspace, and you are redirected to the agency dashboard.
           </p>
         </div>
       </div>

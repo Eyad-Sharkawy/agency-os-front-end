@@ -17,11 +17,11 @@ import { Theme } from "../../../core/services/theme";
       (click)="themeService.toggleTheme()"
       (keydown.enter)="themeService.toggleTheme()"
     >
-      <div class="relative flex size-4 items-center justify-center">
+      <div class="relative flex size-5.5 items-center justify-center">
         <aos-icons
           name="lucideSun"
-          strokeWidth="1.75"
-          class="absolute inset-0 text-amber-500 transition-all duration-300 ease-in-out"
+          strokeWidth="2"
+          class="absolute inset-0 size-5.5 text-amber-500 transition-all duration-300 ease-in-out"
           [class.opacity-0]="themeService.theme() === 'light'"
           [class.rotate-90]="themeService.theme() === 'light'"
           [class.scale-75]="themeService.theme() === 'light'"
@@ -31,8 +31,8 @@ import { Theme } from "../../../core/services/theme";
         />
         <aos-icons
           name="lucideMoon"
-          strokeWidth="1.75"
-          class="text-on-surface-variant absolute inset-0 transition-all duration-300 ease-in-out"
+          strokeWidth="2"
+          class="text-ink absolute inset-0 size-5.5 transition-all duration-300 ease-in-out"
           [class.opacity-0]="themeService.theme() === 'dark'"
           [class.-rotate-90]="themeService.theme() === 'dark'"
           [class.scale-75]="themeService.theme() === 'dark'"
@@ -46,5 +46,5 @@ import { Theme } from "../../../core/services/theme";
 })
 export class ThemeToggle {
   readonly themeService = inject(Theme);
-  readonly buttonClass = input<string>("size-9 rounded-md");
+  readonly buttonClass = input<string>("size-10 rounded-full !p-0");
 }

@@ -68,27 +68,27 @@ export class Button {
 
   protected readonly computedClasses = computed<string>(() => {
     const baseClasses =
-      "inline-flex items-center justify-center cursor-pointer text-center font-medium text-sm rounded-md w-full h-full min-h-9 transition-colors duration-150 ease-in-out disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed";
-    const paddingClasses = "px-4 py-2";
+      "inline-flex items-center justify-center cursor-pointer text-center font-medium text-sm w-full h-full min-h-9 transition-all duration-150 ease-in-out disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed";
+    const pillPadding = "px-5 py-2 rounded-full";
 
     switch (this.variant()) {
       case "primary":
-        return `${baseClasses} ${paddingClasses} bg-primary text-on-primary hover:brightness-105 active:brightness-95 shadow-sm`;
+        return `${baseClasses} ${pillPadding} bg-primary text-on-primary hover:opacity-90 active:scale-[0.99] shadow-xs`;
 
       case "secondary":
-        return `${baseClasses} ${paddingClasses} bg-surface-container-high text-on-surface hover:bg-surface-container-highest active:bg-surface-dim`;
+        return `${baseClasses} px-2 py-1.5 rounded-sm bg-transparent text-ink hover:underline underline-offset-4 active:opacity-75`;
 
       case "inverted":
-        return `${baseClasses} ${paddingClasses} bg-on-surface text-surface hover:opacity-90 active:opacity-80 shadow-sm`;
+        return `${baseClasses} ${pillPadding} bg-white text-[#17171c] hover:bg-soft-stone active:scale-[0.99] shadow-xs`;
 
       case "outlined":
-        return `${baseClasses} ${paddingClasses} bg-transparent border border-outline text-on-surface hover:bg-surface-container-low active:bg-surface-container`;
+        return `${baseClasses} ${pillPadding} bg-transparent border border-hairline text-ink hover:border-ink hover:bg-soft-stone/40 active:bg-soft-stone`;
 
       case "danger":
-        return `${baseClasses} ${paddingClasses} bg-error text-on-error hover:brightness-105 active:brightness-95 shadow-sm`;
+        return `${baseClasses} ${pillPadding} bg-error text-white hover:opacity-90 active:scale-[0.99] shadow-xs`;
 
       case "ghost":
-        return `${baseClasses} bg-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high active:bg-surface-container-highest`;
+        return `${baseClasses} px-3 py-1.5 rounded-full bg-transparent text-ink/80 hover:text-ink hover:bg-soft-stone/60 active:bg-soft-stone`;
     }
   });
 }

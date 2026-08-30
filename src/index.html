@@ -27,13 +27,13 @@
     <style>
       html.dark {
         color-scheme: dark;
-        background-color: #121417;
-        color: #e2e2e6;
+        background-color: #0e0e12;
+        color: #f3f3f6;
       }
       html:not(.dark) {
         color-scheme: light;
-        background-color: #f7f9fb;
-        color: #1a1c1e;
+        background-color: #ffffff;
+        color: #212121;
       }
       aos-icons,
       aos-logo,
@@ -80,8 +80,8 @@
     <link rel="canonical" href="https://agency-os-eyad.vercel.app/" />
 
     <!-- Theme & Accent Color (Discord Embed Line + Mobile Address Bar) -->
-    <meta name="theme-color" content="#059669" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#10b981" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#17171c" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0e12" media="(prefers-color-scheme: dark)" />
     <meta name="color-scheme" content="light dark" />
 
     <!-- Open Graph / Facebook / LinkedIn / Discord / Slack / WhatsApp -->
@@ -122,15 +122,17 @@
     <link rel="icon" type="image/svg+xml" href="/logo/logo-mark.svg" />
     <link rel="apple-touch-icon" href="/logo/logo-mark.svg" />
 
-    <!-- Google Fonts: Plus Jakarta Sans with Preconnect -->
+    <!-- Google Fonts: Space Grotesk, Inter, Space Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
   </head>
-  <body class="bg-surface text-on-surface font-sans">
+  <body
+    class="bg-canvas text-ink selection:bg-brand-green/20 selection:text-ink font-sans antialiased"
+  >
     <aos-root></aos-root>
   </body>
 </html>

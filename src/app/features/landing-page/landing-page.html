@@ -1,246 +1,223 @@
-<div class="relative overflow-hidden">
-  <!-- Background Glow & Grid Accents -->
-  <div
-    class="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden"
-  >
-    <div
-      class="from-primary/15 via-primary/5 h-[500px] w-[1000px] rounded-full bg-gradient-to-b to-transparent blur-3xl"
-    ></div>
-  </div>
-
-  <!-- Hero Section (Full Viewport Height) -->
+<div class="bg-canvas text-ink relative transition-colors">
+  <!-- Hero Section -->
   <section
-    class="flex min-h-[calc(100dvh-64px)] flex-col items-center justify-center gap-6 px-4 py-12 text-center"
+    class="mx-auto flex min-h-[calc(100dvh-100px)] max-w-6xl flex-col items-center justify-center px-6 pt-16 pb-12 text-center"
   >
-    <!-- Announcement Badge -->
+    <!-- Uppercase Mono Label -->
     <div
-      class="border-primary/25 bg-primary/10 text-primary hover:bg-primary/15 inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors"
+      class="border-hairline bg-soft-stone/50 text-ink mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs transition-colors"
     >
-      <aos-icons name="lucideSparkles" class="text-primary size-3.5" />
-      <span>The Open Source Agency Operating System</span>
+      <span class="bg-brand-green size-1.5 rounded-full"></span>
+      <span class="text-ink font-mono text-xs tracking-wider uppercase"
+        >Enterprise Agency Operating System</span
+      >
     </div>
 
-    <!-- Main Headline -->
+    <!-- Monumental Display Headline -->
     <h1
-      class="text-on-surface max-w-4xl text-3xl font-extrabold tracking-tight sm:text-5xl md:text-6xl md:leading-[1.15]"
+      class="font-display text-ink max-w-5xl text-4xl leading-[1.0] font-normal tracking-[-0.04em] sm:text-6xl md:text-7xl lg:text-[84px]"
     >
-      Run Your Projects, Team, and Invoicing in One
-      <span
-        class="from-primary bg-gradient-to-r via-emerald-600 to-teal-600 bg-clip-text text-transparent"
-        >Unified Workspace.</span
-      >
+      The command center for high-performance agencies.
     </h1>
 
-    <!-- Subtitle -->
-    <p class="text-on-surface-variant max-w-2xl text-sm leading-relaxed sm:text-base md:text-lg">
-      Stop juggling ten disconnected tools. Agency OS provides a single, high-performance platform
-      designed specifically for modern digital agencies to manage clients, track time, and get paid
-      faster.
+    <!-- Editorial Subtitle -->
+    <p
+      class="text-body-muted mt-6 max-w-2xl text-base leading-relaxed font-normal sm:text-lg md:text-xl"
+    >
+      Eliminate tool sprawl. Agency OS integrates multi-tenant client CRM, live Kanban workflows,
+      precision time logging, and automated PDF billing in one sovereign engine.
     </p>
 
-    <!-- Hero CTA Buttons -->
-    <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
-      <aos-button variant="primary" class="h-11"> Get Started for Free </aos-button>
-      <aos-button routerLink="." fragment="features" variant="outlined" class="h-11">
-        Explore Features
+    <!-- CTAs: Primary Pill + Secondary Underlined Action -->
+    <div class="flex flex-wrap items-center justify-center gap-4 pt-8">
+      <aos-button variant="primary" routerLink="/workspaces" class="min-w-[160px]">
+        Get Started Free
+      </aos-button>
+      <aos-button routerLink="." fragment="features" variant="secondary">
+        Explore Capabilities &rarr;
       </aos-button>
     </div>
 
-    <!-- Trust Badges -->
+    <!-- Trust Badges with Wide Vertical Spacing -->
     <div
-      class="text-on-surface-variant flex flex-wrap items-center justify-center gap-6 pt-2 text-xs font-medium"
+      class="text-slate flex flex-wrap items-center justify-center gap-8 pt-12 text-xs font-normal"
     >
-      <span class="flex items-center gap-1.5">
-        <aos-icons name="lucideCheckCircle2" class="text-success size-4" />
-        100% Open Source
+      <span class="flex items-center gap-2">
+        <aos-icons name="lucideCheckCircle2" class="text-brand-green size-3.5" />
+        100% Open Source (MIT)
       </span>
-      <span class="flex items-center gap-1.5">
-        <aos-icons name="lucideCheckCircle2" class="text-success size-4" />
-        Self-Hostable or Cloud
+      <span class="flex items-center gap-2">
+        <aos-icons name="lucideCheckCircle2" class="text-brand-green size-3.5" />
+        Self-Hostable or Managed
       </span>
-      <span class="flex items-center gap-1.5">
-        <aos-icons name="lucideCheckCircle2" class="text-success size-4" />
-        No Credit Card Required
+      <span class="flex items-center gap-2">
+        <aos-icons name="lucideCheckCircle2" class="text-brand-green size-3.5" />
+        PostgreSQL Schema Isolation
       </span>
     </div>
   </section>
 
-  <!-- Interactive-Style Dashboard Preview Mockup Section -->
-  <section class="flex flex-col items-center justify-center px-4 pt-4 pb-16 md:pb-24">
-    <div class="w-full max-w-5xl px-2 sm:px-4">
-      <div
-        class="border-outline-variant/60 bg-surface-container-lowest shadow-primary/10 relative overflow-hidden rounded-2xl border shadow-2xl"
-      >
-        <!-- Mockup Window Header -->
-        <div
-          class="border-outline-variant/50 bg-surface-container-low flex h-11 items-center justify-between border-b px-4"
-        >
-          <div class="flex items-center gap-2">
-            <span class="size-3 rounded-full bg-red-400"></span>
-            <span class="size-3 rounded-full bg-amber-400"></span>
-            <span class="size-3 rounded-full bg-emerald-400"></span>
+  <!-- Trust Logo Strip (Quiet monochrome marks with wide spacing) -->
+  <section class="border-hairline bg-canvas border-y px-6 py-12">
+    <div class="mx-auto max-w-6xl text-center">
+      <p class="text-muted mb-8 font-mono text-xs tracking-widest uppercase">
+        Built for Modern Product Studios, Engineering Firms & Creative Consultancies
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-12 opacity-60 grayscale sm:gap-16">
+        <div class="font-display text-ink flex items-center gap-2 text-lg font-bold tracking-tight">
+          <aos-icons name="lucideLayers" class="size-5" />
+          <span>APEX DIGITAL</span>
+        </div>
+        <div class="font-display text-ink flex items-center gap-2 text-lg font-bold tracking-tight">
+          <aos-icons name="lucideZap" class="size-5" />
+          <span>VELOCITY LABS</span>
+        </div>
+        <div class="font-display text-ink flex items-center gap-2 text-lg font-bold tracking-tight">
+          <aos-icons name="lucideWorkflow" class="size-5" />
+          <span>STUDIO FORGE</span>
+        </div>
+        <div class="font-display text-ink flex items-center gap-2 text-lg font-bold tracking-tight">
+          <aos-icons name="lucideShieldCheck" class="size-5" />
+          <span>CYBERNETIC CO.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Signature Agent Console Mockup Card -->
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24">
+    <div
+      class="relative overflow-hidden rounded-[22px] border border-white/10 bg-[#071829] p-6 text-white shadow-2xl sm:p-8 lg:p-10"
+    >
+      <!-- Console Header Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
+        <div class="flex items-center gap-3">
+          <div class="size-3 rounded-full bg-white/20"></div>
+          <div class="font-mono text-xs tracking-wider text-zinc-300 uppercase">
+            Console // tenant_workspace: apex-digital
           </div>
-          <div
-            class="bg-surface-container text-on-surface-variant flex items-center gap-2 rounded-md px-3 py-1 text-xs"
+        </div>
+        <div class="flex items-center gap-3">
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-mono text-[11px] text-white"
           >
-            <aos-icons name="lucideShieldCheck" class="text-primary size-3.5" />
-            <span class="font-mono text-[11px]">agency-os/workspace/overview</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span
-              class="bg-success/15 text-success inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium"
+            <span class="size-1.5 animate-pulse rounded-full bg-emerald-400"></span>
+            PostgreSQL Multi-Tenant Active
+          </span>
+          <span
+            class="bg-brand-green/20 text-brand-green-light rounded-full px-2.5 py-0.5 font-mono text-[11px] font-medium"
+          >
+            Spring 3.x Concurrency
+          </span>
+        </div>
+      </div>
+
+      <!-- Console Body Grid -->
+      <div class="grid grid-cols-1 gap-6 pt-6 lg:grid-cols-12">
+        <!-- Console Left: Organization Metrics -->
+        <div class="flex flex-col gap-4 lg:col-span-4">
+          <div class="rounded-sm border border-white/10 bg-white/5 p-5">
+            <span class="font-mono text-[11px] tracking-wider text-zinc-400 uppercase"
+              >Active Retainers</span
             >
-              <span class="bg-success size-1.5 animate-pulse rounded-full"></span>
-              Live Sync
-            </span>
-          </div>
-        </div>
-
-        <!-- Mockup Content Body -->
-        <div class="grid grid-cols-1 gap-4 p-4 text-left md:grid-cols-12 md:p-6">
-          <!-- Mini Sidebar / Metrics -->
-          <div class="flex flex-col gap-3 md:col-span-4">
-            <div class="border-outline-variant/50 bg-surface-container-low rounded-xl border p-4">
-              <span class="text-on-surface-variant text-xs font-semibold tracking-wider uppercase"
-                >Active Workspace</span
-              >
-              <p class="text-on-surface mt-1 text-base font-bold">Digital Apex Studio</p>
-              <p class="text-on-surface-variant text-xs">8 team members • 12 active projects</p>
-
-              <div class="bg-primary/10 mt-4 flex items-center justify-between rounded-lg p-3">
-                <div class="flex items-center gap-2.5">
-                  <div
-                    class="bg-primary text-on-primary flex size-8 items-center justify-center rounded-lg"
-                  >
-                    <aos-icons name="lucideTimer" class="size-4" />
-                  </div>
-                  <div>
-                    <div class="text-on-surface-variant text-[11px] font-medium">Timer Running</div>
-                    <div class="text-primary text-xs font-bold">UI Redesign • 02:45:18</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="border-outline-variant/50 bg-surface-container-low rounded-xl border p-4">
-              <span class="text-on-surface-variant text-xs font-semibold tracking-wider uppercase"
-                >Recent Invoices</span
-              >
-              <div class="mt-3 flex flex-col gap-2.5">
-                <div class="bg-surface flex items-center justify-between rounded-md p-2.5 text-xs">
-                  <div>
-                    <div class="text-on-surface font-semibold">Acme Corp Retainer</div>
-                    <div class="text-on-surface-variant text-[11px]">Due in 5 days</div>
-                  </div>
-                  <span class="bg-success/15 text-success rounded px-2 py-0.5 font-bold"
-                    >$4,500</span
-                  >
-                </div>
-                <div class="bg-surface flex items-center justify-between rounded-md p-2.5 text-xs">
-                  <div>
-                    <div class="text-on-surface font-semibold">FinTech Mobile MVP</div>
-                    <div class="text-on-surface-variant text-[11px]">Paid yesterday</div>
-                  </div>
-                  <span class="bg-primary/15 text-primary rounded px-2 py-0.5 font-bold"
-                    >$8,200</span
-                  >
-                </div>
-              </div>
+            <div class="mt-2 font-mono text-2xl font-medium text-white">$24,850.00</div>
+            <div class="mt-1 flex items-center justify-between text-xs text-zinc-400">
+              <span>5 Enterprise Clients</span>
+              <span class="font-mono font-semibold text-emerald-400">+18% MoM</span>
             </div>
           </div>
 
-          <!-- Mini Kanban Board UI -->
-          <div class="flex flex-col gap-3 md:col-span-8">
+          <div class="rounded-sm border border-white/10 bg-white/5 p-5">
             <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <aos-icons name="lucideFolderKanban" class="text-primary size-4" />
-                <p class="text-on-surface text-sm font-bold">Sprint Workflow Board</p>
+              <span class="font-mono text-[11px] tracking-wider text-zinc-400 uppercase"
+                >Active Work Timer</span
+              >
+              <span
+                class="bg-brand-green/20 text-brand-green-light rounded-full px-2 py-0.5 font-mono text-[10px] font-medium"
+                >RUNNING</span
+              >
+            </div>
+            <div class="mt-3 flex items-center gap-3">
+              <div
+                class="flex size-8 items-center justify-center rounded-full bg-white/10 text-white"
+              >
+                <aos-icons name="lucideTimer" class="size-4" />
               </div>
-              <span class="text-on-surface-variant text-xs font-medium">Sprint 24 • Q3</span>
+              <div>
+                <div class="font-mono text-lg font-bold text-white">03:42:19</div>
+                <div class="text-xs text-zinc-400">UI Design System Token Architecture</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Console Right: Real-Time Kanban Board -->
+        <div class="flex flex-col gap-4 lg:col-span-8">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-xs tracking-wider text-zinc-300 uppercase">
+              Active Deliverables Stream
+            </span>
+            <span class="font-mono text-xs text-zinc-400">Sync: 12ms</span>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <!-- Stage 1: In Progress -->
+            <div class="flex flex-col gap-3 rounded-sm border border-white/10 bg-white/5 p-4">
+              <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                <span class="text-brand-green-light font-mono text-xs font-semibold"
+                  >IN DEVELOPMENT</span
+                >
+                <span class="py-0.2 rounded bg-white/10 px-1.5 font-mono text-[10px] text-zinc-400"
+                  >2</span
+                >
+              </div>
+              <div class="rounded-sm border border-white/10 bg-white/10 p-3">
+                <div
+                  class="text-brand-green-light flex items-center justify-between font-mono text-[11px] font-medium"
+                >
+                  <span>API Integration</span>
+                  <span>4.5 hrs</span>
+                </div>
+                <div class="mt-1.5 text-xs font-medium text-white">
+                  Tenant schema migration & JWT validation
+                </div>
+              </div>
+              <div class="rounded-sm border border-white/10 bg-white/10 p-3">
+                <div class="flex items-center justify-between font-mono text-[11px] text-zinc-300">
+                  <span>Frontend</span>
+                  <span>2.0 hrs</span>
+                </div>
+                <div class="mt-1.5 text-xs font-medium text-white">
+                  Responsive workspace navigation tabs
+                </div>
+              </div>
             </div>
 
-            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <!-- Column 1: In Progress -->
-              <div
-                class="border-outline-variant/50 bg-surface-container-low flex flex-col gap-2.5 rounded-xl border p-3.5"
-              >
-                <div class="text-on-surface flex items-center justify-between text-xs font-bold">
-                  <span class="flex items-center gap-1.5">
-                    <span class="size-2 rounded-full bg-blue-500"></span>
-                    In Progress
-                  </span>
-                  <span class="bg-surface text-on-surface-variant rounded px-1.5 py-0.5 text-[11px]"
-                    >2</span
-                  >
-                </div>
-
-                <div class="border-outline-variant/40 bg-surface rounded-lg border p-3 shadow-xs">
-                  <div class="flex items-center justify-between">
-                    <span
-                      class="bg-primary/10 text-primary rounded px-2 py-0.5 text-[10px] font-semibold"
-                      >Design System</span
-                    >
-                    <span class="text-on-surface-variant text-[10px]">4h logged</span>
-                  </div>
-                  <div class="text-on-surface mt-2 text-xs font-semibold">
-                    Revamp component tokens & dark mode
-                  </div>
-                  <div
-                    class="border-outline-variant/30 text-on-surface-variant mt-3 flex items-center justify-between border-t pt-2 text-[11px]"
-                  >
-                    <span class="flex items-center gap-1">
-                      <aos-icons name="lucideClock" class="text-warning size-3" />
-                      Tomorrow
-                    </span>
-                    <span class="text-primary font-medium">2 tasks left</span>
-                  </div>
-                </div>
-
-                <div class="border-outline-variant/40 bg-surface rounded-lg border p-3 shadow-xs">
-                  <div class="flex items-center justify-between">
-                    <span
-                      class="rounded bg-purple-500/10 px-2 py-0.5 text-[10px] font-semibold text-purple-600"
-                      >Backend</span
-                    >
-                    <span class="text-on-surface-variant text-[10px]">1.5h logged</span>
-                  </div>
-                  <div class="text-on-surface mt-2 text-xs font-semibold">
-                    Webhook event dispatcher for Stripe
-                  </div>
-                </div>
+            <!-- Stage 2: Ready for Billing -->
+            <div class="flex flex-col gap-3 rounded-sm border border-white/10 bg-white/5 p-4">
+              <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                <span class="font-mono text-xs font-semibold text-emerald-400"
+                  >READY FOR BILLING</span
+                >
+                <span class="py-0.2 rounded bg-white/10 px-1.5 font-mono text-[10px] text-zinc-400"
+                  >1</span
+                >
               </div>
-
-              <!-- Column 2: Ready for Review / Done -->
-              <div
-                class="border-outline-variant/50 bg-surface-container-low flex flex-col gap-2.5 rounded-xl border p-3.5"
-              >
-                <div class="text-on-surface flex items-center justify-between text-xs font-bold">
-                  <span class="flex items-center gap-1.5">
-                    <span class="size-2 rounded-full bg-emerald-500"></span>
-                    Done & Billed
-                  </span>
-                  <span class="bg-surface text-on-surface-variant rounded px-1.5 py-0.5 text-[11px]"
-                    >1</span
-                  >
+              <div class="rounded-sm border border-white/10 bg-white/10 p-3">
+                <div
+                  class="flex items-center justify-between font-mono text-[11px] font-medium text-emerald-400"
+                >
+                  <span>Completed</span>
+                  <span>14.0 hrs</span>
                 </div>
-
-                <div class="border-outline-variant/40 bg-surface rounded-lg border p-3 shadow-xs">
-                  <div class="flex items-center justify-between">
-                    <span
-                      class="bg-success/15 text-success rounded px-2 py-0.5 text-[10px] font-semibold"
-                      >Client Portal</span
-                    >
-                    <span class="text-success text-[10px] font-medium">Completed</span>
-                  </div>
-                  <div class="text-on-surface mt-2 text-xs font-semibold">
-                    Client authentication & role gates
-                  </div>
-                  <div
-                    class="border-outline-variant/30 text-on-surface-variant mt-3 flex items-center justify-between border-t pt-2 text-[11px]"
-                  >
-                    <span class="text-success font-medium">✓ Invoice Attached</span>
-                    <span>12.5 hrs</span>
-                  </div>
+                <div class="mt-1.5 text-xs font-medium text-white">
+                  Client portal contract & role permissions
+                </div>
+                <div
+                  class="mt-3 flex items-center justify-between border-t border-white/10 pt-2 font-mono text-[11px] text-zinc-400"
+                >
+                  <span>Auto-grouped to Invoice #1042</span>
+                  <span class="font-bold text-emerald-400">$2,100.00</span>
                 </div>
               </div>
             </div>
@@ -250,262 +227,252 @@
     </div>
   </section>
 
-  <!-- Core Pillars Banner -->
-  <section class="border-outline-variant/50 bg-surface-container-low/40 border-y px-4 py-10">
-    <div class="mx-auto max-w-6xl">
-      <h2 class="sr-only">Core Platform Pillars</h2>
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="flex items-start gap-3.5">
-          <div
-            class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg"
-          >
-            <aos-icons name="lucideLayers" class="size-5" />
+  <!-- Dark Feature Band: Deep Enterprise Green (dark-feature-band) -->
+  <section class="mx-auto max-w-6xl px-6 py-6">
+    <div
+      class="bg-deep-green relative overflow-hidden rounded-[22px] p-8 text-white sm:p-12 lg:p-16"
+    >
+      <div class="max-w-2xl">
+        <span class="mb-3 block font-mono text-xs tracking-widest text-emerald-300 uppercase">
+          Architecture & Reliability
+        </span>
+        <h2
+          class="font-sans text-3xl leading-tight font-normal tracking-tight text-white sm:text-4xl lg:text-5xl"
+        >
+          Engineered for strict multi-tenant data sovereignty.
+        </h2>
+        <p class="mt-4 text-sm leading-relaxed text-white/80 sm:text-base">
+          Agency OS isolates every organization into dedicated PostgreSQL schemas, providing
+          complete database-level privacy without maintaining dozens of separate SaaS databases.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 pt-12 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-sm border border-white/15 bg-white/5 p-6 backdrop-blur-xs">
+          <div class="mb-4 flex size-8 items-center text-emerald-300">
+            <aos-icons name="lucideLayers" class="size-6" />
           </div>
-          <div>
-            <h3 class="text-on-surface text-sm font-bold">Unified Data Model</h3>
-            <p class="text-on-surface-variant mt-1 text-xs leading-relaxed">
-              CRM, tasks, time, and billing all connected without brittle third-party zaps.
-            </p>
-          </div>
+          <h3 class="font-sans text-base font-semibold text-white">Schema Isolation</h3>
+          <p class="mt-2 text-xs leading-relaxed text-white/70">
+            Independent database schemas ensure client data cannot leak across tenant boundaries.
+          </p>
         </div>
 
-        <div class="flex items-start gap-3.5">
-          <div
-            class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg"
-          >
-            <aos-icons name="lucideShieldCheck" class="size-5" />
+        <div class="rounded-sm border border-white/15 bg-white/5 p-6 backdrop-blur-xs">
+          <div class="mb-4 flex size-8 items-center text-emerald-300">
+            <aos-icons name="lucideShieldCheck" class="size-6" />
           </div>
-          <div>
-            <h3 class="text-on-surface text-sm font-bold">100% Data Privacy</h3>
-            <p class="text-on-surface-variant mt-1 text-xs leading-relaxed">
-              Host on your own servers or private cloud. You own all client data and files.
-            </p>
-          </div>
+          <h3 class="font-sans text-base font-semibold text-white">Full Data Ownership</h3>
+          <p class="mt-2 text-xs leading-relaxed text-white/70">
+            Host in your private VPC or on bare metal. You own all client contracts, timesheets, and
+            invoices.
+          </p>
         </div>
 
-        <div class="flex items-start gap-3.5">
-          <div
-            class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg"
-          >
-            <aos-icons name="lucideZap" class="size-5" />
+        <div class="rounded-sm border border-white/15 bg-white/5 p-6 backdrop-blur-xs">
+          <div class="mb-4 flex size-8 items-center text-emerald-300">
+            <aos-icons name="lucideTrendingUp" class="size-6" />
           </div>
-          <div>
-            <h3 class="text-on-surface text-sm font-bold">Sub-Second Speed</h3>
-            <p class="text-on-surface-variant mt-1 text-xs leading-relaxed">
-              Engineered with high-concurrency Spring Boot and reactive Angular frontend.
-            </p>
-          </div>
+          <h3 class="font-sans text-base font-semibold text-white">Live Margin Sync</h3>
+          <p class="mt-2 text-xs leading-relaxed text-white/70">
+            CRM, timesheets, milestones, and PDF billing connect natively without brittle webhooks
+            or Zapier scripts.
+          </p>
         </div>
 
-        <div class="flex items-start gap-3.5">
-          <div
-            class="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg"
-          >
-            <aos-icons name="lucideSparkles" class="size-5" />
+        <div class="rounded-sm border border-white/15 bg-white/5 p-6 backdrop-blur-xs">
+          <div class="mb-4 flex size-8 items-center text-emerald-300">
+            <aos-icons name="lucideReceiptText" class="size-6" />
           </div>
-          <div>
-            <h3 class="text-on-surface text-sm font-bold">Zero Tool Bloat</h3>
-            <p class="text-on-surface-variant mt-1 text-xs leading-relaxed">
-              Consolidate expensive subscriptions into one focused operating system.
-            </p>
-          </div>
+          <h3 class="font-sans text-base font-semibold text-white">Zero Sync Lag</h3>
+          <p class="mt-2 text-xs leading-relaxed text-white/70">
+            CRM, timesheets, milestones, and PDF billing connect natively without brittle webhooks
+            or Zapier scripts.
+          </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Features Section -->
-  <section id="features" class="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-16 md:py-24">
-    <div class="flex flex-col items-center gap-3 text-center">
-      <div
-        class="border-primary/20 bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold"
-      >
-        Feature Suite
-      </div>
-      <h2 class="text-on-surface text-3xl font-extrabold tracking-tight sm:text-4xl">
-        Everything your agency needs to operate
+  <!-- Feature Capabilities Grid (capability-card) -->
+  <section id="features" class="mx-auto max-w-6xl px-6 py-20">
+    <div class="mb-14 flex flex-col items-center gap-3 text-center">
+      <span class="text-brand-green font-mono text-xs font-semibold tracking-wider uppercase">
+        Operational Suite
+      </span>
+      <h2 class="text-ink font-sans text-3xl font-normal tracking-tight sm:text-4xl md:text-5xl">
+        Everything required to operate at scale
       </h2>
-      <p class="text-on-surface-variant max-w-2xl text-sm sm:text-base">
-        A complete, purpose-built suite of tools designed to streamline your daily operations and
-        maximize billable profitability.
+      <p class="text-body-muted max-w-2xl text-sm font-normal sm:text-base">
+        A unified platform engineered to replace fragmented point solutions with clean editorial
+        clarity.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 gap-6 pt-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
       <aos-feature-card>
-        <aos-icons name="lucideUsers" class="size-5" />
+        <aos-icons name="lucideUsers" class="text-ink size-5" />
         <ng-container ngProjectAs="title">Client CRM</ng-container>
-        <ng-container ngProjectAs="description"
-          >Manage client relationships, contact details, and deal pipelines with full communication
-          history.</ng-container
-        >
+        <ng-container ngProjectAs="description">
+          Manage accounts, key contacts, contract rate cards, and billing currencies in one
+          directory.
+        </ng-container>
       </aos-feature-card>
 
       <aos-feature-card>
-        <aos-icons name="lucideClipboardList" class="size-5" />
-        <ng-container ngProjectAs="title">Project Tracking</ng-container>
-        <ng-container ngProjectAs="description"
-          >Organize deliverable scopes, set milestones, track deadlines, and delegate
-          responsibilities.</ng-container
-        >
+        <aos-icons name="lucideClipboardList" class="text-ink size-5" />
+        <ng-container ngProjectAs="title">Project Scoping</ng-container>
+        <ng-container ngProjectAs="description">
+          Structure deliverables, assign milestone deadlines, and track scope progression with team
+          members.
+        </ng-container>
       </aos-feature-card>
 
       <aos-feature-card>
-        <aos-icons name="lucideKanbanSquare" class="size-5" />
-        <ng-container ngProjectAs="title">Kanban Boards</ng-container>
-        <ng-container ngProjectAs="description"
-          >Visualize workflows with interactive columns and drag-and-drop task
-          progression.</ng-container
-        >
+        <aos-icons name="lucideFolderKanban" class="text-ink size-5" />
+        <ng-container ngProjectAs="title">Live Kanban</ng-container>
+        <ng-container ngProjectAs="description">
+          Visualize sprint tasks across customizable stages with drag-and-drop workflow status
+          updates.
+        </ng-container>
       </aos-feature-card>
 
       <aos-feature-card>
-        <aos-icons name="lucideCalendarRange" class="size-5" />
-        <ng-container ngProjectAs="title">Live Calendar</ng-container>
-        <ng-container ngProjectAs="description"
-          >Visualize task deadlines, project schedules, and team capacity on an interactive live
-          calendar.</ng-container
-        >
+        <aos-icons name="lucideCalendarRange" class="text-ink size-5" />
+        <ng-container ngProjectAs="title">Team Calendar</ng-container>
+        <ng-container ngProjectAs="description">
+          Monitor milestone deadlines, delivery schedules, and individual developer capacity on a
+          live grid.
+        </ng-container>
       </aos-feature-card>
 
       <aos-feature-card>
-        <aos-icons name="lucideTimer" class="size-5" />
-        <ng-container ngProjectAs="title">Time Tracking</ng-container>
-        <ng-container ngProjectAs="description"
-          >Log hours directly against tasks with one-click timers for accurate project costing and
-          billing.</ng-container
-        >
+        <aos-icons name="lucideTimer" class="text-ink size-5" />
+        <ng-container ngProjectAs="title">Precision Timers</ng-container>
+        <ng-container ngProjectAs="description">
+          Log billable hours directly against tasks with real-time stopwatches for honest client
+          accounting.
+        </ng-container>
       </aos-feature-card>
 
       <aos-feature-card>
-        <aos-icons name="lucideReceiptText" class="size-5" />
-        <ng-container ngProjectAs="title">Smart Invoicing</ng-container>
-        <ng-container ngProjectAs="description"
-          >Generate clean, professional invoices directly from logged billable hours and track
-          payment statuses.</ng-container
-        >
+        <aos-icons name="lucideReceiptText" class="text-ink size-5" />
+        <ng-container ngProjectAs="title">Automated Invoicing</ng-container>
+        <ng-container ngProjectAs="description">
+          Convert unbilled time entries and milestone deliverables into professional PDF invoices in
+          one click.
+        </ng-container>
       </aos-feature-card>
 
       <aos-feature-card>
-        <aos-icons name="lucideWorkflow" class="size-5" />
-        <ng-container ngProjectAs="title">Team Workspaces</ng-container>
-        <ng-container ngProjectAs="description"
-          >Collaborate across departments with isolated workspaces, role permissions, and access
-          controls.</ng-container
-        >
+        <aos-icons name="lucideWorkflow" class="text-ink size-5" />
+        <ng-container ngProjectAs="title">Tenant Workspaces</ng-container>
+        <ng-container ngProjectAs="description">
+          Organize multiple sub-agencies, departments, or external partners with role-based access
+          control.
+        </ng-container>
       </aos-feature-card>
 
       <aos-feature-card>
-        <aos-icons name="lucideBarChart3" class="size-5" />
-        <ng-container ngProjectAs="title">Agency Analytics</ng-container>
-        <ng-container ngProjectAs="description"
-          >Gain real-time insights into agency profitability, team utilization, and project
-          turnaround times.</ng-container
-        >
+        <aos-icons name="lucideBarChart3" class="text-ink size-5" />
+        <ng-container ngProjectAs="title">Margin Analytics</ng-container>
+        <ng-container ngProjectAs="description">
+          Gain real-time visibility into project profitability, realization rates, and contractor
+          costs.
+        </ng-container>
       </aos-feature-card>
     </div>
   </section>
 
-  <!-- How It Works Section -->
-  <section
-    class="border-outline-variant/40 bg-surface-container-low/30 border-t px-4 py-16 md:py-24"
-  >
-    <div class="mx-auto flex max-w-6xl flex-col gap-12">
-      <div class="flex flex-col items-center gap-3 text-center">
-        <div
-          class="border-primary/20 bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold"
-        >
-          Workflow
-        </div>
-        <h2 class="text-on-surface text-3xl font-extrabold tracking-tight sm:text-4xl">
+  <!-- Workflow Section: 3-Step Process on Soft Stone (product-card style) -->
+  <section class="border-hairline bg-soft-stone/30 border-y px-6 py-20">
+    <div class="mx-auto max-w-6xl">
+      <div class="mb-16 flex flex-col items-center gap-3 text-center">
+        <span class="text-brand-green font-mono text-xs font-semibold tracking-wider uppercase">
+          Unified Workflow
+        </span>
+        <h2 class="text-ink font-sans text-3xl font-normal tracking-tight sm:text-4xl md:text-5xl">
           From client onboarding to getting paid
         </h2>
-        <p class="text-on-surface-variant max-w-2xl text-sm sm:text-base">
-          See how Agency OS connects every stage of your agency's client delivery cycle in three
-          intuitive steps.
+        <p class="text-body-muted max-w-2xl text-sm font-normal sm:text-base">
+          How Agency OS connects every phase of the client lifecycle without software fragmentation.
         </p>
       </div>
 
       <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
         <!-- Step 1 -->
-        <div
-          class="border-outline-variant/50 bg-surface-container-low flex flex-col gap-4 rounded-2xl border p-6"
-        >
-          <div class="flex items-center justify-between">
-            <span
-              class="bg-primary text-on-primary flex size-9 items-center justify-center rounded-full text-sm font-bold"
-              >1</span
-            >
-            <aos-icons name="lucideUsers" class="text-primary size-6" />
+        <div class="border-hairline bg-canvas flex flex-col justify-between rounded-sm border p-8">
+          <div class="flex flex-col gap-4">
+            <span class="text-ink font-mono text-2xl font-bold">01</span>
+            <h3 class="text-ink font-sans text-xl font-medium">Initialize & Onboard</h3>
+            <p class="text-body-muted text-sm leading-relaxed">
+              Create an isolated organization workspace, add client profiles, and configure hourly
+              rate cards and retainer caps.
+            </p>
           </div>
-          <h3 class="text-on-surface text-lg font-bold">Capture & Onboard</h3>
-          <p class="text-on-surface-variant text-sm leading-relaxed">
-            Add your clients, establish rate cards, and initialize projects with customized task
-            lists and sprint milestones.
-          </p>
+          <div class="border-hairline text-muted mt-6 border-t pt-6 font-mono text-xs">
+            Phase 1 // Organization Setup
+          </div>
         </div>
 
         <!-- Step 2 -->
-        <div
-          class="border-outline-variant/50 bg-surface-container-low flex flex-col gap-4 rounded-2xl border p-6"
-        >
-          <div class="flex items-center justify-between">
-            <span
-              class="bg-primary text-on-primary flex size-9 items-center justify-center rounded-full text-sm font-bold"
-              >2</span
-            >
-            <aos-icons name="lucideFolderKanban" class="text-primary size-6" />
+        <div class="border-hairline bg-canvas flex flex-col justify-between rounded-sm border p-8">
+          <div class="flex flex-col gap-4">
+            <span class="text-ink font-mono text-2xl font-bold">02</span>
+            <h3 class="text-ink font-sans text-xl font-medium">Execute & Track</h3>
+            <p class="text-body-muted text-sm leading-relaxed">
+              Organize deliverables onto Kanban boards, sync timelines with the calendar, and track
+              billable hours with live timers.
+            </p>
           </div>
-          <h3 class="text-on-surface text-lg font-bold">Execute & Track</h3>
-          <p class="text-on-surface-variant text-sm leading-relaxed">
-            Move tasks across Kanban stages, sync deadlines to the live calendar, and track precise
-            team hours with live timers.
-          </p>
+          <div class="border-hairline text-muted mt-6 border-t pt-6 font-mono text-xs">
+            Phase 2 // Production & Timers
+          </div>
         </div>
 
         <!-- Step 3 -->
-        <div
-          class="border-outline-variant/50 bg-surface-container-low flex flex-col gap-4 rounded-2xl border p-6"
-        >
-          <div class="flex items-center justify-between">
-            <span
-              class="bg-primary text-on-primary flex size-9 items-center justify-center rounded-full text-sm font-bold"
-              >3</span
-            >
-            <aos-icons name="lucideReceiptText" class="text-primary size-6" />
+        <div class="border-hairline bg-canvas flex flex-col justify-between rounded-sm border p-8">
+          <div class="flex flex-col gap-4">
+            <span class="text-ink font-mono text-2xl font-bold">03</span>
+            <h3 class="text-ink font-sans text-xl font-medium">Invoice & Settle</h3>
+            <p class="text-body-muted text-sm leading-relaxed">
+              Aggregate unbilled time logs into itemized PDF invoices with a single click. Monitor
+              payments in real-time.
+            </p>
           </div>
-          <h3 class="text-on-surface text-lg font-bold">Invoice & Scale</h3>
-          <p class="text-on-surface-variant text-sm leading-relaxed">
-            Convert logged time and milestones directly into itemized invoices and monitor payments
-            in real-time.
-          </p>
+          <div class="border-hairline text-muted mt-6 border-t pt-6 font-mono text-xs">
+            Phase 3 // Automated Settlement
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Bottom CTA Section -->
-  <section class="px-4 py-16 md:py-24">
+  <!-- Bottom CTA Band -->
+  <section class="mx-auto max-w-6xl px-6 py-20">
     <div
-      class="border-primary/30 from-primary/15 via-primary/5 to-surface-container-low mx-auto max-w-5xl rounded-3xl border bg-gradient-to-b p-8 text-center sm:p-12 md:p-16"
+      class="border-hairline bg-soft-stone/50 rounded-[22px] border p-8 text-center sm:p-14 lg:p-16"
     >
-      <h2 class="text-on-surface text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
-        Ready to scale your agency operations?
+      <span
+        class="text-brand-green mb-3 block font-mono text-xs font-semibold tracking-widest uppercase"
+      >
+        Deploy Now
+      </span>
+      <h2 class="font-display text-ink text-3xl font-normal tracking-tight sm:text-4xl md:text-5xl">
+        Ready to take control of your agency operations?
       </h2>
-      <p class="text-on-surface-variant mx-auto mt-4 max-w-2xl text-sm sm:text-base">
-        Get started with Agency OS today. Free to self-host, open-source forever, and built for
+      <p class="text-body-muted mx-auto mt-4 max-w-2xl text-sm font-normal sm:text-base">
+        Deploy Agency OS on your servers or start in the cloud today. 100% open-source and built for
         performance.
       </p>
 
       <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
-        <aos-button variant="primary" class="h-11"> Get Started for Free </aos-button>
-        <aos-button
-          variant="outlined"
-          href="https://github.com/Eyad-Sharkawy/agency-os-back-end"
-          class="h-11"
-        >
+        <aos-button variant="primary" routerLink="/workspaces" class="min-w-[160px]">
+          Launch Workspace
+        </aos-button>
+        <aos-button variant="outlined" href="https://github.com/Eyad-Sharkawy/agency-os-back-end">
           <aos-icons name="simpleGithub" class="size-4" />
-          <span class="ml-2">View Source on GitHub</span>
+          <span class="ml-2">GitHub Source</span>
         </aos-button>
       </div>
     </div>

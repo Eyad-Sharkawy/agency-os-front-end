@@ -60,6 +60,24 @@ describe("Navbar", () => {
     expect(component.isMenuOpen()).toBe(false);
   });
 
+  it("should dismiss announcement bar", () => {
+    expect(component.showAnnouncement()).toBe(true);
+    component.dismissAnnouncement();
+    expect(component.showAnnouncement()).toBe(false);
+  });
+
+  it("should show announcement bar when not authenticated, and hide when authenticated", () => {
+    isAuthSignal.set(false);
+    fixture.detectChanges();
+    let compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Agency OS enterprise architecture is live");
+
+    isAuthSignal.set(true);
+    fixture.detectChanges();
+    compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).not.toContain("Agency OS enterprise architecture is live");
+  });
+
   it("should show Features and How It Works when not authenticated", () => {
     isAuthSignal.set(false);
     fixture.detectChanges();

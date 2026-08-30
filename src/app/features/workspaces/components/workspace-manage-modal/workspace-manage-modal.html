@@ -5,23 +5,21 @@
     class="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center border-0 bg-black/60 p-4 backdrop-blur-xs"
   >
     <div
-      class="border-outline-variant/60 bg-surface-container-lowest flex w-full max-w-xl flex-col overflow-hidden rounded-3xl border shadow-2xl transition-all"
+      class="border-hairline bg-canvas text-ink flex w-full max-w-xl flex-col overflow-hidden rounded-sm border shadow-2xl transition-all"
     >
       <!-- Modal Header -->
-      <div
-        class="border-outline-variant/50 bg-surface-container-low/50 flex items-center justify-between border-b px-6 py-4"
-      >
-        <div class="flex items-center gap-2.5">
+      <div class="border-hairline bg-canvas flex items-center justify-between border-b px-6 py-4">
+        <div class="flex items-center gap-3">
           <div
-            class="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-lg"
+            class="bg-primary text-on-primary flex size-8 items-center justify-center rounded-sm"
           >
             <aos-icons name="lucideSettings" class="size-4" />
           </div>
           <div>
-            <h2 id="manage-workspace-title" class="text-on-surface text-base font-bold">
+            <h2 id="manage-workspace-title" class="text-ink font-sans text-base font-semibold">
               Manage Workspace
             </h2>
-            <p class="text-on-surface-variant font-mono text-xs">
+            <p class="text-muted font-mono text-xs">
               {{ workspace()?.tenantId }}
             </p>
           </div>
@@ -39,17 +37,15 @@
       </div>
 
       <!-- Navigation Tabs -->
-      <div
-        class="border-outline-variant/40 bg-surface-container-lowest flex overflow-x-auto border-b px-6 pt-2"
-      >
+      <div class="border-hairline bg-canvas flex overflow-x-auto border-b px-6 pt-2">
         <button
           type="button"
           (click)="setTab('general')"
-          [class.border-primary]="activeTab() === 'general'"
-          [class.text-primary]="activeTab() === 'general'"
+          [class.border-ink]="activeTab() === 'general'"
+          [class.text-ink]="activeTab() === 'general'"
           [class.border-transparent]="activeTab() !== 'general'"
-          [class.text-on-surface-variant]="activeTab() !== 'general'"
-          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-bold whitespace-nowrap transition-colors"
+          [class.text-muted]="activeTab() !== 'general'"
+          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
         >
           <aos-icons name="lucidePencil" class="size-3.5" />
           <span>General</span>
@@ -58,17 +54,17 @@
         <button
           type="button"
           (click)="setTab('members')"
-          [class.border-primary]="activeTab() === 'members'"
-          [class.text-primary]="activeTab() === 'members'"
+          [class.border-ink]="activeTab() === 'members'"
+          [class.text-ink]="activeTab() === 'members'"
           [class.border-transparent]="activeTab() !== 'members'"
-          [class.text-on-surface-variant]="activeTab() !== 'members'"
-          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-bold whitespace-nowrap transition-colors"
+          [class.text-muted]="activeTab() !== 'members'"
+          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
         >
           <aos-icons name="lucideUsers" class="size-3.5" />
           <span>Members</span>
           @if (members().length > 0) {
             <span
-              class="bg-surface-container-high text-on-surface-variant py-0.2 ml-1 rounded-full px-1.5 text-[10px] font-bold"
+              class="bg-soft-stone text-ink py-0.2 ml-1 rounded-full px-1.5 font-mono text-[10px] font-bold"
             >
               {{ members().length }}
             </span>
@@ -78,11 +74,11 @@
         <button
           type="button"
           (click)="setTab('invite')"
-          [class.border-primary]="activeTab() === 'invite'"
-          [class.text-primary]="activeTab() === 'invite'"
+          [class.border-ink]="activeTab() === 'invite'"
+          [class.text-ink]="activeTab() === 'invite'"
           [class.border-transparent]="activeTab() !== 'invite'"
-          [class.text-on-surface-variant]="activeTab() !== 'invite'"
-          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-bold whitespace-nowrap transition-colors"
+          [class.text-muted]="activeTab() !== 'invite'"
+          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
         >
           <aos-icons name="lucideUserPlus" class="size-3.5" />
           <span>Invite Users</span>
@@ -95,8 +91,8 @@
             [class.border-error]="activeTab() === 'danger'"
             [class.text-error]="activeTab() === 'danger'"
             [class.border-transparent]="activeTab() !== 'danger'"
-            [class.text-on-surface-variant]="activeTab() !== 'danger'"
-            class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-bold whitespace-nowrap transition-colors"
+            [class.text-muted]="activeTab() !== 'danger'"
+            class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
           >
             <aos-icons name="lucideTrash2" class="size-3.5" />
             <span>Danger Zone</span>

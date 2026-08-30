@@ -14,6 +14,7 @@ export const routes: Routes = [
   {
     path: "how-it-works",
     loadComponent: () => import("./features/how-it-works/how-it-works").then(m => m.HowItWorks),
+    canActivate: [redirectIfAuthenticatedGuard],
   },
 
   {

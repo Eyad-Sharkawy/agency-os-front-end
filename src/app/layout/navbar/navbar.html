@@ -1,74 +1,110 @@
+<!-- Announcement Bar (shown only for unauthenticated landing visitors) -->
+@if (showAnnouncement() && !authStore.isAuthenticated()) {
+  <div
+    class="bg-cohere-black relative z-50 flex h-9 w-full items-center justify-between px-4 text-xs tracking-tight text-white"
+  >
+    <div class="flex flex-1 items-center justify-center gap-1.5 text-center">
+      <span class="text-white/80">Agency OS enterprise architecture is live:</span>
+      <a
+        routerLink="/how-it-works"
+        class="hover:text-brand-green text-white underline underline-offset-2 transition-colors"
+      >
+        Explore the 2026 platform &rarr;
+      </a>
+    </div>
+    <button
+      type="button"
+      (click)="dismissAnnouncement()"
+      class="cursor-pointer p-1 text-white/60 transition-colors hover:text-white"
+      aria-label="Dismiss announcement"
+    >
+      <aos-icons name="lucideX" class="size-3.5" />
+    </button>
+  </div>
+}
+
 <nav
-  class="bg-surface-container-lowest relative flex h-16 items-center gap-6 px-6 shadow-sm md:px-15 lg:px-25"
+  class="bg-canvas border-hairline relative flex h-16 items-center justify-between border-b px-6 transition-colors md:px-12 lg:px-20"
 >
+  <!-- Zone 1: Brand Anchor -->
   <a
     [routerLink]="authStore.isAuthenticated() ? '/workspaces' : '/'"
-    class="flex items-center gap-1"
+    class="group flex items-center gap-2 select-none"
   >
     <aos-logo class="size-6 shrink-0" />
-    <span class="text-primary font-bold">Agency OS</span>
+    <span
+      class="font-display text-ink group-hover:text-primary text-base font-semibold tracking-tight"
+    >
+      Agency OS
+    </span>
   </a>
 
+  <!-- Zone 2: Centered Editorial Menu -->
   @if (!authStore.isAuthenticated()) {
-    <div class="text-on-surface-variant hidden items-center gap-6 text-sm font-medium md:flex">
+    <div class="text-slate hidden items-center gap-8 text-sm font-normal md:flex">
       <a
         routerLink="/"
         [routerLinkActiveOptions]="{ exact: true }"
-        routerLinkActive="text-primary after:w-full"
-        class="hover:text-primary after:bg-primary relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-200 hover:after:w-full"
+        routerLinkActive="text-ink font-medium after:w-full"
+        class="hover:text-ink after:bg-ink relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:transition-all after:duration-200 hover:after:w-full"
       >
         Features
       </a>
 
       <a
         routerLink="/how-it-works"
-        routerLinkActive="text-primary after:w-full"
-        class="hover:text-primary after:bg-primary relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-200 hover:after:w-full"
+        routerLinkActive="text-ink font-medium after:w-full"
+        class="hover:text-ink after:bg-ink relative py-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:transition-all after:duration-200 hover:after:w-full"
       >
         How It Works
       </a>
     </div>
   }
 
-  <div class="ml-auto hidden items-center gap-1.5 lg:flex">
+  <!-- Zone 3: Actions & Auth (Pill CTA) -->
+  <div class="hidden items-center gap-2.5 lg:flex">
     <!-- Theme Toggle -->
-    <aos-theme-toggle buttonClass="size-9 rounded-md" />
+    <aos-theme-toggle
+      buttonClass="size-10 rounded-full hover:bg-soft-stone flex items-center justify-center !p-0"
+    />
 
     <aos-button variant="outlined" href="https://github.com/Eyad-Sharkawy/agency-os-back-end">
-      <aos-icons name="simpleGithub" class="size-6" />
-      <span class="ml-2">View on Github</span>
+      <aos-icons name="simpleGithub" class="size-4" />
+      <span class="ml-1.5 text-xs">GitHub</span>
     </aos-button>
 
     @if (authStore.isAuthenticated()) {
       <aos-profile-menu />
     } @else {
-      <aos-button variant="outlined" (click)="onSignIn()" (keydown.enter)="onSignIn()"
-        >Login</aos-button
-      >
-      <aos-button variant="primary" (click)="onSignUp()" (keydown.enter)="onSignUp()"
-        >Sign up</aos-button
-      >
+      <aos-button variant="secondary" (click)="onSignIn()" (keydown.enter)="onSignIn()">
+        Login
+      </aos-button>
+      <aos-button variant="primary" (click)="onSignUp()" (keydown.enter)="onSignUp()">
+        Sign up
+      </aos-button>
     }
   </div>
 
-  <!-- Mobile Right Controls (Theme Toggle + Hamburger) -->
-  <div class="ml-auto flex items-center gap-1 lg:hidden">
-    <aos-theme-toggle buttonClass="size-8 rounded-md" />
+  <!-- Mobile Controls -->
+  <div class="flex items-center gap-2 lg:hidden">
+    <aos-theme-toggle
+      buttonClass="size-10 rounded-full hover:bg-soft-stone flex items-center justify-center !p-0"
+    />
 
     <aos-button
       variant="ghost"
-      class="size-8"
+      class="hover:bg-soft-stone flex size-10 items-center justify-center rounded-full !p-0"
       [ariaLabel]="isMenuOpen() ? 'Close navigation menu' : 'Open navigation menu'"
       [ariaExpanded]="isMenuOpen() ? 'true' : 'false'"
       ariaControls="mobile-nav-menu"
       (click)="$event.stopPropagation(); toggleMenu()"
       (keydown.enter)="$event.stopPropagation(); toggleMenu()"
     >
-      <div class="relative flex size-5 items-center justify-center">
+      <div class="relative flex size-6 items-center justify-center">
         <aos-icons
           name="lucideMenu"
-          strokeWidth="1.5"
-          class="absolute inset-0 transition-all duration-300 ease-in-out"
+          strokeWidth="2"
+          class="absolute inset-0 size-6 transition-all duration-300 ease-in-out"
           [class.opacity-0]="isMenuOpen()"
           [class.rotate-90]="isMenuOpen()"
           [class.scale-75]="isMenuOpen()"
@@ -78,8 +114,8 @@
         />
         <aos-icons
           name="lucideX"
-          strokeWidth="1.5"
-          class="absolute inset-0 transition-all duration-300 ease-in-out"
+          strokeWidth="2"
+          class="absolute inset-0 size-6 transition-all duration-300 ease-in-out"
           [class.opacity-0]="!isMenuOpen()"
           [class.-rotate-90]="!isMenuOpen()"
           [class.scale-75]="!isMenuOpen()"

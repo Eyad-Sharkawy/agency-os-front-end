@@ -35,7 +35,7 @@ describe("WorkspaceInvitations Component", () => {
 
   it("should create and render invitations", () => {
     expect(component).toBeTruthy();
-    expect(component.getRoleBadgeClass("ADMIN")).toContain("text-blue");
+    expect(component.getRoleBadgeClass("ADMIN")).toContain("action-blue");
   });
 
   it("should emit accept event when Accept button is clicked", () => {
