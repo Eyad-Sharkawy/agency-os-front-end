@@ -119,10 +119,12 @@
               variant="ghost"
               size="xs"
               shape="square"
+              justify="start"
+              fullWidth="true"
               routerLink="/workspaces/create"
               (click)="isWorkspaceMenuOpen.set(false); closeMobile.emit()"
               (keydown.enter)="isWorkspaceMenuOpen.set(false); closeMobile.emit()"
-              class="w-full !justify-start font-mono text-[11px]"
+              class="w-full font-mono text-[11px]"
             >
               <aos-icons name="lucidePlus" class="mr-1.5 size-3.5" />
               <span>Create workspace</span>
@@ -131,10 +133,12 @@
               variant="ghost"
               size="xs"
               shape="square"
+              justify="start"
+              fullWidth="true"
               routerLink="/workspaces"
               (click)="isWorkspaceMenuOpen.set(false); closeMobile.emit()"
               (keydown.enter)="isWorkspaceMenuOpen.set(false); closeMobile.emit()"
-              class="w-full !justify-start font-mono text-[11px]"
+              class="w-full font-mono text-[11px]"
             >
               <aos-icons name="lucideBuilding2" class="mr-1.5 size-3.5" />
               <span>All workspaces</span>
@@ -173,10 +177,12 @@
         variant="ghost"
         size="xs"
         shape="square"
+        justify="start"
+        fullWidth="true"
         type="button"
         (click)="openWorkspaceSettings(ws)"
         (keydown.enter)="openWorkspaceSettings(ws)"
-        class="text-body-muted hover:text-ink w-full !justify-start font-mono text-xs"
+        class="text-body-muted hover:text-ink w-full font-mono text-xs"
       >
         <aos-icons name="lucideSettings" class="mr-2 size-3.5" />
         <span>Workspace Settings</span>
@@ -188,10 +194,12 @@
       variant="ghost"
       size="xs"
       shape="square"
+      justify="start"
+      fullWidth="true"
       routerLink="/workspaces"
       (click)="closeMobile.emit()"
       (keydown.enter)="closeMobile.emit()"
-      class="text-body-muted hover:text-ink w-full !justify-start font-mono text-xs"
+      class="text-body-muted hover:text-ink w-full font-mono text-xs"
     >
       <aos-icons name="lucideBuilding2" class="mr-2 size-3.5" />
       <span>Switch Workspace</span>
