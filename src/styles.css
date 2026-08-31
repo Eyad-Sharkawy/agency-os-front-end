@@ -326,22 +326,22 @@ body {
 @keyframes menu-enter {
   from {
     opacity: 0;
-    transform: scale(0.96) translateY(-4px);
+    transform: translateY(-12px);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: translateY(0);
   }
 }
 
 @keyframes menu-leave {
   from {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: translateY(0);
   }
   to {
     opacity: 0;
-    transform: scale(0.96) translateY(-4px);
+    transform: translateY(-12px);
   }
 }
 
@@ -362,9 +362,11 @@ body {
 }
 
 .menu-enter {
-  animation: menu-enter 0.15s ease-out forwards;
+  transform-origin: top;
+  animation: menu-enter 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .menu-leave {
-  animation: menu-leave 0.1s ease-in forwards;
+  transform-origin: top;
+  animation: menu-leave 0.18s ease-in forwards;
 }
