@@ -4,49 +4,43 @@
     role="menu"
     animate.enter="menu-enter"
     animate.leave="menu-leave"
-    class="bg-surface-container-lowest border-outline/15 absolute inset-x-0 top-full z-50 flex w-full flex-col gap-2 border-b px-6 py-4 shadow-md lg:hidden"
+    class="bg-canvas border-hairline absolute inset-x-0 top-full z-50 flex w-full flex-col gap-2.5 border-b px-6 py-4 shadow-xl lg:hidden"
   >
     @if (!authStore.isAuthenticated()) {
       <a
         routerLink="/"
         [routerLinkActiveOptions]="{ exact: true }"
-        routerLinkActive="text-primary bg-surface-container-high/60 [&>span]:after:w-full"
+        routerLinkActive="text-ink bg-soft-stone font-medium"
         (click)="close()"
         role="menuitem"
-        class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors md:hidden"
+        class="text-ink/80 hover:text-ink hover:bg-soft-stone/60 flex items-center rounded-sm px-3 py-2 text-sm font-medium transition-colors md:hidden"
       >
-        <span
-          class="after:bg-primary relative py-0.5 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-200 hover:after:w-full"
-        >
-          Features
-        </span>
+        <span>Features</span>
       </a>
 
       <a
         routerLink="/how-it-works"
-        routerLinkActive="text-primary bg-surface-container-high/60 [&>span]:after:w-full"
+        routerLinkActive="text-ink bg-soft-stone font-medium"
         (click)="close()"
         role="menuitem"
-        class="text-on-surface-variant hover:text-primary hover:bg-surface-container-high flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors md:hidden"
+        class="text-ink/80 hover:text-ink hover:bg-soft-stone/60 flex items-center rounded-sm px-3 py-2 text-sm font-medium transition-colors md:hidden"
       >
-        <span
-          class="after:bg-primary relative py-0.5 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:transition-all after:duration-200 hover:after:w-full"
-        >
-          How It Works
-        </span>
+        <span>How It Works</span>
       </a>
 
-      <hr class="border-outline/10 my-1 md:hidden" />
+      <hr class="border-hairline my-1 md:hidden" />
     }
 
     <aos-button
       variant="ghost"
       size="sm"
       shape="rounded"
+      justify="between"
+      fullWidth="true"
       type="button"
       (click)="themeService.toggleTheme()"
       (keydown.enter)="themeService.toggleTheme()"
-      class="text-on-surface-variant hover:text-primary w-full !justify-between !px-3 !py-2 text-sm font-medium"
+      class="text-ink/80 hover:text-ink w-full !px-3 !py-2 text-sm font-medium"
       ariaLabel="Toggle theme"
     >
       <span class="flex items-center gap-2.5">
@@ -65,7 +59,7 @@
           <aos-icons
             name="lucideMoon"
             strokeWidth="1.75"
-            class="text-on-surface-variant absolute inset-0 transition-all duration-300 ease-in-out"
+            class="text-ink absolute inset-0 transition-all duration-300 ease-in-out"
             [class.opacity-0]="themeService.theme() === 'dark'"
             [class.-rotate-90]="themeService.theme() === 'dark'"
             [class.scale-75]="themeService.theme() === 'dark'"
@@ -76,12 +70,18 @@
         </div>
         <span>{{ themeService.theme() === "dark" ? "Light Mode" : "Dark Mode" }}</span>
       </span>
-      <span class="text-on-surface-variant/70 text-xs capitalize">{{ themeService.theme() }}</span>
+      <span class="text-muted text-xs capitalize">{{ themeService.theme() }}</span>
     </aos-button>
 
-    <aos-button variant="outlined" href="https://github.com/Eyad-Sharkawy/agency-os-back-end">
-      <aos-icons name="simpleGithub" class="size-6" />
-      <span class="ml-2">View on Github</span>
+    <aos-button
+      variant="outlined"
+      shape="rounded"
+      fullWidth="true"
+      href="https://github.com/Eyad-Sharkawy/agency-os-back-end"
+      class="w-full"
+    >
+      <aos-icons name="simpleGithub" class="size-4" />
+      <span class="ml-2 text-xs">View on Github</span>
     </aos-button>
 
     @if (authStore.isAuthenticated()) {
@@ -114,10 +114,12 @@
             variant="ghost"
             size="xs"
             shape="square"
+            justify="between"
+            fullWidth="true"
             type="button"
             (click)="onManageAccount()"
             (keydown.enter)="onManageAccount()"
-            class="w-full !justify-between font-mono text-xs"
+            class="w-full font-mono text-xs"
           >
             <span class="flex items-center gap-2">
               <aos-icons name="lucideSettings" class="text-muted size-3.5" />
@@ -130,10 +132,12 @@
             variant="ghost"
             size="xs"
             shape="square"
+            justify="start"
+            fullWidth="true"
             routerLink="/workspaces"
             (click)="close()"
             (keydown.enter)="close()"
-            class="w-full !justify-start font-mono text-xs"
+            class="w-full font-mono text-xs"
           >
             <aos-icons name="lucideBuilding2" class="text-muted mr-2 size-3.5" />
             <span>Workspaces</span>
@@ -141,16 +145,39 @@
         </div>
       </div>
 
-      <aos-button variant="outlined" (click)="onSignOut()" (keydown.enter)="onSignOut()">
+      <aos-button
+        variant="outlined"
+        shape="rounded"
+        fullWidth="true"
+        (click)="onSignOut()"
+        (keydown.enter)="onSignOut()"
+        class="w-full"
+      >
         Sign out
       </aos-button>
     } @else {
-      <aos-button variant="outlined" (click)="onSignIn()" (keydown.enter)="onSignIn()">
-        Login
-      </aos-button>
-      <aos-button variant="primary" (click)="onSignUp()" (keydown.enter)="onSignUp()">
-        Sign up
-      </aos-button>
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <aos-button
+          variant="outlined"
+          shape="rounded"
+          fullWidth="true"
+          (click)="onSignIn()"
+          (keydown.enter)="onSignIn()"
+          class="w-full"
+        >
+          Login
+        </aos-button>
+        <aos-button
+          variant="primary"
+          shape="rounded"
+          fullWidth="true"
+          (click)="onSignUp()"
+          (keydown.enter)="onSignUp()"
+          class="w-full"
+        >
+          Sign up
+        </aos-button>
+      </div>
     }
   </div>
 }
