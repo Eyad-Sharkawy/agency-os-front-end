@@ -66,6 +66,7 @@
         size="sm"
         type="button"
         (click)="onInvite()"
+        (keydown.enter)="onInvite()"
         class="border-brand-green/30 text-brand-green hover:bg-brand-green/10"
         ariaLabel="Invite Client User to Agency OS"
       >
@@ -80,6 +81,7 @@
         size="sm"
         type="button"
         (click)="onEdit()"
+        (keydown.enter)="onEdit()"
         ariaLabel="Edit Client"
       >
         <aos-icons name="lucidePencil" class="mr-1 size-3.5" />
@@ -93,6 +95,7 @@
         size="sm"
         type="button"
         (click)="onDelete()"
+        (keydown.enter)="onDelete()"
         ariaLabel="Delete Client"
       >
         <aos-icons name="lucideTrash2" class="mr-1 size-3.5" />

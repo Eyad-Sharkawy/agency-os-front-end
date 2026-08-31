@@ -36,6 +36,7 @@
           size="sm"
           type="button"
           (click)="onClose()"
+          (keydown.enter)="onClose()"
           class="size-8 rounded-full !p-0"
           ariaLabel="Close dialog"
         >
@@ -134,6 +135,7 @@
             type="button"
             class="w-full sm:w-auto"
             (click)="onClose()"
+            (keydown.enter)="onClose()"
             [disabled]="isInviting()"
           >
             <span class="font-mono text-xs">{{ successMessage() ? "Close" : "Cancel" }}</span>

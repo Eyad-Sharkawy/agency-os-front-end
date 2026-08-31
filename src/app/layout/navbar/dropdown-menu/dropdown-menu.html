@@ -45,6 +45,7 @@
       shape="rounded"
       type="button"
       (click)="themeService.toggleTheme()"
+      (keydown.enter)="themeService.toggleTheme()"
       class="text-on-surface-variant hover:text-primary w-full !justify-between !px-3 !py-2 text-sm font-medium"
       ariaLabel="Toggle theme"
     >
@@ -115,6 +116,7 @@
             shape="square"
             type="button"
             (click)="onManageAccount()"
+            (keydown.enter)="onManageAccount()"
             class="w-full !justify-between font-mono text-xs"
           >
             <span class="flex items-center gap-2">
@@ -130,6 +132,7 @@
             shape="square"
             routerLink="/workspaces"
             (click)="close()"
+            (keydown.enter)="close()"
             class="w-full !justify-start font-mono text-xs"
           >
             <aos-icons name="lucideBuilding2" class="text-muted mr-2 size-3.5" />

@@ -39,8 +39,8 @@ export class ProfileMenu {
 
   readonly isOpen = signal(false);
 
-  toggleMenu(event: MouseEvent): void {
-    event.stopPropagation();
+  toggleMenu(event?: Event): void {
+    event?.stopPropagation();
     this.isOpen.update(open => !open);
   }
 

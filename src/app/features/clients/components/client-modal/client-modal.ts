@@ -95,7 +95,10 @@ export class ClientModal {
   readonly isNameValid = computed(() => this.name().trim().length >= 2);
   readonly isEmailValid = computed(() => {
     const val = this.email().trim();
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    if (!val) return false;
+    const atIdx = val.indexOf("@");
+    const dotIdx = val.lastIndexOf(".");
+    return atIdx > 0 && dotIdx > atIdx + 1 && dotIdx < val.length - 1 && !/\s/.test(val);
   });
   readonly isFormValid = computed(() => this.isNameValid() && this.isEmailValid());
 

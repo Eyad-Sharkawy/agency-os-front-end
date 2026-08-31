@@ -7,6 +7,7 @@
   [ariaExpanded]="isOpen() ? 'true' : 'false'"
   [ariaLabel]="authStore.initials() + ' - User profile menu'"
   (click)="toggleMenu($event)"
+  (keydown.enter)="toggleMenu($event)"
 >
   {{ authStore.initials() }}
 </aos-button>
@@ -51,6 +52,7 @@
         shape="square"
         type="button"
         (click)="onManageAccount()"
+        (keydown.enter)="onManageAccount()"
         class="w-full !justify-between font-mono text-xs"
         ariaLabel="Account Settings"
       >
@@ -68,6 +70,7 @@
         shape="square"
         routerLink="/workspaces"
         (click)="close()"
+        (keydown.enter)="close()"
         class="w-full !justify-start font-mono text-xs"
         ariaLabel="Workspaces"
       >
@@ -82,6 +85,7 @@
         shape="square"
         type="button"
         (click)="onSignOut()"
+        (keydown.enter)="onSignOut()"
         class="text-error hover:bg-error/10 w-full !justify-start font-mono text-xs"
         ariaLabel="Sign out"
       >

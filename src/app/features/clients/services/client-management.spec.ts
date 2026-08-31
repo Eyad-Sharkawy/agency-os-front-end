@@ -96,7 +96,7 @@ describe("ClientManagement", () => {
   it("should load clients successfully", () => {
     service.loadClients();
     expect(clientApiMock.getClients).toHaveBeenCalled();
-    expect(service.clients().length).toBe(2);
+    expect(service.clients()).toHaveLength(2);
     expect(service.isLoading()).toBe(false);
     expect(service.errorMessage()).toBeNull();
   });
@@ -111,14 +111,14 @@ describe("ClientManagement", () => {
   it("should filter clients by search query", () => {
     service.clients.set(mockClients);
     service.setSearchQuery("acme");
-    expect(service.filteredClients().length).toBe(1);
+    expect(service.filteredClients()).toHaveLength(1);
     expect(service.filteredClients()[0].name).toBe("Acme Corp");
   });
 
   it("should filter clients by status", () => {
     service.clients.set(mockClients);
     service.setStatusFilter("INACTIVE");
-    expect(service.filteredClients().length).toBe(1);
+    expect(service.filteredClients()).toHaveLength(1);
     expect(service.filteredClients()[0].name).toBe("Beta Inc");
   });
 
@@ -147,7 +147,7 @@ describe("ClientManagement", () => {
       .createClient({ name: "Gamma LLC", email: "info@gamma.com", status: "ACTIVE" })
       .subscribe();
 
-    expect(service.clients().length).toBe(3);
+    expect(service.clients()).toHaveLength(3);
     expect(service.clients()[0].id).toBe("c-3");
   });
 
@@ -172,7 +172,7 @@ describe("ClientManagement", () => {
     service.clients.set(mockClients);
     service.deleteClient("c-1").subscribe();
 
-    expect(service.clients().length).toBe(1);
+    expect(service.clients()).toHaveLength(1);
     expect(service.clients().find(c => c.id === "c-1")).toBeUndefined();
   });
 

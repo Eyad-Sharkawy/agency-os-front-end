@@ -221,6 +221,7 @@
                   ariaLabel="Transfer Ownership"
                   [disabled]="memberActionLoading() !== null"
                   (click)="transferTarget.set(member)"
+                  (keydown.enter)="transferTarget.set(member)"
                   class="border-hairline size-7 rounded-full border !p-0"
                 >
                   <aos-icons name="lucideCrown" class="size-3.5" />
@@ -236,6 +237,7 @@
                   ariaLabel="Remove Member"
                   [disabled]="memberActionLoading() !== null"
                   (click)="removeTarget.set(member)"
+                  (keydown.enter)="removeTarget.set(member)"
                   class="border-hairline text-muted hover:text-error hover:border-error size-7 rounded-full border !p-0"
                 >
                   <aos-icons name="lucideTrash2" class="size-3.5" />

@@ -52,6 +52,7 @@
           shape="circle"
           type="button"
           (click)="showCurrentPassword.update(v => !v)"
+          (keydown.enter)="showCurrentPassword.update(v => !v)"
           class="absolute top-1/2 right-2 -translate-y-1/2"
           [ariaLabel]="showCurrentPassword() ? 'Hide password' : 'Show password'"
         >
@@ -83,6 +84,7 @@
           shape="circle"
           type="button"
           (click)="showNewPassword.update(v => !v)"
+          (keydown.enter)="showNewPassword.update(v => !v)"
           class="absolute top-1/2 right-2 -translate-y-1/2"
           [ariaLabel]="showNewPassword() ? 'Hide password' : 'Show password'"
         >
@@ -111,6 +113,7 @@
           shape="circle"
           type="button"
           (click)="showConfirmPassword.update(v => !v)"
+          (keydown.enter)="showConfirmPassword.update(v => !v)"
           class="absolute top-1/2 right-2 -translate-y-1/2"
           [ariaLabel]="showConfirmPassword() ? 'Hide password' : 'Show password'"
         >

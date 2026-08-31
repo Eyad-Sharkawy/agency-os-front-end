@@ -63,7 +63,9 @@ export class ClientInviteModal {
     const val = this.targetInput().trim();
     if (!val) return false;
     if (val.includes("@")) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+      const atIdx = val.indexOf("@");
+      const dotIdx = val.lastIndexOf(".");
+      return atIdx > 0 && dotIdx > atIdx + 1 && dotIdx < val.length - 1 && !/\s/.test(val);
     }
     return val.length >= 3;
   });

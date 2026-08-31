@@ -24,6 +24,7 @@
         shape="circle"
         type="button"
         (click)="closeMobile.emit()"
+        (keydown.enter)="closeMobile.emit()"
         class="text-muted hover:text-ink lg:hidden"
         ariaLabel="Close sidebar"
       >
@@ -102,6 +103,7 @@
                     shape="circle"
                     type="button"
                     (click)="$event.stopPropagation(); openWorkspaceSettings(ws)"
+                    (keydown.enter)="$event.stopPropagation(); openWorkspaceSettings(ws)"
                     class="p-0.5 opacity-60 transition-opacity group-hover/ws:opacity-100"
                     ariaLabel="Manage {{ ws.name }}"
                   >
@@ -119,6 +121,7 @@
               shape="square"
               routerLink="/workspaces/create"
               (click)="isWorkspaceMenuOpen.set(false); closeMobile.emit()"
+              (keydown.enter)="isWorkspaceMenuOpen.set(false); closeMobile.emit()"
               class="w-full !justify-start font-mono text-[11px]"
             >
               <aos-icons name="lucidePlus" class="mr-1.5 size-3.5" />
@@ -130,6 +133,7 @@
               shape="square"
               routerLink="/workspaces"
               (click)="isWorkspaceMenuOpen.set(false); closeMobile.emit()"
+              (keydown.enter)="isWorkspaceMenuOpen.set(false); closeMobile.emit()"
               class="w-full !justify-start font-mono text-[11px]"
             >
               <aos-icons name="lucideBuilding2" class="mr-1.5 size-3.5" />
@@ -171,6 +175,7 @@
         shape="square"
         type="button"
         (click)="openWorkspaceSettings(ws)"
+        (keydown.enter)="openWorkspaceSettings(ws)"
         class="text-body-muted hover:text-ink w-full !justify-start font-mono text-xs"
       >
         <aos-icons name="lucideSettings" class="mr-2 size-3.5" />
@@ -185,6 +190,7 @@
       shape="square"
       routerLink="/workspaces"
       (click)="closeMobile.emit()"
+      (keydown.enter)="closeMobile.emit()"
       class="text-body-muted hover:text-ink w-full !justify-start font-mono text-xs"
     >
       <aos-icons name="lucideBuilding2" class="mr-2 size-3.5" />
@@ -266,6 +272,7 @@
           shape="circle"
           type="button"
           (click)="onManageAccount()"
+          (keydown.enter)="onManageAccount()"
           ariaLabel="Account Settings"
         >
           <aos-icons name="lucideSettings" class="size-3.5" />
@@ -277,6 +284,7 @@
           shape="circle"
           type="button"
           (click)="onSignOut()"
+          (keydown.enter)="onSignOut()"
           ariaLabel="Sign out"
           class="text-muted hover:text-error"
         >

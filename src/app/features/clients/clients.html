@@ -16,7 +16,13 @@
 
     @if (cm.canCreate()) {
       <div>
-        <aos-button variant="primary" size="sm" type="button" (click)="cm.openCreateModal()">
+        <aos-button
+          variant="primary"
+          size="sm"
+          type="button"
+          (click)="cm.openCreateModal()"
+          (keydown.enter)="cm.openCreateModal()"
+        >
           <aos-icons name="lucidePlus" class="mr-1.5 size-4" />
           <span class="font-mono text-xs">Add Client</span>
         </aos-button>
@@ -63,10 +69,12 @@
   >
     <!-- Left: Search Box -->
     <div class="relative w-full md:max-w-xs">
+      <label for="client-search-input" class="sr-only">Search clients</label>
       <div class="text-muted pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
         <aos-icons name="lucideSearch" class="size-4" />
       </div>
       <input
+        id="client-search-input"
         type="text"
         [ngModel]="cm.searchQuery()"
         (ngModelChange)="onSearch($event)"
@@ -80,6 +88,7 @@
           shape="circle"
           type="button"
           (click)="onSearch('')"
+          (keydown.enter)="onSearch('')"
           class="absolute inset-y-0 right-1 my-auto !h-6 !w-6 !p-0"
           ariaLabel="Clear search"
         >
@@ -164,6 +173,7 @@
         size="sm"
         type="button"
         (click)="cm.loadClients()"
+        (keydown.enter)="cm.loadClients()"
         [disabled]="cm.isLoading()"
         class="border-hairline bg-canvas size-8 border !p-0"
         ariaLabel="Refresh client list"
@@ -208,7 +218,13 @@
         {{ cm.errorMessage() }}
       </p>
       <div class="mt-5">
-        <aos-button variant="outlined" size="sm" type="button" (click)="cm.loadClients()">
+        <aos-button
+          variant="outlined"
+          size="sm"
+          type="button"
+          (click)="cm.loadClients()"
+          (keydown.enter)="cm.loadClients()"
+        >
           <aos-icons name="lucideRefreshCw" class="mr-1.5 size-3.5" />
           <span class="font-mono text-xs">Retry</span>
         </aos-button>
@@ -234,6 +250,7 @@
           size="xs"
           type="button"
           (click)="onSearch(''); onStatusFilter('ALL')"
+          (keydown.enter)="onSearch(''); onStatusFilter('ALL')"
           ariaLabel="Reset filters"
         >
           <span class="text-brand-green font-mono text-xs">Reset filters</span>
@@ -257,7 +274,13 @@
       </p>
       @if (cm.canCreate()) {
         <div class="mt-6">
-          <aos-button variant="primary" size="sm" type="button" (click)="cm.openCreateModal()">
+          <aos-button
+            variant="primary"
+            size="sm"
+            type="button"
+            (click)="cm.openCreateModal()"
+            (keydown.enter)="cm.openCreateModal()"
+          >
             <aos-icons name="lucidePlus" class="mr-1.5 size-4" />
             <span class="font-mono text-xs">Add First Client</span>
           </aos-button>
@@ -342,6 +365,7 @@
                         size="sm"
                         type="button"
                         (click)="cm.openInviteModal(client)"
+                        (keydown.enter)="cm.openInviteModal(client)"
                         class="border-hairline bg-canvas text-brand-green hover:bg-brand-green/10 size-7 border !p-0"
                         ariaLabel="Invite Client User"
                       >
@@ -365,6 +389,7 @@
                         size="sm"
                         type="button"
                         (click)="cm.openEditModal(client)"
+                        (keydown.enter)="cm.openEditModal(client)"
                         class="border-hairline bg-canvas text-ink hover:bg-soft-stone size-7 border !p-0"
                         ariaLabel="Edit Client"
                       >
@@ -378,6 +403,7 @@
                         size="sm"
                         type="button"
                         (click)="cm.openDeleteModal(client)"
+                        (keydown.enter)="cm.openDeleteModal(client)"
                         class="border-hairline text-error hover:bg-error/10 size-7 border !p-0"
                         ariaLabel="Delete Client"
                       >
