@@ -17,12 +17,14 @@ export class InvitationApi {
    * Signal-based reactive HTTP resource for pending invitations.
    */
   getPendingInvitationsResource(
+    urlOrOptions?:
+      (() => string | undefined) | HttpResourceOptions<WorkspaceInvitationResponse[], unknown>,
     options?: HttpResourceOptions<WorkspaceInvitationResponse[], unknown>,
   ): ResourceRef<WorkspaceInvitationResponse[] | undefined> {
-    return httpResource<WorkspaceInvitationResponse[]>(
-      () => `${this.baseUrl}/invitations`,
-      options,
-    );
+    const urlFn =
+      typeof urlOrOptions === "function" ? urlOrOptions : () => `${this.baseUrl}/invitations`;
+    const opts = typeof urlOrOptions === "function" ? options : urlOrOptions;
+    return httpResource<WorkspaceInvitationResponse[]>(urlFn, opts);
   }
 
   getPendingInvitations(): Observable<WorkspaceInvitationResponse[]> {

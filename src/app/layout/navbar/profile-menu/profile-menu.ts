@@ -10,11 +10,12 @@ import {
 } from "@ng-icons/lucide";
 import { AuthStore } from "../../../core/auth/stores/auth.store";
 import { ProfileModalService } from "../../../features/profile/services/profile-modal.service";
+import { Button } from "../../../shared/components/button/button";
 import { Icons } from "../../../shared/components/icons/icons";
 
 @Component({
   selector: "aos-profile-menu",
-  imports: [Icons, RouterLink],
+  imports: [Icons, RouterLink, Button],
   providers: [
     provideIcons({
       lucideLogOut,
@@ -38,8 +39,8 @@ export class ProfileMenu {
 
   readonly isOpen = signal(false);
 
-  toggleMenu(event: MouseEvent): void {
-    event.stopPropagation();
+  toggleMenu(event?: Event): void {
+    event?.stopPropagation();
     this.isOpen.update(open => !open);
   }
 

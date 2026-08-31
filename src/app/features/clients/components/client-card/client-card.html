@@ -1,0 +1,106 @@
+<div
+  class="border-hairline bg-canvas hover:border-ink/40 group relative flex flex-col justify-between rounded-md border p-5 transition-all duration-150 hover:shadow-sm"
+>
+  <!-- Card Header -->
+  <div>
+    <div class="flex items-start justify-between gap-3">
+      <!-- Avatar & Name -->
+      <div class="flex min-w-0 items-center gap-3">
+        <div
+          class="bg-soft-stone text-ink font-display flex size-11 shrink-0 items-center justify-center rounded-md text-sm font-bold tracking-wider"
+        >
+          {{ cm.getInitials(client().name) }}
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-ink font-display truncate text-base font-semibold tracking-tight">
+            {{ client().name }}
+          </h3>
+          <div class="text-body-muted flex items-center gap-1.5 truncate text-xs">
+            <aos-icons name="lucideMail" class="size-3.5 shrink-0" />
+            <span class="truncate font-mono">{{ client().email }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Badge -->
+      <div>
+        @if (client().status === "ACTIVE") {
+          <span
+            class="bg-brand-green/10 text-brand-green dark:bg-brand-green/20 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-[11px] font-medium"
+          >
+            <span class="bg-brand-green size-1.5 rounded-full"></span>
+            <span>ACTIVE</span>
+          </span>
+        } @else {
+          <span
+            class="bg-soft-stone text-muted inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-[11px] font-medium"
+          >
+            <span class="bg-muted size-1.5 rounded-full"></span>
+            <span>INACTIVE</span>
+          </span>
+        }
+      </div>
+    </div>
+
+    <!-- Metadata Section -->
+    <div
+      class="border-hairline text-body-muted mt-5 flex items-center justify-between border-t pt-3 font-mono text-[11px]"
+    >
+      <div class="flex items-center gap-1.5">
+        <aos-icons name="lucideCalendar" class="size-3.5" />
+        <span>Added {{ client().createdAt | date: "mediumDate" }}</span>
+      </div>
+
+      <aos-button variant="secondary" size="xs" routerLink="../projects" ariaLabel="View Projects">
+        <span class="text-brand-green font-mono text-[11px]">Projects</span>
+        <aos-icons name="lucideArrowUpRight" class="text-brand-green ml-0.5 size-3" />
+      </aos-button>
+    </div>
+  </div>
+
+  <!-- Card Action Footer -->
+  <div class="border-hairline mt-4 flex items-center justify-end gap-2 border-t pt-3">
+    @if (cm.canInviteClient()) {
+      <aos-button
+        variant="outlined"
+        size="sm"
+        type="button"
+        (click)="onInvite()"
+        (keydown.enter)="onInvite()"
+        class="border-brand-green/30 text-brand-green hover:bg-brand-green/10"
+        ariaLabel="Invite Client User to Agency OS"
+      >
+        <aos-icons name="lucideUserPlus" class="mr-1 size-3.5" />
+        <span>Invite User</span>
+      </aos-button>
+    }
+
+    @if (cm.canEdit()) {
+      <aos-button
+        variant="outlined"
+        size="sm"
+        type="button"
+        (click)="onEdit()"
+        (keydown.enter)="onEdit()"
+        ariaLabel="Edit Client"
+      >
+        <aos-icons name="lucidePencil" class="mr-1 size-3.5" />
+        <span>Edit</span>
+      </aos-button>
+    }
+
+    @if (cm.canDelete()) {
+      <aos-button
+        variant="danger"
+        size="sm"
+        type="button"
+        (click)="onDelete()"
+        (keydown.enter)="onDelete()"
+        ariaLabel="Delete Client"
+      >
+        <aos-icons name="lucideTrash2" class="mr-1 size-3.5" />
+        <span>Delete</span>
+      </aos-button>
+    }
+  </div>
+</div>

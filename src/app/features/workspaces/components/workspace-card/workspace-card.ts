@@ -18,11 +18,12 @@ import { Button } from "../../../../shared/components/button/button";
     }),
   ],
   template: `
-    <button
-      type="button"
+    <div
+      role="button"
+      tabindex="0"
       (click)="selected.emit(workspace())"
       (keydown.enter)="selected.emit(workspace())"
-      (keydown.space)="selected.emit(workspace())"
+      (keydown.space)="$event.preventDefault(); selected.emit(workspace())"
       [class.border-ink]="isActive()"
       [class.ring-1]="isActive()"
       [class.ring-ink]="isActive()"
@@ -111,7 +112,7 @@ import { Button } from "../../../../shared/components/button/button";
           <span>{{ isActive() ? "Enter" : "Launch" }} &rarr;</span>
         </div>
       </div>
-    </button>
+    </div>
   `,
 })
 export class WorkspaceCard {

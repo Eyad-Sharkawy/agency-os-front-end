@@ -35,6 +35,7 @@ import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 import { ProfileModalService } from "../../features/profile/services/profile-modal.service";
 import { WorkspaceManagement } from "../../features/workspaces/services/workspace-management";
 import { Theme } from "../../core/services/theme";
+import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
 import { LogoComponent } from "../../shared/components/logo/logo";
 
@@ -48,7 +49,7 @@ export interface NavItem {
 @Component({
   selector: "aos-sidebar",
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, Icons, LogoComponent],
+  imports: [RouterLink, RouterLinkActive, Icons, LogoComponent, Button],
   providers: [
     provideIcons({
       lucideLayoutDashboard,

@@ -1,0 +1,161 @@
+@if (isOpen()) {
+  <!-- Modal Dialog -->
+  <dialog
+    open
+    aria-labelledby="client-modal-title"
+    class="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center border-0 bg-black/60 p-4 backdrop-blur-xs"
+  >
+    <div
+      class="bg-canvas border-hairline relative w-full max-w-lg overflow-hidden rounded-lg border p-6 shadow-2xl duration-150 sm:p-8"
+    >
+      <!-- Header -->
+      <div class="border-hairline flex items-center justify-between border-b pb-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-soft-stone text-ink flex size-10 items-center justify-center rounded-full">
+            <aos-icons name="lucideBuilding2" class="size-5" />
+          </div>
+          <div>
+            <h2
+              id="client-modal-title"
+              class="text-ink font-display text-lg font-bold tracking-tight sm:text-xl"
+            >
+              {{ isEditMode() ? "Edit Client" : "Add New Client" }}
+            </h2>
+            <p class="text-body-muted text-xs">
+              {{
+                isEditMode()
+                  ? "Update company registration and billing profile."
+                  : "Register a new client company in this workspace."
+              }}
+            </p>
+          </div>
+        </div>
+
+        <aos-button
+          variant="ghost"
+          size="sm"
+          type="button"
+          (click)="onClose()"
+          (keydown.enter)="onClose()"
+          class="size-8 rounded-full !p-0"
+          ariaLabel="Close dialog"
+        >
+          <aos-icons name="lucideX" class="size-5" />
+        </aos-button>
+      </div>
+
+      <!-- Error Alert -->
+      @if (errorMessage()) {
+        <div
+          class="border-error/20 bg-error/5 text-error mt-4 flex items-start gap-2.5 rounded-sm border p-3 text-xs"
+        >
+          <aos-icons name="lucideAlertCircle" class="mt-0.5 size-4 shrink-0" />
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- Form Body -->
+      <form (ngSubmit)="onSubmit()" class="mt-6 space-y-5">
+        <!-- Client Name -->
+        <div class="space-y-1.5">
+          <label
+            for="client-name"
+            class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+          >
+            Company Name <span class="text-error">*</span>
+          </label>
+          <div class="relative">
+            <input
+              id="client-name"
+              type="text"
+              name="clientName"
+              [ngModel]="name()"
+              (ngModelChange)="name.set($event)"
+              placeholder="e.g. Acme Corporation"
+              required
+              class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border px-3.5 py-2.5 text-sm transition-colors focus:outline-none"
+            />
+          </div>
+          @if (name().length > 0 && !isNameValid()) {
+            <p class="text-error font-mono text-[11px]">
+              Company name must be at least 2 characters.
+            </p>
+          }
+        </div>
+
+        <!-- Contact Email -->
+        <div class="space-y-1.5">
+          <label
+            for="client-email"
+            class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+          >
+            Billing / Primary Email <span class="text-error">*</span>
+          </label>
+          <div class="relative">
+            <input
+              id="client-email"
+              type="email"
+              name="clientEmail"
+              [ngModel]="email()"
+              (ngModelChange)="email.set($event)"
+              placeholder="e.g. billing@acmepartner.com"
+              required
+              class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border px-3.5 py-2.5 text-sm transition-colors focus:outline-none"
+            />
+          </div>
+          @if (email().length > 0 && !isEmailValid()) {
+            <p class="text-error font-mono text-[11px]">Please enter a valid email address.</p>
+          }
+        </div>
+
+        <!-- Status Selector -->
+        <div class="space-y-1.5">
+          <span class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase">
+            Operational Status
+          </span>
+          <aos-select
+            [options]="statusOptions"
+            [value]="status()"
+            (valueChange)="onStatusChange($any($event))"
+            placeholder="Select status..."
+          />
+        </div>
+
+        <!-- Actions Footer -->
+        <div
+          class="border-hairline mt-8 flex flex-col-reverse gap-2.5 border-t pt-5 sm:flex-row sm:items-center sm:justify-end sm:gap-3"
+        >
+          <aos-button
+            variant="outlined"
+            size="sm"
+            type="button"
+            class="w-full sm:w-auto"
+            (click)="onClose()"
+            (keydown.enter)="onClose()"
+            [disabled]="isSubmitting()"
+          >
+            <span class="font-mono text-xs">Cancel</span>
+          </aos-button>
+
+          <aos-button
+            variant="primary"
+            size="sm"
+            type="submit"
+            class="w-full sm:w-auto"
+            [disabled]="!isFormValid() || isSubmitting()"
+          >
+            @if (isSubmitting()) {
+              <aos-icons name="lucideLoader2" class="mr-1.5 size-4 animate-spin" />
+              <span class="font-mono text-xs">Saving...</span>
+            } @else {
+              <aos-icons name="lucideCheck" class="mr-1.5 size-4" />
+              <span class="font-mono text-xs">{{
+                isEditMode() ? "Save Changes" : "Create Client"
+              }}</span>
+            }
+          </aos-button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+}

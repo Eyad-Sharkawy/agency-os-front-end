@@ -110,4 +110,15 @@ describe("Button Component", () => {
     const buttonEl = hostFixture.nativeElement.querySelector("button");
     expect(buttonEl.textContent.trim()).toBe("Click Me");
   });
+
+  it("should apply size and shape classes correctly", () => {
+    const { fixture: fix } = createButtonComponent("primary");
+    fix.componentRef.setInput("size", "xs");
+    fix.componentRef.setInput("shape", "circle");
+    fix.detectChanges();
+
+    const buttonEl = fix.nativeElement.querySelector("button");
+    expect(buttonEl.className).toContain("text-xs");
+    expect(buttonEl.className).toContain("rounded-full");
+  });
 });

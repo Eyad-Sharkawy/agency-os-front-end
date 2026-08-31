@@ -317,12 +317,136 @@ describe("WorkspaceManagement Service", () => {
     expect(service.isSelf(mockMembers[0])).toBe(true);
     expect(service.isSelf(mockMembers[1])).toBe(false);
 
-    // Role options for OWNER
-    expect(service.getInviteRoleOptions()).toHaveLength(3);
+    // Role options for OWNER (MEMBER and ADMIN only)
+    expect(service.getInviteRoleOptions()).toHaveLength(2);
 
     // canModifyRole & canRemoveMember
     expect(service.canModifyRole(mockMembers[0])).toBe(false); // self/owner
     expect(service.canModifyRole(mockMembers[1])).toBe(true);
     expect(service.canRemoveMember(mockMembers[1])).toBe(true);
+  });
+
+  it("should test reloadAll and initials generation", () => {
+    const reloadWorkspacesSpy = vi.spyOn(service.workspacesResource, "reload");
+    const reloadInvitationsSpy = vi.spyOn(service.invitationsResource, "reload");
+
+    service.reloadAll();
+    expect(reloadWorkspacesSpy).toHaveBeenCalled();
+    expect(reloadInvitationsSpy).toHaveBeenCalled();
+
+    expect(service.getInitials(mockMembers[0])).toBe("OU");
+    expect(
+      service.getInitials({
+        userId: "u-3",
+        username: "developer",
+        email: "dev@test.com",
+        firstName: "Dev",
+        lastName: "",
+        role: "MEMBER",
+      }),
+    ).toBe("DE");
+    expect(
+      service.getInitials({
+        userId: "u-4",
+        username: "",
+        email: "support@acme.com",
+        firstName: "",
+        lastName: "",
+        role: "MEMBER",
+      }),
+    ).toBe("SU");
+    expect(
+      service.getInitials({
+        userId: "u-5",
+        username: "",
+        email: "",
+        firstName: "",
+        lastName: "",
+        role: "MEMBER",
+      }),
+    ).toBe("?");
+  });
+
+  it("should evaluate canModifyRole properly for ADMIN role", () => {
+    service.selectedManageWorkspace.set({
+      ...mockWorkspace,
+      role: "ADMIN",
+    });
+    vi.spyOn(authStore, "user").mockReturnValue({
+      id: "u-other-admin",
+      username: "other_admin",
+      email: "other@acme.com",
+      firstName: "Other",
+      lastName: "Admin",
+    });
+
+    expect(
+      service.canModifyRole({
+        userId: "u-owner",
+        username: "owner",
+        email: "owner@acme.com",
+        firstName: "Owner",
+        lastName: "User",
+        role: "OWNER",
+      }),
+    ).toBe(false);
+    expect(
+      service.canModifyRole({
+        userId: "u-admin",
+        username: "admin",
+        email: "admin@acme.com",
+        firstName: "Admin",
+        lastName: "User",
+        role: "ADMIN",
+      }),
+    ).toBe(false);
+    expect(
+      service.canModifyRole({
+        userId: "u-member",
+        username: "member",
+        email: "member@acme.com",
+        firstName: "Member",
+        lastName: "User",
+        role: "MEMBER",
+      }),
+    ).toBe(true);
+  });
+
+  it("should invite user by username without email symbol", () => {
+    service.setModalWorkspace(mockWorkspace);
+    service.inviteTarget.set("janedoe");
+    service.inviteRole.set("MEMBER");
+    service.submitInviteUser();
+
+    expect(invitationApiMock.inviteUser).toHaveBeenCalledWith("tenant_acme", {
+      username: "janedoe",
+      email: undefined,
+      role: "MEMBER",
+    });
+  });
+
+  it("should handle error in invitation acceptance and declining", () => {
+    const mockInvitation: WorkspaceInvitationResponse = {
+      id: "inv-err",
+      workspaceId: "w-1",
+      workspaceName: "Acme Agency",
+      username: "alex_dev",
+      invitedByUsername: "Owner",
+      role: "MEMBER",
+      status: "PENDING",
+      createdAt: "2026-01-01T00:00:00Z",
+    };
+
+    invitationApiMock.acceptInvitation.mockReturnValue(
+      throwError(() => new Error("Accept failed")),
+    );
+    service.acceptInvitation(mockInvitation);
+    expect(service.processingInvitationId()).toBeNull();
+
+    invitationApiMock.declineInvitation.mockReturnValue(
+      throwError(() => new Error("Decline failed")),
+    );
+    service.declineInvitation(mockInvitation);
+    expect(service.processingInvitationId()).toBeNull();
   });
 });
