@@ -1,42 +1,86 @@
-import { Component } from "@angular/core";
+import { DatePipe } from "@angular/common";
+import { Component, inject, OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { RouterLink } from "@angular/router";
 import { provideIcons } from "@ng-icons/core";
-import { lucidePlus, lucideSearch, lucideUsers } from "@ng-icons/lucide";
+import {
+  lucideAlertCircle,
+  lucideArrowUpRight,
+  lucideBuilding2,
+  lucideCheckCircle2,
+  lucideFilter,
+  lucideGrid,
+  lucideLayoutList,
+  lucideLoader2,
+  lucidePencil,
+  lucidePlus,
+  lucideRefreshCw,
+  lucideSearch,
+  lucideTrash2,
+  lucideUserPlus,
+  lucideUsers,
+  lucideX,
+} from "@ng-icons/lucide";
 import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
+import { ClientCard } from "./components/client-card/client-card";
+import { ClientDeleteModal } from "./components/client-delete-modal/client-delete-modal";
+import { ClientInviteModal } from "./components/client-invite-modal/client-invite-modal";
+import { ClientModal } from "./components/client-modal/client-modal";
+import { ClientFilterStatus, ClientManagement, ClientViewMode } from "./services/client-management";
 
 @Component({
   selector: "aos-clients",
   standalone: true,
-  imports: [Button, Icons],
-  providers: [provideIcons({ lucideUsers, lucidePlus, lucideSearch })],
-  template: `
-    <div class="space-y-6">
-      <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 class="text-ink font-display text-2xl font-bold tracking-tight">Clients</h1>
-          <p class="text-body-muted text-sm">
-            Manage your client organizations, billing contacts, and project contracts.
-          </p>
-        </div>
-        <aos-button variant="primary" size="sm">
-          <aos-icons name="lucidePlus" class="size-4" />
-          <span class="ml-1.5 font-mono text-xs">Add Client</span>
-        </aos-button>
-      </div>
-
-      <div class="border-hairline bg-canvas rounded-md border p-12 text-center">
-        <div
-          class="bg-soft-stone text-muted mx-auto flex size-12 items-center justify-center rounded-full"
-        >
-          <aos-icons name="lucideUsers" class="size-6" />
-        </div>
-        <h3 class="text-ink mt-4 text-base font-semibold">Client Directory Ready</h3>
-        <p class="text-body-muted mx-auto mt-1 max-w-sm text-xs">
-          Client services and API integrations are connected. Use the Add Client action to create
-          your first client profile.
-        </p>
-      </div>
-    </div>
-  `,
+  imports: [
+    DatePipe,
+    FormsModule,
+    RouterLink,
+    Button,
+    Icons,
+    ClientCard,
+    ClientModal,
+    ClientDeleteModal,
+    ClientInviteModal,
+  ],
+  providers: [
+    provideIcons({
+      lucideUsers,
+      lucidePlus,
+      lucideSearch,
+      lucideGrid,
+      lucideLayoutList,
+      lucideRefreshCw,
+      lucideX,
+      lucideBuilding2,
+      lucideCheckCircle2,
+      lucideAlertCircle,
+      lucideLoader2,
+      lucidePencil,
+      lucideTrash2,
+      lucideArrowUpRight,
+      lucideFilter,
+      lucideUserPlus,
+    }),
+  ],
+  templateUrl: "./clients.html",
 })
-export class ClientsComponent {}
+export class ClientsComponent implements OnInit {
+  readonly cm = inject(ClientManagement);
+
+  ngOnInit(): void {
+    this.cm.loadClients();
+  }
+
+  onSearch(query: string): void {
+    this.cm.setSearchQuery(query);
+  }
+
+  onStatusFilter(status: ClientFilterStatus): void {
+    this.cm.setStatusFilter(status);
+  }
+
+  onViewMode(mode: ClientViewMode): void {
+    this.cm.setViewMode(mode);
+  }
+}

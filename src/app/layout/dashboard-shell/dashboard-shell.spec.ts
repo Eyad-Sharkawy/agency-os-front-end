@@ -92,4 +92,8 @@ describe("DashboardShell Component", () => {
     fixture.detectChanges();
     expect(component.isMobileSidebarOpen()).toBe(false);
   });
+
+  it("should compute currentSectionTitle based on active route", () => {
+    expect(component.currentSectionTitle()).toBe("Overview");
+  });
 });

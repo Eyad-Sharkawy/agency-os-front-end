@@ -214,30 +214,32 @@
 
               <!-- Transfer Ownership Action -->
               @if (workspace()?.role === "OWNER" && !isSelf(member)) {
-                <button
+                <aos-button
+                  variant="ghost"
+                  size="sm"
                   type="button"
-                  title="Transfer Ownership"
-                  aria-label="Transfer Ownership"
+                  ariaLabel="Transfer Ownership"
                   [disabled]="memberActionLoading() !== null"
                   (click)="transferTarget.set(member)"
-                  class="text-muted hover:text-ink border-hairline hover:border-ink flex size-7 cursor-pointer items-center justify-center rounded-full border transition-colors"
+                  class="border-hairline size-7 rounded-full border !p-0"
                 >
                   <aos-icons name="lucideCrown" class="size-3.5" />
-                </button>
+                </aos-button>
               }
 
               <!-- Remove Member Action -->
               @if (canRemoveMember(member)) {
-                <button
+                <aos-button
+                  variant="ghost"
+                  size="sm"
                   type="button"
-                  title="Remove Member"
-                  aria-label="Remove Member"
+                  ariaLabel="Remove Member"
                   [disabled]="memberActionLoading() !== null"
                   (click)="removeTarget.set(member)"
-                  class="text-muted hover:text-error hover:border-error border-hairline flex size-7 cursor-pointer items-center justify-center rounded-full border transition-colors"
+                  class="border-hairline text-muted hover:text-error hover:border-error size-7 rounded-full border !p-0"
                 >
                   <aos-icons name="lucideTrash2" class="size-3.5" />
-                </button>
+                </aos-button>
               }
             }
           </div>

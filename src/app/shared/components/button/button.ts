@@ -4,6 +4,8 @@ import { NgTemplateOutlet } from "@angular/common";
 
 type BUTTON_VARIANTS = "primary" | "secondary" | "inverted" | "outlined" | "danger" | "ghost";
 type BUTTON_TYPES = "button" | "submit" | "reset";
+type BUTTON_SIZES = "xs" | "sm" | "md" | "lg";
+type BUTTON_SHAPES = "pill" | "rounded" | "square" | "circle";
 
 @Component({
   selector: "aos-button",
@@ -56,6 +58,8 @@ type BUTTON_TYPES = "button" | "submit" | "reset";
 })
 export class Button {
   readonly variant = input.required<BUTTON_VARIANTS>();
+  readonly size = input<BUTTON_SIZES>("md");
+  readonly shape = input<BUTTON_SHAPES>("pill");
   readonly type = input<BUTTON_TYPES>("button");
   readonly href = input<string | undefined>(undefined);
   readonly routerLink = input<string | unknown[] | undefined>(undefined);
@@ -68,27 +72,72 @@ export class Button {
 
   protected readonly computedClasses = computed<string>(() => {
     const baseClasses =
-      "inline-flex items-center justify-center cursor-pointer text-center font-medium text-sm w-full h-full min-h-9 transition-all duration-150 ease-in-out disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed";
-    const pillPadding = "px-5 py-2 rounded-full";
+      "inline-flex items-center justify-center cursor-pointer text-center font-medium transition-all duration-150 ease-in-out disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed";
 
+    let sizeClasses = "";
+    switch (this.size()) {
+      case "xs":
+        sizeClasses = "text-xs px-2.5 py-1 min-h-6";
+        break;
+      case "sm":
+        sizeClasses = "text-xs px-3.5 py-1.5 min-h-8";
+        break;
+      case "md":
+        sizeClasses = "text-sm px-5 py-2 min-h-9";
+        break;
+      case "lg":
+        sizeClasses = "text-base px-6 py-3 min-h-11";
+        break;
+    }
+
+    let shapeClasses = "";
+    switch (this.shape()) {
+      case "pill":
+        shapeClasses = "rounded-full";
+        break;
+      case "rounded":
+        shapeClasses = "rounded-md";
+        break;
+      case "square":
+        shapeClasses = "rounded-sm";
+        break;
+      case "circle":
+        shapeClasses = "rounded-full p-0 flex items-center justify-center";
+        break;
+    }
+
+    let variantClasses = "";
     switch (this.variant()) {
       case "primary":
-        return `${baseClasses} ${pillPadding} bg-primary text-on-primary hover:opacity-90 active:scale-[0.99] shadow-xs`;
+        variantClasses =
+          "bg-primary text-on-primary hover:opacity-90 active:scale-[0.99] shadow-xs";
+        break;
 
       case "secondary":
-        return `${baseClasses} px-2 py-1.5 rounded-sm bg-transparent text-ink hover:underline underline-offset-4 active:opacity-75`;
+        variantClasses =
+          "bg-transparent text-ink hover:underline underline-offset-4 active:opacity-75";
+        break;
 
       case "inverted":
-        return `${baseClasses} ${pillPadding} bg-white text-[#17171c] hover:bg-soft-stone active:scale-[0.99] shadow-xs`;
+        variantClasses =
+          "bg-white text-[#17171c] hover:bg-soft-stone active:scale-[0.99] shadow-xs";
+        break;
 
       case "outlined":
-        return `${baseClasses} ${pillPadding} bg-transparent border border-hairline text-ink hover:border-ink hover:bg-soft-stone/40 active:bg-soft-stone`;
+        variantClasses =
+          "bg-transparent border border-hairline text-ink hover:border-ink hover:bg-soft-stone/40 active:bg-soft-stone";
+        break;
 
       case "danger":
-        return `${baseClasses} ${pillPadding} bg-error text-white hover:opacity-90 active:scale-[0.99] shadow-xs`;
+        variantClasses = "bg-error text-white hover:opacity-90 active:scale-[0.99] shadow-xs";
+        break;
 
       case "ghost":
-        return `${baseClasses} px-3 py-1.5 rounded-full bg-transparent text-ink/80 hover:text-ink hover:bg-soft-stone/60 active:bg-soft-stone`;
+        variantClasses =
+          "bg-transparent text-ink/80 hover:text-ink hover:bg-soft-stone/60 active:bg-soft-stone";
+        break;
     }
+
+    return `${baseClasses} ${sizeClasses} ${shapeClasses} ${variantClasses}`;
   });
 }

@@ -317,8 +317,8 @@ describe("WorkspaceManagement Service", () => {
     expect(service.isSelf(mockMembers[0])).toBe(true);
     expect(service.isSelf(mockMembers[1])).toBe(false);
 
-    // Role options for OWNER
-    expect(service.getInviteRoleOptions()).toHaveLength(3);
+    // Role options for OWNER (MEMBER and ADMIN only)
+    expect(service.getInviteRoleOptions()).toHaveLength(2);
 
     // canModifyRole & canRemoveMember
     expect(service.canModifyRole(mockMembers[0])).toBe(false); // self/owner

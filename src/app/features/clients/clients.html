@@ -1,0 +1,401 @@
+<div class="space-y-8">
+  <!-- Page Header -->
+  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="bg-brand-green size-2 rounded-full"></span>
+        <span class="text-muted font-mono text-xs tracking-wider uppercase">Directory</span>
+      </div>
+      <h1 class="text-ink font-display mt-1 text-2xl font-bold tracking-tight md:text-3xl">
+        Clients
+      </h1>
+      <p class="text-body-muted mt-1 text-sm">
+        Manage client organizations, billing contacts, and operational statuses.
+      </p>
+    </div>
+
+    @if (cm.canCreate()) {
+      <div>
+        <aos-button variant="primary" size="sm" type="button" (click)="cm.openCreateModal()">
+          <aos-icons name="lucidePlus" class="mr-1.5 size-4" />
+          <span class="font-mono text-xs">Add Client</span>
+        </aos-button>
+      </div>
+    }
+  </div>
+
+  <!-- Quick Stats Ribbon -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div class="border-hairline bg-canvas rounded-md border p-4">
+      <div class="flex items-center justify-between">
+        <span class="text-muted font-mono text-xs uppercase">Total Clients</span>
+        <aos-icons name="lucideUsers" class="text-muted size-4" />
+      </div>
+      <div class="text-ink font-display mt-2 text-2xl font-semibold">
+        {{ cm.stats().total }}
+      </div>
+    </div>
+
+    <div class="border-hairline bg-canvas rounded-md border p-4">
+      <div class="flex items-center justify-between">
+        <span class="text-muted font-mono text-xs uppercase">Active Accounts</span>
+        <span class="bg-brand-green size-2 rounded-full"></span>
+      </div>
+      <div class="text-brand-green font-display mt-2 text-2xl font-semibold">
+        {{ cm.stats().active }}
+      </div>
+    </div>
+
+    <div class="border-hairline bg-canvas rounded-md border p-4">
+      <div class="flex items-center justify-between">
+        <span class="text-muted font-mono text-xs uppercase">Inactive / Paused</span>
+        <span class="bg-muted size-2 rounded-full"></span>
+      </div>
+      <div class="text-muted font-display mt-2 text-2xl font-semibold">
+        {{ cm.stats().inactive }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter Controls Bar -->
+  <div
+    class="border-hairline bg-canvas flex flex-col gap-4 rounded-md border p-4 md:flex-row md:items-center md:justify-between"
+  >
+    <!-- Left: Search Box -->
+    <div class="relative w-full md:max-w-xs">
+      <div class="text-muted pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+        <aos-icons name="lucideSearch" class="size-4" />
+      </div>
+      <input
+        type="text"
+        [ngModel]="cm.searchQuery()"
+        (ngModelChange)="onSearch($event)"
+        placeholder="Search by company or email..."
+        class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border py-2 pr-8 pl-9 font-mono text-xs transition-colors focus:outline-none"
+      />
+      @if (cm.searchQuery()) {
+        <aos-button
+          variant="ghost"
+          size="xs"
+          shape="circle"
+          type="button"
+          (click)="onSearch('')"
+          class="absolute inset-y-0 right-1 my-auto !h-6 !w-6 !p-0"
+          ariaLabel="Clear search"
+        >
+          <aos-icons name="lucideX" class="text-muted hover:text-ink size-3.5" />
+        </aos-button>
+      }
+    </div>
+
+    <!-- Right: Filter Pills & View Toggles -->
+    <div class="flex flex-wrap items-center gap-2">
+      <!-- Status Filter Tabs -->
+      <div class="border-hairline bg-soft-stone/40 flex items-center rounded-sm border p-0.5">
+        <button
+          type="button"
+          (click)="onStatusFilter('ALL')"
+          class="cursor-pointer rounded-xs px-2.5 py-1 font-mono text-xs transition-colors"
+          [class.bg-canvas]="cm.statusFilter() === 'ALL'"
+          [class.text-ink]="cm.statusFilter() === 'ALL'"
+          [class.font-semibold]="cm.statusFilter() === 'ALL'"
+          [class.shadow-xs]="cm.statusFilter() === 'ALL'"
+          [class.text-body-muted]="cm.statusFilter() !== 'ALL'"
+        >
+          All ({{ cm.stats().total }})
+        </button>
+        <button
+          type="button"
+          (click)="onStatusFilter('ACTIVE')"
+          class="cursor-pointer rounded-xs px-2.5 py-1 font-mono text-xs transition-colors"
+          [class.bg-canvas]="cm.statusFilter() === 'ACTIVE'"
+          [class.text-brand-green]="cm.statusFilter() === 'ACTIVE'"
+          [class.font-semibold]="cm.statusFilter() === 'ACTIVE'"
+          [class.shadow-xs]="cm.statusFilter() === 'ACTIVE'"
+          [class.text-body-muted]="cm.statusFilter() !== 'ACTIVE'"
+        >
+          Active ({{ cm.stats().active }})
+        </button>
+        <button
+          type="button"
+          (click)="onStatusFilter('INACTIVE')"
+          class="cursor-pointer rounded-xs px-2.5 py-1 font-mono text-xs transition-colors"
+          [class.bg-canvas]="cm.statusFilter() === 'INACTIVE'"
+          [class.text-ink]="cm.statusFilter() === 'INACTIVE'"
+          [class.font-semibold]="cm.statusFilter() === 'INACTIVE'"
+          [class.shadow-xs]="cm.statusFilter() === 'INACTIVE'"
+          [class.text-body-muted]="cm.statusFilter() !== 'INACTIVE'"
+        >
+          Inactive ({{ cm.stats().inactive }})
+        </button>
+      </div>
+
+      <!-- View Switcher (Grid / Table) -->
+      <div class="border-hairline bg-soft-stone/40 flex items-center rounded-sm border p-0.5">
+        <button
+          type="button"
+          (click)="onViewMode('grid')"
+          class="cursor-pointer rounded-xs p-1.5 transition-colors"
+          [class.bg-canvas]="cm.viewMode() === 'grid'"
+          [class.text-ink]="cm.viewMode() === 'grid'"
+          [class.shadow-xs]="cm.viewMode() === 'grid'"
+          [class.text-body-muted]="cm.viewMode() !== 'grid'"
+          aria-label="Grid view"
+        >
+          <aos-icons name="lucideGrid" class="size-4" />
+        </button>
+        <button
+          type="button"
+          (click)="onViewMode('table')"
+          class="cursor-pointer rounded-xs p-1.5 transition-colors"
+          [class.bg-canvas]="cm.viewMode() === 'table'"
+          [class.text-ink]="cm.viewMode() === 'table'"
+          [class.shadow-xs]="cm.viewMode() === 'table'"
+          [class.text-body-muted]="cm.viewMode() !== 'table'"
+          aria-label="Table view"
+        >
+          <aos-icons name="lucideLayoutList" class="size-4" />
+        </button>
+      </div>
+
+      <!-- Reload Button -->
+      <aos-button
+        variant="ghost"
+        size="sm"
+        type="button"
+        (click)="cm.loadClients()"
+        [disabled]="cm.isLoading()"
+        class="border-hairline bg-canvas size-8 border !p-0"
+        ariaLabel="Refresh client list"
+      >
+        <aos-icons name="lucideRefreshCw" class="size-3.5" [class.animate-spin]="cm.isLoading()" />
+      </aos-button>
+    </div>
+  </div>
+
+  <!-- Loading State Skeletons -->
+  @if (cm.isLoading() && cm.clients().length === 0) {
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      @for (placeholder of [1, 2, 3, 4, 5, 6]; track placeholder) {
+        <div class="border-hairline bg-canvas animate-pulse space-y-4 rounded-md border p-5">
+          <div class="flex items-center gap-3">
+            <div class="bg-soft-stone size-11 rounded-md"></div>
+            <div class="flex-1 space-y-2">
+              <div class="bg-soft-stone h-4 w-3/4 rounded-xs"></div>
+              <div class="bg-soft-stone h-3 w-1/2 rounded-xs"></div>
+            </div>
+          </div>
+          <div class="bg-soft-stone h-px w-full"></div>
+          <div class="flex justify-between">
+            <div class="bg-soft-stone h-3 w-1/3 rounded-xs"></div>
+            <div class="bg-soft-stone h-3 w-1/4 rounded-xs"></div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Error State Alert -->
+  @else if (cm.errorMessage()) {
+    <div class="border-hairline bg-canvas rounded-md border p-8 text-center">
+      <div
+        class="bg-error/10 text-error mx-auto flex size-12 items-center justify-center rounded-full"
+      >
+        <aos-icons name="lucideAlertCircle" class="size-6" />
+      </div>
+      <h3 class="text-ink mt-4 text-base font-semibold">Failed to Load Clients</h3>
+      <p class="text-body-muted mx-auto mt-1 max-w-sm text-xs">
+        {{ cm.errorMessage() }}
+      </p>
+      <div class="mt-5">
+        <aos-button variant="outlined" size="sm" type="button" (click)="cm.loadClients()">
+          <aos-icons name="lucideRefreshCw" class="mr-1.5 size-3.5" />
+          <span class="font-mono text-xs">Retry</span>
+        </aos-button>
+      </div>
+    </div>
+  }
+
+  <!-- Empty Search Results State -->
+  @else if (cm.filteredClients().length === 0 && cm.clients().length > 0) {
+    <div class="border-hairline bg-canvas rounded-md border p-12 text-center">
+      <div
+        class="bg-soft-stone text-muted mx-auto flex size-12 items-center justify-center rounded-full"
+      >
+        <aos-icons name="lucideSearch" class="size-6" />
+      </div>
+      <h3 class="text-ink mt-4 text-base font-semibold">No Matching Clients</h3>
+      <p class="text-body-muted mx-auto mt-1 max-w-sm text-xs">
+        No client companies matched your search query or active filter.
+      </p>
+      <div class="mt-4 flex justify-center gap-2">
+        <aos-button
+          variant="secondary"
+          size="xs"
+          type="button"
+          (click)="onSearch(''); onStatusFilter('ALL')"
+          ariaLabel="Reset filters"
+        >
+          <span class="text-brand-green font-mono text-xs">Reset filters</span>
+        </aos-button>
+      </div>
+    </div>
+  }
+
+  <!-- Initial Empty State (No clients in workspace) -->
+  @else if (cm.filteredClients().length === 0) {
+    <div class="border-hairline bg-canvas rounded-md border p-12 text-center">
+      <div
+        class="bg-soft-stone text-muted mx-auto flex size-12 items-center justify-center rounded-full"
+      >
+        <aos-icons name="lucideUsers" class="size-6" />
+      </div>
+      <h3 class="text-ink mt-4 text-base font-semibold">No Clients Registered</h3>
+      <p class="text-body-muted mx-auto mt-1 max-w-sm text-xs">
+        Register your client companies to attach projects, track billable time, and generate
+        invoices.
+      </p>
+      @if (cm.canCreate()) {
+        <div class="mt-6">
+          <aos-button variant="primary" size="sm" type="button" (click)="cm.openCreateModal()">
+            <aos-icons name="lucidePlus" class="mr-1.5 size-4" />
+            <span class="font-mono text-xs">Add First Client</span>
+          </aos-button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Grid View Mode -->
+  @else if (cm.viewMode() === "grid") {
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      @for (client of cm.filteredClients(); track client.id) {
+        <aos-client-card [client]="client" />
+      }
+    </div>
+  }
+
+  <!-- Table View Mode -->
+  @else if (cm.viewMode() === "table") {
+    <div class="border-hairline bg-canvas overflow-hidden rounded-md border">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="border-hairline bg-soft-stone/30 text-muted border-b font-mono uppercase">
+            <tr>
+              <th scope="col" class="px-5 py-3">Client Company</th>
+              <th scope="col" class="px-5 py-3">Billing Email</th>
+              <th scope="col" class="px-5 py-3">Status</th>
+              <th scope="col" class="px-5 py-3">Created</th>
+              <th scope="col" class="px-5 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-hairline divide-y">
+            @for (client of cm.filteredClients(); track client.id) {
+              <tr class="hover:bg-soft-stone/20 transition-colors">
+                <!-- Company Name + Initials -->
+                <td class="px-5 py-3.5">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="bg-soft-stone text-ink font-display flex size-8 shrink-0 items-center justify-center rounded-sm text-xs font-bold"
+                    >
+                      {{ cm.getInitials(client.name) }}
+                    </div>
+                    <span class="text-ink font-semibold">{{ client.name }}</span>
+                  </div>
+                </td>
+
+                <!-- Billing Email -->
+                <td class="text-body-muted px-5 py-3.5 font-mono">
+                  {{ client.email }}
+                </td>
+
+                <!-- Status Badge -->
+                <td class="px-5 py-3.5">
+                  @if (client.status === "ACTIVE") {
+                    <span
+                      class="bg-brand-green/10 text-brand-green inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-[11px] font-medium"
+                    >
+                      <span class="bg-brand-green size-1.5 rounded-full"></span>
+                      <span>ACTIVE</span>
+                    </span>
+                  } @else {
+                    <span
+                      class="bg-soft-stone text-muted inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-[11px] font-medium"
+                    >
+                      <span class="bg-muted size-1.5 rounded-full"></span>
+                      <span>INACTIVE</span>
+                    </span>
+                  }
+                </td>
+
+                <!-- Created Date -->
+                <td class="text-body-muted px-5 py-3.5 font-mono">
+                  {{ client.createdAt | date: "mediumDate" }}
+                </td>
+
+                <!-- Actions -->
+                <td class="px-5 py-3.5 text-right">
+                  <div class="flex items-center justify-end gap-1.5">
+                    @if (cm.canInviteClient()) {
+                      <aos-button
+                        variant="ghost"
+                        size="sm"
+                        type="button"
+                        (click)="cm.openInviteModal(client)"
+                        class="border-hairline bg-canvas text-brand-green hover:bg-brand-green/10 size-7 border !p-0"
+                        ariaLabel="Invite Client User"
+                      >
+                        <aos-icons name="lucideUserPlus" class="size-3.5" />
+                      </aos-button>
+                    }
+
+                    <aos-button
+                      variant="ghost"
+                      size="sm"
+                      routerLink="../projects"
+                      class="border-hairline bg-canvas text-ink hover:bg-soft-stone size-7 border !p-0"
+                      ariaLabel="View Projects"
+                    >
+                      <aos-icons name="lucideArrowUpRight" class="size-3.5" />
+                    </aos-button>
+
+                    @if (cm.canEdit()) {
+                      <aos-button
+                        variant="ghost"
+                        size="sm"
+                        type="button"
+                        (click)="cm.openEditModal(client)"
+                        class="border-hairline bg-canvas text-ink hover:bg-soft-stone size-7 border !p-0"
+                        ariaLabel="Edit Client"
+                      >
+                        <aos-icons name="lucidePencil" class="size-3.5" />
+                      </aos-button>
+                    }
+
+                    @if (cm.canDelete()) {
+                      <aos-button
+                        variant="ghost"
+                        size="sm"
+                        type="button"
+                        (click)="cm.openDeleteModal(client)"
+                        class="border-hairline text-error hover:bg-error/10 size-7 border !p-0"
+                        ariaLabel="Delete Client"
+                      >
+                        <aos-icons name="lucideTrash2" class="size-3.5" />
+                      </aos-button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Modals -->
+<aos-client-modal />
+<aos-client-delete-modal />
+<aos-client-invite-modal />

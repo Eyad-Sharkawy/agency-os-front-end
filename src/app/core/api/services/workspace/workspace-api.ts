@@ -20,9 +20,12 @@ export class WorkspaceApi {
    * Signal-based reactive HTTP resource for listing workspaces.
    */
   getWorkspacesResource(
+    urlOrOptions?: (() => string | undefined) | HttpResourceOptions<WorkspaceResponse[], unknown>,
     options?: HttpResourceOptions<WorkspaceResponse[], unknown>,
   ): ResourceRef<WorkspaceResponse[] | undefined> {
-    return httpResource<WorkspaceResponse[]>(() => this.baseUrl, options);
+    const urlFn = typeof urlOrOptions === "function" ? urlOrOptions : () => this.baseUrl;
+    const opts = typeof urlOrOptions === "function" ? options : urlOrOptions;
+    return httpResource<WorkspaceResponse[]>(urlFn, opts);
   }
 
   /**

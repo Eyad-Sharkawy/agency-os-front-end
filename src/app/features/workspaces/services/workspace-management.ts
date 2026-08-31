@@ -27,11 +27,18 @@ export class WorkspaceManagement {
 
   private readonly queryParams = toSignal(this.route.queryParams);
 
-  // Reactive HTTP Resources (Signals)
-  readonly workspacesResource = this.workspaceApi.getWorkspacesResource({ defaultValue: [] });
-  readonly invitationsResource = this.invitationApi.getPendingInvitationsResource({
-    defaultValue: [],
-  });
+  // Reactive HTTP Resources (Signals) - only request when user is authenticated
+  readonly workspacesResource = this.workspaceApi.getWorkspacesResource(
+    () => (this.authStore.isAuthenticated() ? this.workspaceApi.baseUrl : undefined),
+    { defaultValue: [] },
+  );
+  readonly invitationsResource = this.invitationApi.getPendingInvitationsResource(
+    () =>
+      this.authStore.isAuthenticated() ? `${this.invitationApi.baseUrl}/invitations` : undefined,
+    {
+      defaultValue: [],
+    },
+  );
 
   // Safe computed lists
   readonly workspacesList = computed<WorkspaceResponse[]>(() => {
@@ -269,7 +276,7 @@ export class WorkspaceManagement {
 
     this.workspaceApi.getMembers(ws.tenantId).subscribe({
       next: members => {
-        this.members.set(members);
+        this.members.set((members || []).filter(m => m.role !== "CLIENT"));
         this.isLoadingMembers.set(false);
       },
       error: (err: unknown) => {
@@ -460,25 +467,17 @@ export class WorkspaceManagement {
   // --- Permission & Role Helpers ---
 
   getInviteRoleOptions(): SelectOption<WorkspaceRole>[] {
-    const opts: SelectOption<WorkspaceRole>[] = [
+    return [
       { label: "MEMBER (Standard Access)", value: "MEMBER" },
       { label: "ADMIN (Workspace Management)", value: "ADMIN" },
     ];
-    if (this.selectedManageWorkspace()?.role === "OWNER") {
-      opts.push({ label: "CLIENT (External Portal Access)", value: "CLIENT" });
-    }
-    return opts;
   }
 
   getMemberRoleOptions(): SelectOption<WorkspaceRole>[] {
-    const opts: SelectOption<WorkspaceRole>[] = [
+    return [
       { label: "MEMBER", value: "MEMBER" },
       { label: "ADMIN", value: "ADMIN" },
     ];
-    if (this.selectedManageWorkspace()?.role === "OWNER") {
-      opts.push({ label: "CLIENT", value: "CLIENT" });
-    }
-    return opts;
   }
 
   getInitials(member: WorkspaceMemberResponse): string {

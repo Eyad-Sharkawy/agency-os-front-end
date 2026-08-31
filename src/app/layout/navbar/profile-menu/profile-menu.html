@@ -1,13 +1,15 @@
-<button
+<aos-button
+  variant="primary"
+  size="xs"
+  shape="circle"
   type="button"
-  class="bg-primary text-on-primary border-hairline flex size-9 cursor-pointer items-center justify-center rounded-full border font-mono text-xs font-bold tracking-wider shadow-xs transition-all hover:opacity-90 focus:outline-none"
-  [attr.aria-expanded]="isOpen()"
-  aria-haspopup="menu"
-  [attr.aria-label]="authStore.initials() + ' - User profile menu'"
+  class="border-hairline size-9 border font-mono text-xs font-bold tracking-wider shadow-xs"
+  [ariaExpanded]="isOpen() ? 'true' : 'false'"
+  [ariaLabel]="authStore.initials() + ' - User profile menu'"
   (click)="toggleMenu($event)"
 >
   {{ authStore.initials() }}
-</button>
+</aos-button>
 
 @if (isOpen()) {
   <div
@@ -41,44 +43,51 @@
     </div>
 
     <!-- Actions List -->
-    <div class="space-y-0.5 pt-1">
+    <div class="flex flex-col space-y-0.5 pt-1">
       <!-- Account Settings -->
-      <button
+      <aos-button
+        variant="ghost"
+        size="xs"
+        shape="square"
         type="button"
-        role="menuitem"
         (click)="onManageAccount()"
-        (keydown.enter)="onManageAccount()"
-        class="text-ink hover:bg-soft-stone flex w-full cursor-pointer items-center justify-between rounded-xs px-3 py-2 font-mono text-xs transition-colors"
+        class="w-full !justify-between font-mono text-xs"
+        ariaLabel="Account Settings"
       >
         <div class="flex items-center gap-2">
           <aos-icons name="lucideSettings" class="text-muted size-3.5" />
           <span>Account Settings</span>
         </div>
         <aos-icons name="lucideChevronRight" class="text-muted size-3" />
-      </button>
+      </aos-button>
 
       <!-- Workspaces Switcher Link -->
-      <a
+      <aos-button
+        variant="ghost"
+        size="xs"
+        shape="square"
         routerLink="/workspaces"
         (click)="close()"
-        role="menuitem"
-        class="text-ink hover:bg-soft-stone flex w-full cursor-pointer items-center gap-2 rounded-xs px-3 py-2 font-mono text-xs transition-colors"
+        class="w-full !justify-start font-mono text-xs"
+        ariaLabel="Workspaces"
       >
-        <aos-icons name="lucideBuilding2" class="text-muted size-3.5" />
+        <aos-icons name="lucideBuilding2" class="text-muted mr-2 size-3.5" />
         <span>Workspaces</span>
-      </a>
+      </aos-button>
 
       <!-- Sign Out -->
-      <button
+      <aos-button
+        variant="ghost"
+        size="xs"
+        shape="square"
         type="button"
-        role="menuitem"
         (click)="onSignOut()"
-        (keydown.enter)="onSignOut()"
-        class="text-error hover:bg-error/10 flex w-full cursor-pointer items-center gap-2 rounded-xs px-3 py-2 font-mono text-xs transition-colors"
+        class="text-error hover:bg-error/10 w-full !justify-start font-mono text-xs"
+        ariaLabel="Sign out"
       >
-        <aos-icons name="lucideLogOut" class="size-3.5" />
+        <aos-icons name="lucideLogOut" class="mr-2 size-3.5" />
         <span>Sign out</span>
-      </button>
+      </aos-button>
     </div>
   </div>
 }

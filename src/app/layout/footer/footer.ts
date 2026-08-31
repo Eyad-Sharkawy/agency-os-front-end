@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { LogoComponent } from "../../shared/components/logo/logo";
+import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
 import { provideIcons } from "@ng-icons/core";
 import { simpleGithub } from "@ng-icons/simple-icons";
@@ -8,7 +9,7 @@ import { lucideArrowRight, lucideExternalLink, lucideHeart } from "@ng-icons/luc
 
 @Component({
   selector: "aos-footer",
-  imports: [RouterLink, LogoComponent, Icons],
+  imports: [RouterLink, LogoComponent, Icons, Button],
   providers: [provideIcons({ simpleGithub, lucideHeart, lucideExternalLink, lucideArrowRight })],
   templateUrl: "./footer.html",
 })

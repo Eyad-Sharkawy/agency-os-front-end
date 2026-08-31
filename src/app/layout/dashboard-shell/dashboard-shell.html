@@ -42,14 +42,17 @@
     >
       <div class="flex items-center gap-3">
         <!-- Mobile Sidebar Toggle -->
-        <button
+        <aos-button
+          variant="ghost"
+          size="xs"
+          shape="circle"
           type="button"
           (click)="toggleMobileSidebar()"
-          class="text-muted hover:text-ink cursor-pointer p-1.5 lg:hidden"
-          aria-label="Open sidebar menu"
+          class="lg:hidden"
+          ariaLabel="Open sidebar menu"
         >
           <aos-icons name="lucideMenu" class="size-5" />
-        </button>
+        </aos-button>
 
         <!-- Breadcrumb / Section Heading -->
         <div class="flex items-center gap-2">
