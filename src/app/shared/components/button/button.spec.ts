@@ -121,4 +121,17 @@ describe("Button Component", () => {
     expect(buttonEl.className).toContain("text-xs");
     expect(buttonEl.className).toContain("rounded-full");
   });
+
+  it("should handle justify, fullWidth, and buttonClass correctly", () => {
+    const { fixture: fix } = createButtonComponent("primary");
+    fix.componentRef.setInput("justify", "between");
+    fix.componentRef.setInput("fullWidth", true);
+    fix.componentRef.setInput("buttonClass", "custom-btn-class");
+    fix.detectChanges();
+
+    const buttonEl = fix.nativeElement.querySelector("button");
+    expect(buttonEl.className).toContain("justify-between");
+    expect(buttonEl.className).toContain("custom-btn-class");
+    expect(fix.nativeElement.className).toContain("w-full");
+  });
 });

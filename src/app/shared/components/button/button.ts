@@ -6,12 +6,14 @@ type BUTTON_VARIANTS = "primary" | "secondary" | "inverted" | "outlined" | "dang
 type BUTTON_TYPES = "button" | "submit" | "reset";
 type BUTTON_SIZES = "xs" | "sm" | "md" | "lg";
 type BUTTON_SHAPES = "pill" | "rounded" | "square" | "circle";
+type BUTTON_JUSTIFY = "center" | "start" | "between" | "end";
 
 @Component({
   selector: "aos-button",
   imports: [RouterLink, NgTemplateOutlet],
   host: {
     class: "inline-flex items-center justify-center shrink-0 select-none",
+    "[class.w-full]": "fullWidth()",
     "[attr.aria-label]": "null",
     "[attr.aria-expanded]": "null",
     "[attr.aria-controls]": "null",
@@ -61,6 +63,9 @@ export class Button {
   readonly size = input<BUTTON_SIZES>("md");
   readonly shape = input<BUTTON_SHAPES>("pill");
   readonly type = input<BUTTON_TYPES>("button");
+  readonly justify = input<BUTTON_JUSTIFY>("center");
+  readonly fullWidth = input<boolean, unknown>(false, { transform: booleanAttribute });
+  readonly buttonClass = input<string>("");
   readonly href = input<string | undefined>(undefined);
   readonly routerLink = input<string | unknown[] | undefined>(undefined);
   readonly target = input<string | undefined>(undefined);
@@ -72,7 +77,24 @@ export class Button {
 
   protected readonly computedClasses = computed<string>(() => {
     const baseClasses =
-      "inline-flex items-center justify-center cursor-pointer text-center font-medium transition-all duration-150 ease-in-out disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed";
+      "inline-flex items-center cursor-pointer font-medium transition-all duration-150 ease-in-out disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed w-full h-full";
+
+    let justifyClasses: string;
+    switch (this.justify()) {
+      case "start":
+        justifyClasses = "justify-start text-left";
+        break;
+      case "between":
+        justifyClasses = "justify-between text-left";
+        break;
+      case "end":
+        justifyClasses = "justify-end text-right";
+        break;
+      case "center":
+      default:
+        justifyClasses = "justify-center text-center";
+        break;
+    }
 
     let sizeClasses = "";
     switch (this.size()) {
@@ -138,6 +160,6 @@ export class Button {
         break;
     }
 
-    return `${baseClasses} ${sizeClasses} ${shapeClasses} ${variantClasses}`;
+    return `${baseClasses} ${justifyClasses} ${sizeClasses} ${shapeClasses} ${variantClasses} ${this.buttonClass()}`.trim();
   });
 }

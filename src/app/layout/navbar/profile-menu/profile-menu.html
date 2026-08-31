@@ -50,10 +50,12 @@
         variant="ghost"
         size="xs"
         shape="square"
+        justify="between"
+        fullWidth="true"
         type="button"
         (click)="onManageAccount()"
         (keydown.enter)="onManageAccount()"
-        class="w-full !justify-between font-mono text-xs"
+        class="w-full font-mono text-xs"
         ariaLabel="Account Settings"
       >
         <div class="flex items-center gap-2">
@@ -68,10 +70,12 @@
         variant="ghost"
         size="xs"
         shape="square"
+        justify="start"
+        fullWidth="true"
         routerLink="/workspaces"
         (click)="close()"
         (keydown.enter)="close()"
-        class="w-full !justify-start font-mono text-xs"
+        class="w-full font-mono text-xs"
         ariaLabel="Workspaces"
       >
         <aos-icons name="lucideBuilding2" class="text-muted mr-2 size-3.5" />
@@ -83,10 +87,12 @@
         variant="ghost"
         size="xs"
         shape="square"
+        justify="start"
+        fullWidth="true"
         type="button"
         (click)="onSignOut()"
         (keydown.enter)="onSignOut()"
-        class="text-error hover:bg-error/10 w-full !justify-start font-mono text-xs"
+        class="text-error hover:bg-error/10 w-full font-mono text-xs"
         ariaLabel="Sign out"
       >
         <aos-icons name="lucideLogOut" class="mr-2 size-3.5" />
