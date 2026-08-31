@@ -126,8 +126,11 @@ export class ClientModal {
 
     if (this.isEditMode()) {
       const client = this.clientToEdit();
-      if (!client) return;
-
+      if (!client) {
+        this.isSubmitting.set(false);
+        this.errorMessage.set("Client details are not loaded yet. Please try again.");
+        return;
+      }
       this.cm.updateClient(client.id, payload).subscribe({
         next: () => {
           this.isSubmitting.set(false);
