@@ -1,21 +1,22 @@
 <!-- Announcement Bar (shown only for unauthenticated landing visitors) -->
 @if (showAnnouncement() && !authStore.isAuthenticated()) {
   <div
-    class="bg-cohere-black relative z-50 flex h-9 w-full items-center justify-between px-4 text-xs tracking-tight text-white"
+    class="bg-cohere-black relative z-50 flex min-h-9 w-full items-center justify-center px-8 py-1.5 text-center text-xs tracking-tight text-white"
   >
-    <div class="flex flex-1 items-center justify-center gap-1.5 text-center">
+    <div class="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 leading-snug">
       <span class="text-white/80">Agency OS enterprise architecture is live:</span>
       <a
         routerLink="/how-it-works"
-        class="hover:text-brand-green text-white underline underline-offset-2 transition-colors"
+        class="hover:text-brand-green inline-flex items-center gap-1 text-white underline underline-offset-2 transition-colors whitespace-nowrap"
       >
-        Explore the 2026 platform &rarr;
+        <span>Explore the platform</span>
+        <span>&rarr;</span>
       </a>
     </div>
     <button
       type="button"
       (click)="dismissAnnouncement()"
-      class="cursor-pointer p-1 text-white/60 transition-colors hover:text-white"
+      class="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer p-1 text-white/60 transition-colors hover:text-white"
       aria-label="Dismiss announcement"
     >
       <aos-icons name="lucideX" class="size-3.5" />
