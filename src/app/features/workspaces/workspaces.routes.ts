@@ -1,10 +1,8 @@
 import { Routes } from "@angular/router";
-import { WorkspaceManagement } from "./services/workspace-management";
 
 export const WORKSPACE_ROUTES: Routes = [
   {
     path: "",
-    providers: [WorkspaceManagement],
     children: [
       {
         path: "",

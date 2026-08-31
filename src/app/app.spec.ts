@@ -1,3 +1,4 @@
+import { provideHttpClient } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { provideRouter, Router } from "@angular/router";
 import { App } from "./app";
@@ -9,6 +10,7 @@ describe("App", () => {
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
+        provideHttpClient(),
         provideRouter([
           { path: "w/:workspaceId", component: App },
           { path: "app", component: App },

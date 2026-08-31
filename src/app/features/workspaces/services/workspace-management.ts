@@ -14,7 +14,9 @@ import { SelectOption } from "../../../shared/components/select/select";
 
 export type ManageTab = "general" | "members" | "invite" | "danger";
 
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
 export class WorkspaceManagement {
   private readonly workspaceApi = inject(WorkspaceApi);
   private readonly invitationApi = inject(InvitationApi);
@@ -119,9 +121,29 @@ export class WorkspaceManagement {
 
       if (manageTenantId) {
         const list = this.workspacesList();
-        const ws = list.find(w => w.tenantId === manageTenantId);
+        const ws =
+          list.find(w => w.tenantId === manageTenantId || w.id === manageTenantId) ||
+          this.workspaceStore
+            .workspaces()
+            .find(w => w.tenantId === manageTenantId || w.id === manageTenantId) ||
+          (this.workspaceStore.activeWorkspace()?.tenantId === manageTenantId ||
+          this.workspaceStore.activeWorkspace()?.id === manageTenantId
+            ? this.workspaceStore.activeWorkspace()
+            : null);
+
         if (ws) {
           this.setModalWorkspace(ws, tab);
+        } else {
+          this.workspaceApi.getWorkspaces().subscribe({
+            next: workspaces => {
+              const matched = workspaces.find(
+                w => w.tenantId === manageTenantId || w.id === manageTenantId,
+              );
+              if (matched) {
+                this.setModalWorkspace(matched, tab);
+              }
+            },
+          });
         }
       } else if (params && "manage" in params && this.isManageModalOpen()) {
         this.isManageModalOpen.set(false);
@@ -144,7 +166,6 @@ export class WorkspaceManagement {
   openManageModal(ws: WorkspaceResponse, tab: ManageTab = "general"): void {
     this.setModalWorkspace(ws, tab);
     void this.router.navigate([], {
-      relativeTo: this.route,
       queryParams: { manage: ws.tenantId, tab },
       queryParamsHandling: "merge",
     });
@@ -158,7 +179,6 @@ export class WorkspaceManagement {
       this.loadMembers();
     }
     void this.router.navigate([], {
-      relativeTo: this.route,
       queryParams: { tab },
       queryParamsHandling: "merge",
     });
@@ -169,7 +189,6 @@ export class WorkspaceManagement {
     this.selectedManageWorkspace.set(null);
     this.resetModalState();
     void this.router.navigate([], {
-      relativeTo: this.route,
       queryParams: { manage: null, tab: null },
       queryParamsHandling: "merge",
     });

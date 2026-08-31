@@ -4,13 +4,15 @@ import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { provideIcons } from "@ng-icons/core";
 import { lucideMenu } from "@ng-icons/lucide";
 import { filter, map } from "rxjs";
+import { ProfileModal } from "./features/profile/profile-modal";
+import { WorkspaceManageModal } from "./features/workspaces/components/workspace-manage-modal/workspace-manage-modal";
 import { Footer } from "./layout/footer/footer";
 import { Navbar } from "./layout/navbar/navbar";
 
 @Component({
   selector: "aos-root",
   standalone: true,
-  imports: [RouterOutlet, Navbar, Footer],
+  imports: [RouterOutlet, Navbar, Footer, WorkspaceManageModal, ProfileModal],
   providers: provideIcons({ lucideMenu }),
   templateUrl: "./app.html",
 })

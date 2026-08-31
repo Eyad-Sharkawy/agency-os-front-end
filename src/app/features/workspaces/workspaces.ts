@@ -15,25 +15,14 @@ import { AuthStore } from "../../core/auth/stores/auth.store";
 import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
 import { WorkspaceCard } from "./components/workspace-card/workspace-card";
-import {
-  ManageTab,
-  WorkspaceManageModal,
-} from "./components/workspace-manage-modal/workspace-manage-modal";
+import { ManageTab } from "./components/workspace-manage-modal/workspace-manage-modal";
 import { WorkspaceInvitations } from "./components/workspace-invitations/workspace-invitations";
 import { WorkspaceManagement } from "./services/workspace-management";
 
 @Component({
   selector: "aos-workspaces",
   standalone: true,
-  imports: [
-    FormsModule,
-    RouterLink,
-    Button,
-    Icons,
-    WorkspaceCard,
-    WorkspaceManageModal,
-    WorkspaceInvitations,
-  ],
+  imports: [FormsModule, RouterLink, Button, Icons, WorkspaceCard, WorkspaceInvitations],
   providers: [
     provideIcons({
       lucideBuilding2,

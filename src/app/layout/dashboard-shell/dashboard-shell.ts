@@ -3,14 +3,13 @@ import { Router, RouterOutlet } from "@angular/router";
 import { provideIcons } from "@ng-icons/core";
 import { lucideMenu, lucideSlidersHorizontal } from "@ng-icons/lucide";
 import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
-import { ProfileModal } from "../../features/profile/profile-modal";
 import { Icons } from "../../shared/components/icons/icons";
 import { Sidebar } from "../sidebar/sidebar";
 
 @Component({
   selector: "aos-dashboard-shell",
   standalone: true,
-  imports: [RouterOutlet, Sidebar, Icons, ProfileModal],
+  imports: [RouterOutlet, Sidebar, Icons],
   providers: [provideIcons({ lucideMenu, lucideSlidersHorizontal })],
   templateUrl: "./dashboard-shell.html",
   host: {

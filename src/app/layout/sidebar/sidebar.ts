@@ -33,6 +33,7 @@ import { WorkspaceResponse } from "../../core/api/models";
 import { AuthStore } from "../../core/auth/stores/auth.store";
 import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 import { ProfileModalService } from "../../features/profile/services/profile-modal.service";
+import { WorkspaceManagement } from "../../features/workspaces/services/workspace-management";
 import { Theme } from "../../core/services/theme";
 import { Icons } from "../../shared/components/icons/icons";
 import { LogoComponent } from "../../shared/components/logo/logo";
@@ -79,6 +80,7 @@ export class Sidebar {
   private readonly elementRef = inject(ElementRef);
   private readonly router = inject(Router);
   private readonly profileModalService = inject(ProfileModalService);
+  private readonly workspaceManagement = inject(WorkspaceManagement);
   readonly workspaceStore = inject(WorkspaceStore);
   readonly authStore = inject(AuthStore);
   readonly themeService = inject(Theme);
@@ -142,6 +144,12 @@ export class Sidebar {
     this.workspaceStore.setActiveWorkspace(ws);
     this.isWorkspaceMenuOpen.set(false);
     void this.router.navigate(["/w", ws.tenantId]);
+    this.closeMobile.emit();
+  }
+
+  openWorkspaceSettings(ws: WorkspaceResponse): void {
+    this.workspaceManagement.openManageModal(ws, "general");
+    this.isWorkspaceMenuOpen.set(false);
     this.closeMobile.emit();
   }
 

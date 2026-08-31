@@ -1,3 +1,4 @@
+import { provideHttpClient } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -5,6 +6,9 @@ import { WorkspaceResponse } from "../../core/api/models";
 import { AuthStore } from "../../core/auth/stores/auth.store";
 import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 import { ProfileModalService } from "../../features/profile/services/profile-modal.service";
+import { WorkspaceManagement } from "../../features/workspaces/services/workspace-management";
+import { ENVIRONMENT } from "../../core/tokens/enviroment/environment.token";
+import { environment } from "../../../environments/environment";
 import { Sidebar } from "./sidebar";
 
 describe("Sidebar Component", () => {
@@ -69,7 +73,9 @@ describe("Sidebar Component", () => {
     await TestBed.configureTestingModule({
       imports: [Sidebar],
       providers: [
+        provideHttpClient(),
         provideRouter([{ path: "w/:workspaceId", component: class Dummy {} }]),
+        { provide: ENVIRONMENT, useValue: environment },
         { provide: WorkspaceStore, useValue: mockWorkspaceStore },
         { provide: AuthStore, useValue: mockAuthStore },
       ],
@@ -123,6 +129,14 @@ describe("Sidebar Component", () => {
     const openSpy = vi.spyOn(profileModalService, "open");
     component.onManageAccount();
     expect(openSpy).toHaveBeenCalledWith("personal");
+  });
+
+  it("should trigger workspaceManagement.openManageModal on openWorkspaceSettings", () => {
+    const wm = TestBed.inject(WorkspaceManagement);
+    const openSpy = vi.spyOn(wm, "openManageModal");
+    component.openWorkspaceSettings(mockWorkspaces[0]);
+    expect(openSpy).toHaveBeenCalledWith(mockWorkspaces[0], "general");
+    expect(component.isWorkspaceMenuOpen()).toBe(false);
   });
 
   it("should compute canManageActiveWorkspace for OWNER role", () => {
