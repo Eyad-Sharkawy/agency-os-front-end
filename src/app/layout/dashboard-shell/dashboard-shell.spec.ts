@@ -1,12 +1,16 @@
+import { Component } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideHttpClient } from "@angular/common/http";
-import { provideRouter } from "@angular/router";
+import { provideRouter, Router } from "@angular/router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthStore } from "../../core/auth/stores/auth.store";
 import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 import { ENVIRONMENT } from "../../core/tokens/enviroment/environment.token";
 import { environment } from "../../../environments/environment";
 import { DashboardShell } from "./dashboard-shell";
+
+@Component({ standalone: true, template: "" })
+class DummyViewComponent {}
 
 describe("DashboardShell Component", () => {
   let fixture: ComponentFixture<DashboardShell>;
@@ -55,7 +59,14 @@ describe("DashboardShell Component", () => {
     await TestBed.configureTestingModule({
       imports: [DashboardShell],
       providers: [
-        provideRouter([]),
+        provideRouter([
+          { path: "clients", component: DummyViewComponent },
+          { path: "projects", component: DummyViewComponent },
+          { path: "tasks", component: DummyViewComponent },
+          { path: "time-tracking", component: DummyViewComponent },
+          { path: "invoices", component: DummyViewComponent },
+          { path: "**", component: DummyViewComponent },
+        ]),
         provideHttpClient(),
         { provide: ENVIRONMENT, useValue: environment },
         { provide: WorkspaceStore, useValue: mockWorkspaceStore },
@@ -95,5 +106,35 @@ describe("DashboardShell Component", () => {
 
   it("should compute currentSectionTitle based on active route", () => {
     expect(component.currentSectionTitle()).toBe("Overview");
+  });
+
+  it("should close mobile sidebar when closeMobileSidebar is called", () => {
+    component.isMobileSidebarOpen.set(true);
+    component.closeMobileSidebar();
+    expect(component.isMobileSidebarOpen()).toBe(false);
+  });
+
+  it("should map various route patterns to their corresponding section title", async () => {
+    const router = TestBed.inject(Router);
+
+    await router.navigateByUrl("/clients");
+    fixture.detectChanges();
+    expect(component.currentSectionTitle()).toBe("Clients");
+
+    await router.navigateByUrl("/projects");
+    fixture.detectChanges();
+    expect(component.currentSectionTitle()).toBe("Projects");
+
+    await router.navigateByUrl("/tasks");
+    fixture.detectChanges();
+    expect(component.currentSectionTitle()).toBe("Tasks");
+
+    await router.navigateByUrl("/time-tracking");
+    fixture.detectChanges();
+    expect(component.currentSectionTitle()).toBe("Time Tracking");
+
+    await router.navigateByUrl("/invoices");
+    fixture.detectChanges();
+    expect(component.currentSectionTitle()).toBe("Invoices");
   });
 });

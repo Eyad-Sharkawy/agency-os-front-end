@@ -1,3 +1,4 @@
+import { signal, WritableSignal } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { provideRouter, Router } from "@angular/router";
 import { of, throwError } from "rxjs";
@@ -21,8 +22,9 @@ describe("ClientManagement", () => {
   let invitationApiMock: {
     inviteUser: ReturnType<typeof vi.fn>;
   };
+  let activeWorkspaceSignal: WritableSignal<{ role: string } | null>;
   let workspaceStoreMock: {
-    activeWorkspace: ReturnType<typeof vi.fn>;
+    activeWorkspace: WritableSignal<{ role: string } | null>;
     activeTenantId: ReturnType<typeof vi.fn>;
   };
 
@@ -46,6 +48,7 @@ describe("ClientManagement", () => {
   ];
 
   beforeEach(() => {
+    activeWorkspaceSignal = signal<{ role: string } | null>({ role: "OWNER" });
     clientApiMock = {
       getClients: vi.fn().mockReturnValue(of(mockClients)),
       getClientById: vi
@@ -63,7 +66,7 @@ describe("ClientManagement", () => {
     };
 
     workspaceStoreMock = {
-      activeWorkspace: vi.fn().mockReturnValue({ role: "OWNER" }),
+      activeWorkspace: activeWorkspaceSignal,
       activeTenantId: vi.fn().mockReturnValue("tenant-123"),
     };
 
@@ -228,5 +231,70 @@ describe("ClientManagement", () => {
     expect(service.getInitials("Acme Corporation")).toBe("AC");
     expect(service.getInitials("Globex")).toBe("GL");
     expect(service.getInitials("")).toBe("CL");
+  });
+
+  it("should update viewMode correctly", () => {
+    service.setViewMode("table");
+    expect(service.viewMode()).toBe("table");
+  });
+
+  it("should compute permissions properly for ADMIN and MEMBER roles", () => {
+    activeWorkspaceSignal.set({ role: "ADMIN" });
+    expect(service.canCreate()).toBe(true);
+    expect(service.canEdit()).toBe(false);
+    expect(service.canDelete()).toBe(false);
+    expect(service.canInviteClient()).toBe(false);
+
+    activeWorkspaceSignal.set({ role: "MEMBER" });
+    expect(service.canCreate()).toBe(false);
+    expect(service.canEdit()).toBe(false);
+    expect(service.canDelete()).toBe(false);
+    expect(service.canInviteClient()).toBe(false);
+  });
+
+  it("should invite a client user by username target", () => {
+    service.selectedClient.set(mockClients[0]);
+    service.inviteClientUser("client_admin").subscribe();
+
+    expect(invitationApiMock.inviteUser).toHaveBeenCalledWith("tenant-123", {
+      email: undefined,
+      username: "client_admin",
+      role: "CLIENT",
+      clientId: "c-1",
+    });
+    expect(service.inviteSuccess()).toContain("client_admin");
+  });
+
+  it("should throw error if inviteClientUser is called without active client or tenant", () => {
+    service.selectedClient.set(null);
+    expect(() => service.inviteClientUser("test@test.com")).toThrow(
+      "Active workspace or client is missing.",
+    );
+  });
+
+  it("should handle error in inviteClientUser", () => {
+    service.selectedClient.set(mockClients[0]);
+    invitationApiMock.inviteUser.mockReturnValue(
+      throwError(() => ({ error: { detail: "User already invited" } })),
+    );
+
+    service.inviteClientUser("user@acme.com").subscribe({
+      error: () => {
+        expect(service.isInviting()).toBe(false);
+        expect(service.inviteError()).toBe("User already invited");
+      },
+    });
+  });
+
+  it("should handle generic Error in inviteClientUser", () => {
+    service.selectedClient.set(mockClients[0]);
+    invitationApiMock.inviteUser.mockReturnValue(throwError(() => new Error("Network timeout")));
+
+    service.inviteClientUser("user@acme.com").subscribe({
+      error: () => {
+        expect(service.isInviting()).toBe(false);
+        expect(service.inviteError()).toBe("Network timeout");
+      },
+    });
   });
 });
