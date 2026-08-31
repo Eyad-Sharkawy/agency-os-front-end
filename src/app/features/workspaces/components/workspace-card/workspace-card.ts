@@ -23,7 +23,7 @@ import { Button } from "../../../../shared/components/button/button";
       tabindex="0"
       (click)="selected.emit(workspace())"
       (keydown.enter)="selected.emit(workspace())"
-      (keydown.space)="selected.emit(workspace())"
+      (keydown.space)="$event.preventDefault(); selected.emit(workspace())"
       [class.border-ink]="isActive()"
       [class.ring-1]="isActive()"
       [class.ring-ink]="isActive()"
