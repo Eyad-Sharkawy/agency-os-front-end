@@ -21,7 +21,14 @@ describe("Button Component", () => {
   });
 
   function createButtonComponent(
-    variant: "primary" | "secondary" | "inverted" | "outlined" | "danger" | "ghost" = "primary",
+    variant:
+      | "primary"
+      | "secondary"
+      | "inverted"
+      | "outlined"
+      | "pill-outline"
+      | "danger"
+      | "ghost" = "primary",
   ) {
     fixture = TestBed.createComponent(Button);
     component = fixture.componentInstance;
@@ -45,6 +52,8 @@ describe("Button Component", () => {
     expect(buttonEl.getAttribute("type")).toBe("submit");
     expect(buttonEl.className).toContain("bg-primary");
     expect(buttonEl.className).toContain("text-on-primary");
+    expect(buttonEl.className).toContain("rounded-pill");
+    expect(buttonEl.className).toContain("focus-visible:ring-[#4c6ee6]");
   });
 
   it("should render an external link <a> when href is provided", () => {
@@ -73,14 +82,9 @@ describe("Button Component", () => {
   });
 
   it("should apply variant classes correctly", () => {
-    const variants: ("primary" | "secondary" | "inverted" | "outlined" | "danger" | "ghost")[] = [
-      "primary",
-      "secondary",
-      "inverted",
-      "outlined",
-      "danger",
-      "ghost",
-    ];
+    const variants: (
+      "primary" | "secondary" | "inverted" | "outlined" | "pill-outline" | "danger" | "ghost"
+    )[] = ["primary", "secondary", "inverted", "outlined", "pill-outline", "danger", "ghost"];
 
     for (const variant of variants) {
       const { fixture: fix } = createButtonComponent(variant);
@@ -133,5 +137,22 @@ describe("Button Component", () => {
     expect(buttonEl.className).toContain("justify-between");
     expect(buttonEl.className).toContain("custom-btn-class");
     expect(fix.nativeElement.className).toContain("w-full");
+  });
+
+  it("should disable automatically after getting clicked when disableOnClick is enabled", () => {
+    const { fixture: fix, component: btn } = createButtonComponent("primary");
+    fix.componentRef.setInput("disableOnClick", true);
+    fix.detectChanges();
+
+    expect(btn.effectiveDisabled()).toBe(false);
+    const hostEl = fix.nativeElement as HTMLElement;
+    hostEl.click();
+    fix.detectChanges();
+
+    expect(btn.effectiveDisabled()).toBe(true);
+    const buttonEl = fix.nativeElement.querySelector("button");
+    expect(buttonEl.disabled).toBe(true);
+    expect(hostEl.className).toContain("pointer-events-none");
+    expect(hostEl.getAttribute("aria-disabled")).toBe("true");
   });
 });

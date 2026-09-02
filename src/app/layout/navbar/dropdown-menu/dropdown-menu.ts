@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, model } from "@angular/core";
+import { Component, ElementRef, inject, model, signal } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { provideIcons } from "@ng-icons/core";
 import {
@@ -46,6 +46,8 @@ export class DropdownMenu {
   readonly authStore = inject(AuthStore);
 
   readonly isOpen = model<boolean>(false);
+  readonly isSigningIn = signal(false);
+  readonly isSigningUp = signal(false);
 
   toggle(): void {
     this.isOpen.update(open => !open);
@@ -56,11 +58,15 @@ export class DropdownMenu {
   }
 
   onSignIn(): void {
+    if (this.isSigningIn()) return;
+    this.isSigningIn.set(true);
     this.close();
     this.authStore.login();
   }
 
   onSignUp(): void {
+    if (this.isSigningUp()) return;
+    this.isSigningUp.set(true);
     this.close();
     this.authStore.register();
   }

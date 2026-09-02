@@ -86,10 +86,20 @@
     @if (authStore.isAuthenticated()) {
       <aos-profile-menu />
     } @else {
-      <aos-button variant="secondary" (click)="onSignIn()" (keydown.enter)="onSignIn()">
+      <aos-button
+        variant="secondary"
+        [disabled]="isSigningIn() || isSigningUp()"
+        (click)="onSignIn()"
+        (keydown.enter)="onSignIn()"
+      >
         Login
       </aos-button>
-      <aos-button variant="primary" (click)="onSignUp()" (keydown.enter)="onSignUp()">
+      <aos-button
+        variant="primary"
+        [disabled]="isSigningIn() || isSigningUp()"
+        (click)="onSignUp()"
+        (keydown.enter)="onSignUp()"
+      >
         Sign up
       </aos-button>
     }

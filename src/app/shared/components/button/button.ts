@@ -1,8 +1,9 @@
-import { booleanAttribute, Component, computed, input } from "@angular/core";
+import { booleanAttribute, Component, computed, input, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { NgTemplateOutlet } from "@angular/common";
 
-type BUTTON_VARIANTS = "primary" | "secondary" | "inverted" | "outlined" | "danger" | "ghost";
+type BUTTON_VARIANTS =
+  "primary" | "secondary" | "inverted" | "outlined" | "pill-outline" | "danger" | "ghost";
 type BUTTON_TYPES = "button" | "submit" | "reset";
 type BUTTON_SIZES = "xs" | "sm" | "md" | "lg";
 type BUTTON_SHAPES = "pill" | "rounded" | "square" | "circle";
@@ -14,9 +15,13 @@ type BUTTON_JUSTIFY = "center" | "start" | "between" | "end";
   host: {
     class: "inline-flex items-center justify-center shrink-0 select-none",
     "[class.w-full]": "fullWidth()",
+    "[class.pointer-events-none]": "effectiveDisabled()",
+    "[class.rounded-none]": "shape() === 'square'",
+    "[attr.aria-disabled]": "effectiveDisabled() ? 'true' : null",
     "[attr.aria-label]": "null",
     "[attr.aria-expanded]": "null",
     "[attr.aria-controls]": "null",
+    "(click)": "handleHostClick($event)",
   },
   template: `
     <ng-template #buttonContent>
@@ -27,10 +32,11 @@ type BUTTON_JUSTIFY = "center" | "start" | "between" | "end";
       <!-- External Link -->
       <a
         [class]="computedClasses()"
-        [href]="href()"
+        [href]="effectiveDisabled() ? null : href()"
         [target]="target()"
         [rel]="target() === '_blank' ? 'noopener noreferrer' : rel() || null"
         [attr.aria-label]="ariaLabel() || null"
+        [attr.aria-disabled]="effectiveDisabled() ? 'true' : null"
       >
         <ng-container [ngTemplateOutlet]="buttonContent" />
       </a>
@@ -38,8 +44,9 @@ type BUTTON_JUSTIFY = "center" | "start" | "between" | "end";
       <!-- Internal Router Link -->
       <a
         [class]="computedClasses()"
-        [routerLink]="routerLink()"
+        [routerLink]="effectiveDisabled() ? null : routerLink()"
         [attr.aria-label]="ariaLabel() || null"
+        [attr.aria-disabled]="effectiveDisabled() ? 'true' : null"
       >
         <ng-container [ngTemplateOutlet]="buttonContent" />
       </a>
@@ -51,7 +58,7 @@ type BUTTON_JUSTIFY = "center" | "start" | "between" | "end";
         [attr.aria-label]="ariaLabel() || null"
         [attr.aria-expanded]="ariaExpanded() || null"
         [attr.aria-controls]="ariaControls() || null"
-        [disabled]="disabled()"
+        [disabled]="effectiveDisabled()"
       >
         <ng-container [ngTemplateOutlet]="buttonContent" />
       </button>
@@ -74,10 +81,25 @@ export class Button {
   readonly ariaExpanded = input<string | undefined>(undefined);
   readonly ariaControls = input<string | undefined>(undefined);
   readonly disabled = input<boolean, unknown>(false, { transform: booleanAttribute });
+  readonly disableOnClick = input<boolean, unknown>(false, { transform: booleanAttribute });
+
+  private readonly clicked = signal(false);
+  readonly effectiveDisabled = computed(() => this.disabled() || this.clicked());
+
+  protected handleHostClick(event: MouseEvent): void {
+    if (this.effectiveDisabled()) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
+    if (this.disableOnClick()) {
+      this.clicked.set(true);
+    }
+  }
 
   protected readonly computedClasses = computed<string>(() => {
     const baseClasses =
-      "inline-flex items-center cursor-pointer font-medium transition-all duration-150 ease-in-out disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed w-full h-full";
+      "inline-flex items-center cursor-pointer font-sans font-medium leading-[1.71] tracking-normal transition-all duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4c6ee6] focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none w-full h-full";
 
     let justifyClasses: string;
     switch (this.justify()) {
@@ -97,42 +119,58 @@ export class Button {
     }
 
     let sizeClasses = "";
-    switch (this.size()) {
-      case "xs":
-        sizeClasses = "text-xs px-2.5 py-1 min-h-6";
-        break;
-      case "sm":
-        sizeClasses = "text-xs px-3.5 py-1.5 min-h-8";
-        break;
-      case "md":
-        sizeClasses = "text-sm px-5 py-2 min-h-9";
-        break;
-      case "lg":
-        sizeClasses = "text-base px-6 py-3 min-h-11";
-        break;
+    if (this.shape() === "circle") {
+      switch (this.size()) {
+        case "xs":
+          sizeClasses = "size-6 min-h-6 min-w-6 text-xs";
+          break;
+        case "sm":
+          sizeClasses = "size-8 min-h-8 min-w-8 text-xs";
+          break;
+        case "md":
+          sizeClasses = "size-9 min-h-9 min-w-9 text-sm";
+          break;
+        case "lg":
+          sizeClasses = "size-11 min-h-11 min-w-11 text-base";
+          break;
+      }
+    } else {
+      switch (this.size()) {
+        case "xs":
+          sizeClasses = "text-xs px-2.5 py-1 min-h-6";
+          break;
+        case "sm":
+          sizeClasses = "text-xs px-3.5 py-1.5 min-h-8";
+          break;
+        case "md":
+          sizeClasses = "text-sm px-4.5 py-2 min-h-9";
+          break;
+        case "lg":
+          sizeClasses = "text-sm px-6 py-3 min-h-11";
+          break;
+      }
     }
 
     let shapeClasses = "";
     switch (this.shape()) {
       case "pill":
-        shapeClasses = "rounded-full";
+        shapeClasses = "rounded-pill";
         break;
       case "rounded":
         shapeClasses = "rounded-md";
         break;
       case "square":
-        shapeClasses = "rounded-sm";
+        shapeClasses = "rounded-xs";
         break;
       case "circle":
-        shapeClasses = "rounded-full p-0 flex items-center justify-center";
+        shapeClasses = "rounded-full p-0 flex items-center justify-center shrink-0";
         break;
     }
 
     let variantClasses = "";
     switch (this.variant()) {
       case "primary":
-        variantClasses =
-          "bg-primary text-on-primary hover:opacity-90 active:scale-[0.99] shadow-xs";
+        variantClasses = "bg-primary text-on-primary hover:opacity-90 active:scale-[0.99]";
         break;
 
       case "secondary":
@@ -141,17 +179,17 @@ export class Button {
         break;
 
       case "inverted":
-        variantClasses =
-          "bg-white text-[#17171c] hover:bg-soft-stone active:scale-[0.99] shadow-xs";
+        variantClasses = "bg-white text-[#17171c] hover:bg-soft-stone active:scale-[0.99]";
         break;
 
       case "outlined":
+      case "pill-outline":
         variantClasses =
           "bg-transparent border border-hairline text-ink hover:border-ink hover:bg-soft-stone/40 active:bg-soft-stone";
         break;
 
       case "danger":
-        variantClasses = "bg-error text-white hover:opacity-90 active:scale-[0.99] shadow-xs";
+        variantClasses = "bg-error text-white hover:opacity-90 active:scale-[0.99]";
         break;
 
       case "ghost":
@@ -160,6 +198,10 @@ export class Button {
         break;
     }
 
-    return `${baseClasses} ${justifyClasses} ${sizeClasses} ${shapeClasses} ${variantClasses} ${this.buttonClass()}`.trim();
+    const disabledClasses = this.effectiveDisabled()
+      ? "opacity-40 cursor-not-allowed pointer-events-none"
+      : "";
+
+    return `${baseClasses} ${justifyClasses} ${sizeClasses} ${shapeClasses} ${variantClasses} ${disabledClasses} ${this.buttonClass()}`.trim();
   });
 }
