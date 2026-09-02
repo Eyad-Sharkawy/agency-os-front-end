@@ -1,0 +1,439 @@
+<div class="space-y-8">
+  <!-- Page Header -->
+  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="bg-brand-green size-2 rounded-full"></span>
+        <span class="text-muted font-mono text-xs tracking-wider uppercase">Deliverables</span>
+      </div>
+      <h1 class="text-ink font-display mt-1 text-2xl font-bold tracking-tight md:text-3xl">
+        Projects
+      </h1>
+      <p class="text-body-muted mt-1 text-sm">
+        Track active deliverables, project budgets, timelines, and milestones.
+      </p>
+    </div>
+
+    @if (pm.canCreate()) {
+      <div>
+        <aos-button
+          variant="primary"
+          size="sm"
+          type="button"
+          (click)="pm.openCreateModal()"
+          (keydown.enter)="pm.openCreateModal()"
+        >
+          <aos-icons name="lucidePlus" class="mr-1.5 size-4" />
+          <span class="font-mono text-xs">New Project</span>
+        </aos-button>
+      </div>
+    }
+  </div>
+
+  <!-- Quick Stats Ribbon -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="border-hairline bg-canvas rounded-md border p-4">
+      <div class="flex items-center justify-between">
+        <span class="text-muted font-mono text-xs uppercase">Total Projects</span>
+        <aos-icons name="lucideFolderKanban" class="text-muted size-4" />
+      </div>
+      <div class="text-ink font-display mt-2 text-2xl font-semibold">
+        {{ pm.stats().total }}
+      </div>
+    </div>
+
+    <div class="border-hairline bg-canvas rounded-md border p-4">
+      <div class="flex items-center justify-between">
+        <span class="text-muted font-mono text-xs uppercase">In Progress</span>
+        <span class="bg-brand-green size-2 rounded-full"></span>
+      </div>
+      <div class="text-brand-green font-display mt-2 text-2xl font-semibold">
+        {{ pm.stats().inProgress }}
+      </div>
+    </div>
+
+    <div class="border-hairline bg-canvas rounded-md border p-4">
+      <div class="flex items-center justify-between">
+        <span class="text-muted font-mono text-xs uppercase">Planning Phase</span>
+        <span class="size-2 rounded-full bg-amber-500"></span>
+      </div>
+      <div class="font-display mt-2 text-2xl font-semibold text-amber-600 dark:text-amber-400">
+        {{ pm.stats().planning }}
+      </div>
+    </div>
+
+    <div class="border-hairline bg-canvas rounded-md border p-4">
+      <div class="flex items-center justify-between">
+        <span class="text-muted font-mono text-xs uppercase">Total Budget</span>
+        <aos-icons name="lucideDollarSign" class="text-muted size-4" />
+      </div>
+      <div class="text-ink mt-2 font-mono text-2xl font-semibold">
+        {{ pm.stats().totalBudget | currency: "USD" : "symbol" : "1.0-0" }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter Controls Bar -->
+  <div
+    class="border-hairline bg-canvas flex flex-col gap-4 rounded-md border p-4 lg:flex-row lg:items-center lg:justify-between"
+  >
+    <!-- Left: Search Box -->
+    <div class="relative w-full lg:max-w-xs">
+      <label for="project-search-input" class="sr-only">Search projects</label>
+      <div class="text-muted pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+        <aos-icons name="lucideSearch" class="size-4" />
+      </div>
+      <input
+        id="project-search-input"
+        type="text"
+        [ngModel]="pm.searchQuery()"
+        (ngModelChange)="onSearch($event)"
+        placeholder="Search projects or clients..."
+        class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border py-2 pr-8 pl-9 font-mono text-xs transition-colors focus:outline-none"
+      />
+      @if (pm.searchQuery()) {
+        <aos-button
+          variant="ghost"
+          size="xs"
+          shape="circle"
+          type="button"
+          (click)="onSearch('')"
+          (keydown.enter)="onSearch('')"
+          class="absolute inset-y-0 right-1 my-auto !h-6 !w-6 !p-0"
+          ariaLabel="Clear search"
+        >
+          <aos-icons name="lucideX" class="text-muted hover:text-ink size-3.5" />
+        </aos-button>
+      }
+    </div>
+
+    <!-- Right: Filter Pills, Client Dropdown & View Mode Toggles -->
+    <div class="flex flex-wrap items-center gap-3">
+      <!-- Client Selector Dropdown -->
+      @if (pm.clients().length > 0) {
+        <div class="w-44">
+          <aos-select
+            [options]="clientFilterOptions()"
+            [ngModel]="pm.clientFilter()"
+            (ngModelChange)="onClientFilter($event)"
+            size="sm"
+            placeholder="All Clients"
+            ariaLabel="Filter by Client"
+          />
+        </div>
+      }
+
+      <!-- Status Filter Tabs -->
+      <div class="border-hairline bg-soft-stone/30 flex items-center rounded-md border p-0.5">
+        <button
+          type="button"
+          (click)="onStatusFilter('ALL')"
+          class="rounded-sm px-2.5 py-1 font-mono text-xs transition-colors"
+          [class]="
+            pm.statusFilter() === 'ALL'
+              ? 'bg-canvas text-ink font-semibold shadow-xs'
+              : 'text-muted hover:text-ink'
+          "
+        >
+          All
+        </button>
+        <button
+          type="button"
+          (click)="onStatusFilter('IN_PROGRESS')"
+          class="rounded-sm px-2.5 py-1 font-mono text-xs transition-colors"
+          [class]="
+            pm.statusFilter() === 'IN_PROGRESS'
+              ? 'bg-canvas text-brand-green font-semibold shadow-xs'
+              : 'text-muted hover:text-ink'
+          "
+        >
+          In Progress
+        </button>
+        <button
+          type="button"
+          (click)="onStatusFilter('PLANNING')"
+          class="rounded-sm px-2.5 py-1 font-mono text-xs transition-colors"
+          [class]="
+            pm.statusFilter() === 'PLANNING'
+              ? 'bg-canvas font-semibold text-amber-600 shadow-xs'
+              : 'text-muted hover:text-ink'
+          "
+        >
+          Planning
+        </button>
+        <button
+          type="button"
+          (click)="onStatusFilter('DELIVERED')"
+          class="rounded-sm px-2.5 py-1 font-mono text-xs transition-colors"
+          [class]="
+            pm.statusFilter() === 'DELIVERED'
+              ? 'bg-canvas text-deep-green font-semibold shadow-xs'
+              : 'text-muted hover:text-ink'
+          "
+        >
+          Delivered
+        </button>
+      </div>
+
+      <!-- View Mode Buttons -->
+      <div class="border-hairline bg-soft-stone/30 flex items-center rounded-md border p-0.5">
+        <button
+          type="button"
+          (click)="onViewMode('grid')"
+          class="rounded-sm p-1.5 transition-colors"
+          [class]="
+            pm.viewMode() === 'grid' ? 'bg-canvas text-ink shadow-xs' : 'text-muted hover:text-ink'
+          "
+          aria-label="Grid view"
+        >
+          <aos-icons name="lucideGrid" class="size-4" />
+        </button>
+        <button
+          type="button"
+          (click)="onViewMode('table')"
+          class="rounded-sm p-1.5 transition-colors"
+          [class]="
+            pm.viewMode() === 'table' ? 'bg-canvas text-ink shadow-xs' : 'text-muted hover:text-ink'
+          "
+          aria-label="Table view"
+        >
+          <aos-icons name="lucideLayoutList" class="size-4" />
+        </button>
+      </div>
+
+      <!-- Refresh Button -->
+      <aos-button
+        variant="ghost"
+        size="sm"
+        type="button"
+        (click)="pm.loadProjects()"
+        [disabled]="pm.isLoading()"
+        ariaLabel="Refresh projects list"
+      >
+        <aos-icons
+          name="lucideRefreshCw"
+          class="size-4"
+          [class]="pm.isLoading() ? 'animate-spin' : ''"
+        />
+      </aos-button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (pm.isLoading()) {
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div
+          class="border-hairline bg-canvas flex h-48 animate-pulse flex-col justify-between rounded-md border p-5"
+        >
+          <div class="flex items-center gap-3">
+            <div class="bg-soft-stone size-10 rounded-md"></div>
+            <div class="space-y-2">
+              <div class="bg-soft-stone h-4 w-32 rounded-xs"></div>
+              <div class="bg-soft-stone h-3 w-20 rounded-xs"></div>
+            </div>
+          </div>
+          <div class="bg-soft-stone h-10 w-full rounded-sm"></div>
+          <div class="bg-soft-stone h-4 w-24 rounded-xs"></div>
+        </div>
+      }
+    </div>
+  } @else if (pm.errorMessage()) {
+    <!-- Error State -->
+    <div class="border-error/20 bg-error/5 text-error rounded-md border p-6 text-center text-sm">
+      <div
+        class="bg-error/10 text-error mx-auto flex size-12 items-center justify-center rounded-full"
+      >
+        <aos-icons name="lucideAlertCircle" class="size-6" />
+      </div>
+      <h3 class="mt-3 font-semibold">Failed to load projects</h3>
+      <p class="text-body-muted mt-1 text-xs">{{ pm.errorMessage() }}</p>
+      <div class="mt-4">
+        <aos-button variant="outlined" size="sm" (click)="pm.loadProjects()">
+          <aos-icons name="lucideRefreshCw" class="mr-1.5 size-4" />
+          <span>Try Again</span>
+        </aos-button>
+      </div>
+    </div>
+  } @else if (pm.projects().length === 0) {
+    <!-- Empty Workspace State -->
+    <div class="border-hairline bg-canvas rounded-md border p-12 text-center">
+      <div
+        class="bg-soft-stone text-muted mx-auto flex size-12 items-center justify-center rounded-full"
+      >
+        <aos-icons name="lucideFolderKanban" class="size-6" />
+      </div>
+      <h3 class="text-ink mt-4 text-base font-semibold">No projects yet</h3>
+      <p class="text-body-muted mx-auto mt-1 max-w-sm text-xs">
+        Get started by creating your first project workspace to organize tasks, track billable
+        hours, and invoice clients.
+      </p>
+      @if (pm.canCreate()) {
+        <div class="mt-6">
+          <aos-button variant="primary" size="sm" (click)="pm.openCreateModal()">
+            <aos-icons name="lucidePlus" class="mr-1.5 size-4" />
+            <span class="font-mono text-xs">Create First Project</span>
+          </aos-button>
+        </div>
+      }
+    </div>
+  } @else if (pm.filteredProjects().length === 0) {
+    <!-- Filtered Empty State -->
+    <div class="border-hairline bg-canvas rounded-md border p-10 text-center">
+      <div
+        class="bg-soft-stone text-muted mx-auto flex size-10 items-center justify-center rounded-full"
+      >
+        <aos-icons name="lucideFilter" class="size-5" />
+      </div>
+      <h3 class="text-ink mt-3 text-sm font-semibold">No matching projects</h3>
+      <p class="text-body-muted mx-auto mt-1 max-w-xs text-xs">
+        No projects match your current search or status filters.
+      </p>
+      <div class="mt-4">
+        <aos-button
+          variant="secondary"
+          size="xs"
+          (click)="onSearch(''); onStatusFilter('ALL'); onClientFilter('ALL')"
+        >
+          <span>Reset Filters</span>
+        </aos-button>
+      </div>
+    </div>
+  } @else {
+    <!-- Projects View: Grid or Table -->
+    @if (pm.viewMode() === "grid") {
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @for (project of pm.filteredProjects(); track project.id) {
+          <aos-project-card [project]="project" />
+        }
+      </div>
+    } @else {
+      <!-- Table View -->
+      <div class="border-hairline bg-canvas overflow-hidden rounded-md border">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="border-hairline bg-soft-stone/40 text-muted border-b font-mono uppercase">
+              <tr>
+                <th scope="col" class="px-5 py-3">Project</th>
+                <th scope="col" class="px-5 py-3">Client</th>
+                <th scope="col" class="px-5 py-3">Status</th>
+                <th scope="col" class="px-5 py-3">Budget</th>
+                <th scope="col" class="px-5 py-3">Rate</th>
+                <th scope="col" class="px-5 py-3">Created</th>
+                <th scope="col" class="px-5 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-hairline divide-y">
+              @for (project of pm.filteredProjects(); track project.id) {
+                <tr class="hover:bg-soft-stone/20 transition-colors">
+                  <!-- Name & Description -->
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="bg-soft-stone text-ink flex size-8 shrink-0 items-center justify-center rounded-md font-bold"
+                      >
+                        <aos-icons name="lucideFolderKanban" class="size-4" />
+                      </div>
+                      <div class="min-w-0">
+                        <div class="text-ink font-semibold">{{ project.name }}</div>
+                        @if (project.description) {
+                          <div class="text-body-muted max-w-xs truncate text-[11px]">
+                            {{ project.description }}
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </td>
+
+                  <!-- Client -->
+                  <td class="px-5 py-4 font-mono text-xs">
+                    <span class="inline-flex items-center gap-1.5">
+                      <aos-icons name="lucideBuilding2" class="text-muted size-3.5" />
+                      {{ pm.getClientName(project.clientId) }}
+                    </span>
+                  </td>
+
+                  <!-- Status -->
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[10px] font-medium"
+                      [class]="getStatusClass(project.status)"
+                    >
+                      <span
+                        class="size-1.5 rounded-full"
+                        [class]="getStatusDotClass(project.status)"
+                      ></span>
+                      <span>{{ getStatusLabel(project.status) }}</span>
+                    </span>
+                  </td>
+
+                  <!-- Budget -->
+                  <td class="px-5 py-4 font-mono text-xs font-semibold">
+                    @if (project.budget !== undefined && project.budget !== null) {
+                      {{ project.budget | currency: "USD" : "symbol" : "1.0-0" }}
+                    } @else {
+                      <span class="text-muted font-normal">—</span>
+                    }
+                  </td>
+
+                  <!-- Billing Rate -->
+                  <td class="px-5 py-4 font-mono text-xs">
+                    {{ project.billingRate | currency: "USD" : "symbol" : "1.0-0" }}/hr
+                  </td>
+
+                  <!-- Created Date -->
+                  <td class="text-body-muted px-5 py-4 font-mono text-[11px]">
+                    {{ project.createdAt | date: "mediumDate" }}
+                  </td>
+
+                  <!-- Actions -->
+                  <td class="px-5 py-4 text-right">
+                    <div class="flex items-center justify-end gap-1">
+                      <aos-button
+                        variant="ghost"
+                        size="xs"
+                        routerLink="../tasks"
+                        [queryParams]="{ projectId: project.id }"
+                        ariaLabel="View Tasks"
+                      >
+                        <span class="text-brand-green font-mono text-xs">Tasks</span>
+                        <aos-icons name="lucideArrowUpRight" class="text-brand-green ml-1 size-3" />
+                      </aos-button>
+
+                      @if (pm.canEdit()) {
+                        <aos-button
+                          variant="ghost"
+                          size="xs"
+                          (click)="pm.openEditModal(project)"
+                          ariaLabel="Edit Project"
+                        >
+                          <aos-icons name="lucidePencil" class="size-3.5" />
+                        </aos-button>
+                      }
+
+                      @if (pm.canDelete()) {
+                        <aos-button
+                          variant="ghost"
+                          size="xs"
+                          (click)="pm.openDeleteModal(project)"
+                          class="text-error hover:bg-error/10 hover:text-error"
+                          ariaLabel="Delete Project"
+                        >
+                          <aos-icons name="lucideTrash2" class="size-3.5" />
+                        </aos-button>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Modals -->
+  <aos-project-modal />
+  <aos-project-delete-modal />
+</div>

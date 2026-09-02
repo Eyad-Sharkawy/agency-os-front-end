@@ -1,4 +1,4 @@
-export type ProjectStatus = "PLANNING" | "IN_PROGRESS" | "ON_HOLD" | "COMPLETED" | "CANCELLED";
+export type ProjectStatus = "PLANNING" | "IN_PROGRESS" | "ON_HOLD" | "DELIVERED";
 
 export interface ProjectRequest {
   name: string;

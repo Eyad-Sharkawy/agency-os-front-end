@@ -26,6 +26,7 @@ export const routes: Routes = [
   {
     path: "w/:workspaceId",
     canActivate: [authGuard, tenantGuard],
+    canActivateChild: [tenantGuard],
     component: DashboardShell,
     children: [
       {

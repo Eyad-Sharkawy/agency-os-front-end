@@ -1,0 +1,240 @@
+@if (isOpen()) {
+  <!-- Modal Dialog -->
+  <dialog
+    open
+    aria-labelledby="project-modal-title"
+    class="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center border-0 bg-black/60 p-4 backdrop-blur-xs"
+  >
+    <div
+      class="bg-canvas border-hairline relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border p-6 shadow-2xl duration-150 sm:p-8"
+    >
+      <!-- Header -->
+      <div class="border-hairline flex items-center justify-between border-b pb-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-soft-stone text-ink flex size-10 items-center justify-center rounded-full">
+            <aos-icons name="lucideFolderKanban" class="size-5" />
+          </div>
+          <div>
+            <h2
+              id="project-modal-title"
+              class="text-ink font-display text-lg font-bold tracking-tight sm:text-xl"
+            >
+              {{ isEditMode() ? "Edit Project" : "Create New Project" }}
+            </h2>
+            <p class="text-body-muted text-xs">
+              {{
+                isEditMode()
+                  ? "Update deliverables, client mapping, and budget parameters."
+                  : "Launch a new project workspace linked to a client."
+              }}
+            </p>
+          </div>
+        </div>
+
+        <aos-button
+          variant="ghost"
+          size="sm"
+          type="button"
+          (click)="onClose()"
+          (keydown.enter)="onClose()"
+          class="size-8 rounded-full !p-0"
+          ariaLabel="Close dialog"
+        >
+          <aos-icons name="lucideX" class="size-5" />
+        </aos-button>
+      </div>
+
+      <!-- Error Alert -->
+      @if (errorMessage()) {
+        <div
+          class="border-error/20 bg-error/5 text-error mt-4 flex items-start gap-2.5 rounded-sm border p-3 text-xs"
+        >
+          <aos-icons name="lucideAlertCircle" class="mt-0.5 size-4 shrink-0" />
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- Form Body -->
+      <form (ngSubmit)="onSubmit()" class="mt-6 space-y-4">
+        <!-- Project Name -->
+        <div class="space-y-1.5">
+          <label
+            for="project-name"
+            class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+          >
+            Project Name <span class="text-error">*</span>
+          </label>
+          <input
+            id="project-name"
+            type="text"
+            name="projectName"
+            [ngModel]="name()"
+            (ngModelChange)="name.set($event)"
+            placeholder="e.g. Design System Overhaul"
+            required
+            class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border px-3.5 py-2.5 text-sm transition-colors focus:outline-none"
+          />
+          @if (name().length > 0 && !isNameValid()) {
+            <p class="text-error font-mono text-[11px]">Name must be at least 2 characters long.</p>
+          }
+        </div>
+
+        <!-- Client Association -->
+        <div class="space-y-1.5">
+          <span
+            id="project-client-label"
+            class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+          >
+            Client Organization <span class="text-error">*</span>
+          </span>
+          @if (pm.clients().length > 0) {
+            <aos-select
+              [options]="clientOptions()"
+              [ngModel]="clientId()"
+              (ngModelChange)="clientId.set($event)"
+              name="projectClient"
+              placeholder="Select a client..."
+              ariaLabelledby="project-client-label"
+            />
+          } @else {
+            <div
+              class="border-hairline bg-soft-stone/40 text-body-muted rounded-md border p-3 text-xs"
+            >
+              No clients available in this workspace yet. Please create a client first.
+            </div>
+          }
+        </div>
+
+        <!-- Project Status -->
+        <div class="space-y-1.5">
+          <span
+            id="project-status-label"
+            class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+          >
+            Status <span class="text-error">*</span>
+          </span>
+          <aos-select
+            [options]="statusOptions"
+            [ngModel]="status()"
+            (ngModelChange)="status.set($event)"
+            name="projectStatus"
+            placeholder="Select status..."
+            ariaLabelledby="project-status-label"
+          />
+        </div>
+
+        <!-- Financial Metrics (Budget & Rate) -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <!-- Budget -->
+          <div class="space-y-1.5">
+            <label
+              for="project-budget"
+              class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+            >
+              Budget ($)
+            </label>
+            <div class="relative">
+              <span
+                class="text-muted pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-xs"
+              >
+                $
+              </span>
+              <input
+                id="project-budget"
+                type="number"
+                name="projectBudget"
+                min="0"
+                step="100"
+                [ngModel]="budget()"
+                (ngModelChange)="budget.set($event)"
+                placeholder="10000"
+                class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border py-2.5 pr-3.5 pl-7 text-sm transition-colors focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <!-- Billing Rate -->
+          <div class="space-y-1.5">
+            <label
+              for="project-billing-rate"
+              class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+            >
+              Hourly Rate ($/hr) <span class="text-error">*</span>
+            </label>
+            <div class="relative">
+              <span
+                class="text-muted pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-xs"
+              >
+                $
+              </span>
+              <input
+                id="project-billing-rate"
+                type="number"
+                name="projectBillingRate"
+                min="0"
+                step="10"
+                [ngModel]="billingRate()"
+                (ngModelChange)="billingRate.set($event)"
+                placeholder="150"
+                required
+                class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border py-2.5 pr-3.5 pl-7 text-sm transition-colors focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Description -->
+        <div class="space-y-1.5">
+          <label
+            for="project-description"
+            class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+          >
+            Description <span class="text-muted text-[10px] font-normal lowercase">(optional)</span>
+          </label>
+          <textarea
+            id="project-description"
+            name="projectDescription"
+            rows="3"
+            [ngModel]="description()"
+            (ngModelChange)="description.set($event)"
+            placeholder="Outline objectives, deliverables, milestones, and scope..."
+            class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full resize-none rounded-md border px-3.5 py-2 text-sm transition-colors focus:outline-none"
+          ></textarea>
+        </div>
+
+        <!-- Footer Actions -->
+        <div
+          class="border-hairline mt-6 flex flex-col-reverse gap-2.5 border-t pt-4 sm:flex-row sm:items-center sm:justify-end sm:gap-3"
+        >
+          <aos-button
+            variant="outlined"
+            size="sm"
+            type="button"
+            (click)="onClose()"
+            (keydown.enter)="onClose()"
+            [disabled]="isSubmitting()"
+            class="w-full sm:w-auto"
+          >
+            Cancel
+          </aos-button>
+
+          <aos-button
+            variant="primary"
+            size="sm"
+            type="submit"
+            [disabled]="!isFormValid() || isSubmitting()"
+            class="w-full sm:w-auto"
+          >
+            @if (isSubmitting()) {
+              <aos-icons name="lucideLoader2" class="mr-2 size-4 animate-spin" />
+              <span>Saving...</span>
+            } @else {
+              <aos-icons name="lucideCheck" class="mr-1.5 size-4" />
+              <span>{{ isEditMode() ? "Save Changes" : "Create Project" }}</span>
+            }
+          </aos-button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+}

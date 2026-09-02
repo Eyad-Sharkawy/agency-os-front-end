@@ -26,13 +26,31 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (isApiRequest) {
-        const tenantId = workspaceStore?.activeTenantId?.() ?? null;
         const isGlobalWorkspaceEndpoint =
           req.url === `${env.apiUrl}/workspaces` ||
           req.url.startsWith(`${env.apiUrl}/workspaces/invitations`);
 
-        if (tenantId && !isGlobalWorkspaceEndpoint && !headers.has("X-Tenant-ID")) {
-          headers = headers.set("X-Tenant-ID", tenantId);
+        if (!isGlobalWorkspaceEndpoint && !headers.has("X-Tenant-ID")) {
+          let tenantId = workspaceStore?.activeTenantId?.() ?? null;
+
+          if (!tenantId) {
+            try {
+              tenantId = localStorage.getItem("agency_os_active_tenant_id");
+            } catch {
+              // Ignore in environments without localStorage
+            }
+          }
+
+          if (!tenantId && typeof window !== "undefined" && window.location?.pathname) {
+            const match = window.location.pathname.match(/\/w\/([^/]+)/);
+            if (match && match[1]) {
+              tenantId = match[1];
+            }
+          }
+
+          if (tenantId) {
+            headers = headers.set("X-Tenant-ID", tenantId);
+          }
         }
       }
 
