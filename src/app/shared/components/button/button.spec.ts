@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
-import { Button } from "./button";
 import { Component } from "@angular/core";
+import { describe, it, expect } from "vitest";
+import { Button } from "./button";
 
 @Component({
   imports: [Button],
@@ -154,5 +155,52 @@ describe("Button Component", () => {
     expect(buttonEl.disabled).toBe(true);
     expect(hostEl.className).toContain("pointer-events-none");
     expect(hostEl.getAttribute("aria-disabled")).toBe("true");
+  });
+
+  it("should handle loading state correctly", () => {
+    const { fixture: fix, component: btn } = createButtonComponent("primary");
+    fix.componentRef.setInput("loading", true);
+    fix.detectChanges();
+
+    expect(btn.effectiveDisabled()).toBe(true);
+    const hostEl = fix.nativeElement as HTMLElement;
+    const buttonEl = fix.nativeElement.querySelector("button");
+
+    expect(buttonEl.disabled).toBe(true);
+    expect(hostEl.getAttribute("aria-busy")).toBe("true");
+    expect(hostEl.getAttribute("aria-disabled")).toBe("true");
+    expect(hostEl.className).toContain("pointer-events-none");
+
+    const spinner = fix.nativeElement.querySelector("aos-icons");
+    expect(spinner).toBeTruthy();
+    expect(spinner.className).toContain("animate-spin");
+  });
+
+  it("should display loadingText when provided during loading", () => {
+    const { fixture: fix } = createButtonComponent("primary");
+    fix.componentRef.setInput("loading", true);
+    fix.componentRef.setInput("loadingText", "Provisioning...");
+    fix.detectChanges();
+
+    const buttonEl = fix.nativeElement.querySelector("button");
+    expect(buttonEl.textContent).toContain("Provisioning...");
+  });
+
+  it("should prevent click propagation when loading is true", () => {
+    const { fixture: fix } = createButtonComponent("primary");
+    fix.componentRef.setInput("loading", true);
+    fix.detectChanges();
+
+    const hostEl = fix.nativeElement as HTMLElement;
+    let clicked = false;
+    hostEl.addEventListener("click", () => {
+      clicked = true;
+    });
+
+    const event = new MouseEvent("click", { cancelable: true });
+    hostEl.dispatchEvent(event);
+
+    expect(event.defaultPrevented).toBe(true);
+    expect(clicked).toBe(false);
   });
 });

@@ -142,17 +142,14 @@
             size="sm"
             type="submit"
             class="w-full sm:w-auto"
-            [disabled]="!isFormValid() || isSubmitting()"
+            [disabled]="!isFormValid()"
+            [loading]="isSubmitting()"
+            loadingText="Saving..."
           >
-            @if (isSubmitting()) {
-              <aos-icons name="lucideLoader2" class="mr-1.5 size-4 animate-spin" />
-              <span class="font-mono text-xs">Saving...</span>
-            } @else {
-              <aos-icons name="lucideCheck" class="mr-1.5 size-4" />
-              <span class="font-mono text-xs">{{
-                isEditMode() ? "Save Changes" : "Create Client"
-              }}</span>
-            }
+            <aos-icons name="lucideCheck" class="mr-1.5 size-4" />
+            <span class="font-mono text-xs">{{
+              isEditMode() ? "Save Changes" : "Create Client"
+            }}</span>
           </aos-button>
         </div>
       </form>

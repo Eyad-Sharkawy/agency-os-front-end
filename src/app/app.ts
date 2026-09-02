@@ -1,6 +1,13 @@
 import { Component, computed, inject } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
-import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+  RouterOutlet,
+} from "@angular/router";
 import { provideIcons } from "@ng-icons/core";
 import { lucideMenu } from "@ng-icons/lucide";
 import { filter, map } from "rxjs";
@@ -25,6 +32,20 @@ export class App {
       map(e => e.urlAfterRedirects || e.url),
     ),
     { initialValue: this.router.url },
+  );
+
+  readonly isNavigating = toSignal(
+    this.router.events.pipe(
+      filter(
+        e =>
+          e instanceof NavigationStart ||
+          e instanceof NavigationEnd ||
+          e instanceof NavigationCancel ||
+          e instanceof NavigationError,
+      ),
+      map(e => e instanceof NavigationStart),
+    ),
+    { initialValue: false },
   );
 
   readonly isAppRoute = computed(() => {

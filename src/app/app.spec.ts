@@ -46,4 +46,21 @@ describe("App", () => {
     fixture.detectChanges();
     expect(app.isAppRoute()).toBe(false);
   });
+
+  it("should display progress bar when isNavigating is active and hide when navigation ends", async () => {
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(app.isNavigating()).toBe(false);
+    expect(fixture.nativeElement.querySelector("progress")).toBeNull();
+
+    await router.navigateByUrl("/workspaces");
+    fixture.detectChanges();
+
+    // After navigation finishes, isNavigating resets to false
+    expect(app.isNavigating()).toBe(false);
+    expect(fixture.nativeElement.querySelector("progress")).toBeNull();
+  });
 });

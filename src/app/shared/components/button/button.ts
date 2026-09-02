@@ -1,6 +1,9 @@
 import { booleanAttribute, Component, computed, input, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { NgTemplateOutlet } from "@angular/common";
+import { provideIcons } from "@ng-icons/core";
+import { lucideLoader2 } from "@ng-icons/lucide";
+import { Icons } from "../icons/icons";
 
 type BUTTON_VARIANTS =
   "primary" | "secondary" | "inverted" | "outlined" | "pill-outline" | "danger" | "ghost";
@@ -11,13 +14,15 @@ type BUTTON_JUSTIFY = "center" | "start" | "between" | "end";
 
 @Component({
   selector: "aos-button",
-  imports: [RouterLink, NgTemplateOutlet],
+  imports: [RouterLink, NgTemplateOutlet, Icons],
+  providers: [provideIcons({ lucideLoader2 })],
   host: {
     class: "inline-flex items-center justify-center shrink-0 select-none",
     "[class.w-full]": "fullWidth()",
     "[class.pointer-events-none]": "effectiveDisabled()",
     "[class.rounded-none]": "shape() === 'square'",
     "[attr.aria-disabled]": "effectiveDisabled() ? 'true' : null",
+    "[attr.aria-busy]": "loading() ? 'true' : null",
     "[attr.aria-label]": "null",
     "[attr.aria-expanded]": "null",
     "[attr.aria-controls]": "null",
@@ -25,7 +30,16 @@ type BUTTON_JUSTIFY = "center" | "start" | "between" | "end";
   },
   template: `
     <ng-template #buttonContent>
-      <ng-content />
+      @if (loading()) {
+        <aos-icons name="lucideLoader2" [class]="spinnerClass()" class="shrink-0 animate-spin" />
+        @if (loadingText()) {
+          <span>{{ loadingText() }}</span>
+        } @else if (shape() !== "circle") {
+          <ng-content />
+        }
+      } @else {
+        <ng-content />
+      }
     </ng-template>
 
     @if (href()) {
@@ -82,9 +96,23 @@ export class Button {
   readonly ariaControls = input<string | undefined>(undefined);
   readonly disabled = input<boolean, unknown>(false, { transform: booleanAttribute });
   readonly disableOnClick = input<boolean, unknown>(false, { transform: booleanAttribute });
+  readonly loading = input<boolean, unknown>(false, { transform: booleanAttribute });
+  readonly loadingText = input<string | undefined>(undefined);
 
   private readonly clicked = signal(false);
-  readonly effectiveDisabled = computed(() => this.disabled() || this.clicked());
+  readonly effectiveDisabled = computed(() => this.disabled() || this.clicked() || this.loading());
+
+  protected readonly spinnerClass = computed(() => {
+    const sizeMap: Record<BUTTON_SIZES, string> = {
+      xs: "size-3",
+      sm: "size-3.5",
+      md: "size-4",
+      lg: "size-5",
+    };
+    const size = sizeMap[this.size()] || "size-4";
+    const margin = this.shape() === "circle" ? "" : "mr-1.5";
+    return `${size} ${margin}`.trim();
+  });
 
   protected handleHostClick(event: MouseEvent): void {
     if (this.effectiveDisabled()) {

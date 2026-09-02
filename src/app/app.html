@@ -1,4 +1,11 @@
 <div class="bg-canvas text-ink flex min-h-screen flex-col">
+  @if (isNavigating()) {
+    <div class="bg-brand-green/20 fixed inset-x-0 top-0 z-50 h-0.5 overflow-hidden">
+      <progress class="sr-only" aria-label="Loading page"></progress>
+      <div class="animate-indeterminate bg-brand-green h-full shadow-xs" aria-hidden="true"></div>
+    </div>
+  }
+
   @if (!isAppRoute()) {
     <aos-navbar />
   }
