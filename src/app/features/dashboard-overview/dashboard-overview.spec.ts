@@ -43,7 +43,7 @@ describe("DashboardOverview Component", () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain("Acme Agency");
     expect(compiled.textContent).toContain("Active Tenant: acme-agency");
-    expect(compiled.querySelectorAll(".animate-pulse").length).toBe(0);
+    expect(compiled.querySelectorAll(".animate-pulse")).toHaveLength(0);
   });
 
   it("should render quick links to clients, projects, time tracking and invoices", () => {

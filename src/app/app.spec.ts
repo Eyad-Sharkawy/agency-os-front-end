@@ -54,13 +54,13 @@ describe("App", () => {
     fixture.detectChanges();
 
     expect(app.isNavigating()).toBe(false);
-    expect(fixture.nativeElement.querySelector('[role="progressbar"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector("progress")).toBeNull();
 
     await router.navigateByUrl("/workspaces");
     fixture.detectChanges();
 
     // After navigation finishes, isNavigating resets to false
     expect(app.isNavigating()).toBe(false);
-    expect(fixture.nativeElement.querySelector('[role="progressbar"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector("progress")).toBeNull();
   });
 });
