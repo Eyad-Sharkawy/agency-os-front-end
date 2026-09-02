@@ -84,15 +84,11 @@
           class="w-full sm:w-auto"
           (click)="onDelete()"
           (keydown.enter)="onDelete()"
-          [disabled]="isDeleting()"
+          [loading]="isDeleting()"
+          loadingText="Deleting..."
         >
-          @if (isDeleting()) {
-            <aos-icons name="lucideLoader2" class="mr-1.5 size-4 animate-spin" />
-            <span class="font-mono text-xs">Deleting...</span>
-          } @else {
-            <aos-icons name="lucideTrash2" class="mr-1.5 size-4" />
-            <span class="font-mono text-xs">Delete Client</span>
-          }
+          <aos-icons name="lucideTrash2" class="mr-1.5 size-4" />
+          <span class="font-mono text-xs">Delete Client</span>
         </aos-button>
       </div>
     </div>
