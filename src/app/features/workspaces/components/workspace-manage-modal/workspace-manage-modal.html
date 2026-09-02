@@ -45,6 +45,7 @@
           class="relative -mb-px"
           type="button"
           (click)="setTab('general')"
+          (keydown.enter)="setTab('general')"
           [buttonClass]="
             'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
             (activeTab() === 'general'
@@ -63,6 +64,7 @@
           class="relative -mb-px"
           type="button"
           (click)="setTab('members')"
+          (keydown.enter)="setTab('members')"
           [buttonClass]="
             'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
             (activeTab() === 'members'
@@ -93,6 +95,7 @@
           class="relative -mb-px"
           type="button"
           (click)="setTab('invite')"
+          (keydown.enter)="setTab('invite')"
           [buttonClass]="
             'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
             (activeTab() === 'invite'
@@ -112,6 +115,7 @@
             class="relative -mb-px"
             type="button"
             (click)="setTab('danger')"
+            (keydown.enter)="setTab('danger')"
             [buttonClass]="
               'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
               (activeTab() === 'danger'

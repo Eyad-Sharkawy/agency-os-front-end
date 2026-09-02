@@ -41,6 +41,7 @@
         justify="between"
         type="button"
         (click)="toggleWorkspaceMenu()"
+        (keydown.enter)="toggleWorkspaceMenu()"
         [ariaExpanded]="isWorkspaceMenuOpen() ? 'true' : 'false'"
         ariaLabel="Toggle workspace menu"
         buttonClass="border-hairline bg-soft-stone/40 hover:bg-soft-stone/70 border p-2.5 w-full text-left"
@@ -92,6 +93,7 @@
                   justify="start"
                   type="button"
                   (click)="selectWorkspace(ws)"
+                  (keydown.enter)="selectWorkspace(ws)"
                   [buttonClass]="
                     'flex min-w-0 flex-1 items-center gap-2 text-left !p-0 ' +
                     (ws.tenantId === activeWorkspace()?.tenantId ? 'font-semibold' : '')

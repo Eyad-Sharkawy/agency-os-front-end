@@ -107,6 +107,7 @@
           shape="square"
           type="button"
           (click)="onStatusFilter('ALL')"
+          (keydown.enter)="onStatusFilter('ALL')"
           [buttonClass]="
             'font-mono text-xs px-2.5 py-1 ' +
             (cm.statusFilter() === 'ALL'
@@ -122,6 +123,7 @@
           shape="square"
           type="button"
           (click)="onStatusFilter('ACTIVE')"
+          (keydown.enter)="onStatusFilter('ACTIVE')"
           [buttonClass]="
             'font-mono text-xs px-2.5 py-1 ' +
             (cm.statusFilter() === 'ACTIVE'
@@ -137,6 +139,7 @@
           shape="square"
           type="button"
           (click)="onStatusFilter('INACTIVE')"
+          (keydown.enter)="onStatusFilter('INACTIVE')"
           [buttonClass]="
             'font-mono text-xs px-2.5 py-1 ' +
             (cm.statusFilter() === 'INACTIVE'
@@ -156,6 +159,7 @@
           shape="square"
           type="button"
           (click)="onViewMode('grid')"
+          (keydown.enter)="onViewMode('grid')"
           ariaLabel="Grid view"
           [buttonClass]="
             '!p-1.5 ' +
@@ -172,6 +176,7 @@
           shape="square"
           type="button"
           (click)="onViewMode('table')"
+          (keydown.enter)="onViewMode('table')"
           ariaLabel="Table view"
           [buttonClass]="
             '!p-1.5 ' +

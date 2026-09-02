@@ -45,6 +45,7 @@
           class="relative -mb-px"
           type="button"
           (click)="setTab('personal')"
+          (keydown.enter)="setTab('personal')"
           [buttonClass]="
             'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
             (activeTab() === 'personal'
@@ -63,6 +64,7 @@
           class="relative -mb-px"
           type="button"
           (click)="setTab('security')"
+          (keydown.enter)="setTab('security')"
           [buttonClass]="
             'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
             (activeTab() === 'security'
@@ -81,6 +83,7 @@
           class="relative -mb-px"
           type="button"
           (click)="setTab('sessions')"
+          (keydown.enter)="setTab('sessions')"
           [buttonClass]="
             'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
             (activeTab() === 'sessions'
@@ -99,6 +102,7 @@
           class="relative -mb-px"
           type="button"
           (click)="setTab('advanced')"
+          (keydown.enter)="setTab('advanced')"
           [buttonClass]="
             'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
             (activeTab() === 'advanced'

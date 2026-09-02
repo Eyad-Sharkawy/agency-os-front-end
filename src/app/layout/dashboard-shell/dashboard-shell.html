@@ -18,6 +18,7 @@
         class="fixed inset-0 block !p-0"
         buttonClass="fixed inset-0 cursor-pointer border-0 bg-black/60 p-0 backdrop-blur-xs rounded-none w-full h-full"
         (click)="closeMobileSidebar()"
+        (keydown.enter)="closeMobileSidebar()"
         (keydown.escape)="closeMobileSidebar()"
         ariaLabel="Close mobile sidebar backdrop"
         animate.enter="backdrop-enter"
