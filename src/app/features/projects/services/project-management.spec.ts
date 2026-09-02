@@ -162,48 +162,48 @@ describe("ProjectManagement", () => {
     service.clients.set(mockClients);
 
     service.setSearchQuery("Alpha");
-    expect(service.filteredProjects().length).toBe(1);
+    expect(service.filteredProjects()).toHaveLength(1);
     expect(service.filteredProjects()[0].id).toBe("proj-1");
 
     service.setSearchQuery("Flutter");
-    expect(service.filteredProjects().length).toBe(1);
+    expect(service.filteredProjects()).toHaveLength(1);
     expect(service.filteredProjects()[0].id).toBe("proj-2");
 
     service.setSearchQuery("Globex");
-    expect(service.filteredProjects().length).toBe(1);
+    expect(service.filteredProjects()).toHaveLength(1);
     expect(service.filteredProjects()[0].id).toBe("proj-2");
 
     service.setSearchQuery("Nonexistent");
-    expect(service.filteredProjects().length).toBe(0);
+    expect(service.filteredProjects()).toHaveLength(0);
   });
 
   it("should filter projects by status", () => {
     service.projects.set(mockProjects);
 
     service.setStatusFilter("IN_PROGRESS");
-    expect(service.filteredProjects().length).toBe(1);
+    expect(service.filteredProjects()).toHaveLength(1);
     expect(service.filteredProjects()[0].id).toBe("proj-1");
 
     service.setStatusFilter("PLANNING");
-    expect(service.filteredProjects().length).toBe(1);
+    expect(service.filteredProjects()).toHaveLength(1);
     expect(service.filteredProjects()[0].id).toBe("proj-2");
 
     service.setStatusFilter("DELIVERED");
-    expect(service.filteredProjects().length).toBe(1);
+    expect(service.filteredProjects()).toHaveLength(1);
     expect(service.filteredProjects()[0].id).toBe("proj-3");
 
     service.setStatusFilter("ON_HOLD");
-    expect(service.filteredProjects().length).toBe(0);
+    expect(service.filteredProjects()).toHaveLength(0);
   });
 
   it("should filter projects by client", () => {
     service.projects.set(mockProjects);
 
     service.setClientFilter("client-1");
-    expect(service.filteredProjects().length).toBe(2);
+    expect(service.filteredProjects()).toHaveLength(2);
 
     service.setClientFilter("client-2");
-    expect(service.filteredProjects().length).toBe(1);
+    expect(service.filteredProjects()).toHaveLength(1);
   });
 
   it("should create project and prepend to list", () => {
@@ -234,7 +234,7 @@ describe("ProjectManagement", () => {
       expect(result).toEqual(newProject);
     });
 
-    expect(service.projects().length).toBe(4);
+    expect(service.projects()).toHaveLength(4);
     expect(service.projects()[0].id).toBe("proj-4");
   });
 
@@ -270,7 +270,7 @@ describe("ProjectManagement", () => {
 
     service.deleteProject("proj-1").subscribe();
 
-    expect(service.projects().length).toBe(2);
+    expect(service.projects()).toHaveLength(2);
     expect(service.projects().find(p => p.id === "proj-1")).toBeUndefined();
   });
 
@@ -312,5 +312,51 @@ describe("ProjectManagement", () => {
     expect(service.canCreate()).toBe(false);
     expect(service.canEdit()).toBe(false);
     expect(service.canDelete()).toBe(false);
+  });
+
+  it("should return client name or fallback to 'Unknown Client'", () => {
+    service.clients.set(mockClients);
+    expect(service.getClientName("client-1")).toBe("Acme Corp");
+    expect(service.getClientName("nonexistent-id")).toBe("Unknown Client");
+  });
+
+  it("should load clients independently via loadClients", () => {
+    service.loadClients();
+    expect(service.clients()).toEqual(mockClients);
+
+    clientApiMock.getClients.mockReturnValue(throwError(() => new Error("Client error")));
+    service.loadClients();
+    // Does not crash
+    expect(service.clients()).toEqual(mockClients);
+  });
+
+  it("should handle error messages when error is an Error instance", () => {
+    projectApiMock.getProjects.mockReturnValue(throwError(() => new Error("Network timeout")));
+    service.loadProjects();
+    expect(service.errorMessage()).toBe("Network timeout");
+
+    projectApiMock.getProjects.mockReturnValue(throwError(() => "Unknown failure"));
+    service.loadProjects();
+    expect(service.errorMessage()).toBe("Failed to load projects.");
+  });
+
+  it("should compute stats correctly including onHold status", () => {
+    service.projects.set([
+      ...mockProjects,
+      {
+        id: "proj-hold",
+        name: "Hold Project",
+        status: "ON_HOLD",
+        clientId: "client-1",
+        budget: 1000,
+        billingRate: 100,
+        createdAt: "2026-01-01T00:00:00Z",
+        updatedAt: "2026-01-01T00:00:00Z",
+      },
+    ]);
+
+    expect(service.stats().onHold).toBe(1);
+    expect(service.stats().total).toBe(4);
+    expect(service.stats().totalBudget).toBe(43000);
   });
 });

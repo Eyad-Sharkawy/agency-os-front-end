@@ -207,6 +207,7 @@
         size="sm"
         type="button"
         (click)="pm.loadProjects()"
+        (keydown.enter)="pm.loadProjects()"
         [disabled]="pm.isLoading()"
         ariaLabel="Refresh projects list"
       >
@@ -249,7 +250,13 @@
       <h3 class="mt-3 font-semibold">Failed to load projects</h3>
       <p class="text-body-muted mt-1 text-xs">{{ pm.errorMessage() }}</p>
       <div class="mt-4">
-        <aos-button variant="outlined" size="sm" (click)="pm.loadProjects()">
+        <aos-button
+          variant="outlined"
+          size="sm"
+          type="button"
+          (click)="pm.loadProjects()"
+          (keydown.enter)="pm.loadProjects()"
+        >
           <aos-icons name="lucideRefreshCw" class="mr-1.5 size-4" />
           <span>Try Again</span>
         </aos-button>
@@ -270,7 +277,13 @@
       </p>
       @if (pm.canCreate()) {
         <div class="mt-6">
-          <aos-button variant="primary" size="sm" (click)="pm.openCreateModal()">
+          <aos-button
+            variant="primary"
+            size="sm"
+            type="button"
+            (click)="pm.openCreateModal()"
+            (keydown.enter)="pm.openCreateModal()"
+          >
             <aos-icons name="lucidePlus" class="mr-1.5 size-4" />
             <span class="font-mono text-xs">Create First Project</span>
           </aos-button>
@@ -293,7 +306,9 @@
         <aos-button
           variant="secondary"
           size="xs"
+          type="button"
           (click)="onSearch(''); onStatusFilter('ALL'); onClientFilter('ALL')"
+          (keydown.enter)="onSearch(''); onStatusFilter('ALL'); onClientFilter('ALL')"
         >
           <span>Reset Filters</span>
         </aos-button>
@@ -404,7 +419,9 @@
                         <aos-button
                           variant="ghost"
                           size="xs"
+                          type="button"
                           (click)="pm.openEditModal(project)"
+                          (keydown.enter)="pm.openEditModal(project)"
                           ariaLabel="Edit Project"
                         >
                           <aos-icons name="lucidePencil" class="size-3.5" />
@@ -415,7 +432,9 @@
                         <aos-button
                           variant="ghost"
                           size="xs"
+                          type="button"
                           (click)="pm.openDeleteModal(project)"
+                          (keydown.enter)="pm.openDeleteModal(project)"
                           class="text-error hover:bg-error/10 hover:text-error"
                           ariaLabel="Delete Project"
                         >

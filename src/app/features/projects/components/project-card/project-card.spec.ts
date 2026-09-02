@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ProjectResponse } from "../../../../core/api/models/project.models";
+import { ProjectResponse, ProjectStatus } from "../../../../core/api/models/project.models";
 import { ProjectManagement } from "../../services/project-management";
 import { ProjectCard } from "./project-card";
 
@@ -65,9 +65,19 @@ describe("ProjectCard", () => {
     expect(component.getStatusLabel("IN_PROGRESS")).toBe("In Progress");
     expect(component.getStatusLabel("ON_HOLD")).toBe("On Hold");
     expect(component.getStatusLabel("DELIVERED")).toBe("Delivered");
+    expect(component.getStatusLabel("OTHER" as ProjectStatus)).toBe("OTHER");
 
+    expect(component.getStatusClass("PLANNING")).toContain("amber");
     expect(component.getStatusClass("IN_PROGRESS")).toContain("bg-brand-green/10");
+    expect(component.getStatusClass("ON_HOLD")).toContain("orange");
+    expect(component.getStatusClass("DELIVERED")).toContain("deep-green");
+    expect(component.getStatusClass("OTHER" as ProjectStatus)).toContain("soft-stone");
+
+    expect(component.getStatusDotClass("PLANNING")).toBe("bg-amber-500");
     expect(component.getStatusDotClass("IN_PROGRESS")).toBe("bg-brand-green");
+    expect(component.getStatusDotClass("ON_HOLD")).toBe("bg-orange-500");
+    expect(component.getStatusDotClass("DELIVERED")).toBe("bg-deep-green");
+    expect(component.getStatusDotClass("OTHER" as ProjectStatus)).toBe("bg-muted");
   });
 
   it("should trigger edit modal on edit click", () => {

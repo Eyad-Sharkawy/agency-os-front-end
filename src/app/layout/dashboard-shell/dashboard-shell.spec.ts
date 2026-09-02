@@ -79,8 +79,9 @@ describe("DashboardShell Component", () => {
     await fixture.whenStable();
   });
 
-  it("should create dashboard shell", () => {
+  it("should create dashboard shell and expose activeWorkspace", () => {
     expect(component).toBeTruthy();
+    expect(component.activeWorkspace()).toEqual(mockWorkspace);
   });
 
   it("should render sidebar and router outlet", () => {

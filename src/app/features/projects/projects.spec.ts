@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ClientResponse } from "../../core/api/models/client.models";
-import { ProjectResponse } from "../../core/api/models/project.models";
+import { ProjectResponse, ProjectStatus } from "../../core/api/models/project.models";
 import { ProjectsComponent } from "./projects";
 import {
   ProjectFilterStatus,
@@ -185,5 +185,74 @@ describe("ProjectsComponent", () => {
 
     component.onViewMode("table");
     expect(pmMock.setViewMode).toHaveBeenCalledWith("table");
+  });
+
+  it("should return correct status classes, dots, and labels for all statuses", () => {
+    expect(component.getStatusClass("PLANNING")).toContain("amber");
+    expect(component.getStatusClass("IN_PROGRESS")).toContain("brand-green");
+    expect(component.getStatusClass("ON_HOLD")).toContain("orange");
+    expect(component.getStatusClass("DELIVERED")).toContain("deep-green");
+    expect(component.getStatusClass("UNKNOWN" as ProjectStatus)).toContain("soft-stone");
+
+    expect(component.getStatusDotClass("PLANNING")).toBe("bg-amber-500");
+    expect(component.getStatusDotClass("IN_PROGRESS")).toBe("bg-brand-green");
+    expect(component.getStatusDotClass("ON_HOLD")).toBe("bg-orange-500");
+    expect(component.getStatusDotClass("DELIVERED")).toBe("bg-deep-green");
+    expect(component.getStatusDotClass("UNKNOWN" as ProjectStatus)).toBe("bg-muted");
+
+    expect(component.getStatusLabel("PLANNING")).toBe("Planning");
+    expect(component.getStatusLabel("IN_PROGRESS")).toBe("In Progress");
+    expect(component.getStatusLabel("ON_HOLD")).toBe("On Hold");
+    expect(component.getStatusLabel("DELIVERED")).toBe("Delivered");
+    expect(component.getStatusLabel("UNKNOWN" as ProjectStatus)).toBe("UNKNOWN");
+  });
+
+  it("should compute client filter options correctly", () => {
+    expect(component.clientFilterOptions()).toEqual([
+      { label: "All Clients", value: "ALL" },
+      { label: "Acme Corp", value: "client-1" },
+    ]);
+  });
+
+  it("should render loading skeleton when isLoading is true", () => {
+    pmMock.isLoading.set(true);
+    fixture.detectChanges();
+
+    const skeletons = fixture.nativeElement.querySelectorAll(".animate-pulse");
+    expect(skeletons.length).toBeGreaterThan(0);
+  });
+
+  it("should render error message and handle retry click", () => {
+    pmMock.errorMessage.set("Server error occurred");
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Server error occurred");
+    expect(compiled.textContent).toContain("Failed to load projects");
+
+    const tryAgainBtn = compiled.querySelector("aos-button[variant='outlined']") as HTMLElement;
+    expect(tryAgainBtn).not.toBeNull();
+    tryAgainBtn.click();
+    expect(pmMock.loadProjects).toHaveBeenCalled();
+  });
+
+  it("should handle table action clicks for edit and delete", () => {
+    pmMock.viewMode.set("table");
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const editBtn = compiled.querySelector('aos-button[ariaLabel="Edit Project"]') as HTMLElement;
+    const deleteBtn = compiled.querySelector(
+      'aos-button[ariaLabel="Delete Project"]',
+    ) as HTMLElement;
+
+    expect(editBtn).not.toBeNull();
+    expect(deleteBtn).not.toBeNull();
+
+    editBtn.click();
+    expect(pmMock.openEditModal).toHaveBeenCalledWith(mockProjects[0]);
+
+    deleteBtn.click();
+    expect(pmMock.openDeleteModal).toHaveBeenCalledWith(mockProjects[0]);
   });
 });

@@ -297,4 +297,21 @@ describe("ClientManagement", () => {
       },
     });
   });
+
+  it("should open invite modal with selected client", () => {
+    service.openInviteModal(mockClients[0]);
+    expect(service.isInviteModalOpen()).toBe(true);
+    expect(service.selectedClient()).toEqual(mockClients[0]);
+  });
+
+  it("should compute initials for multi-word, single-word, and empty client names", () => {
+    expect(service.getInitials("Acme Corp")).toBe("AC");
+    expect(service.getInitials("Global")).toBe("GL");
+    expect(service.getInitials("")).toBe("CL");
+  });
+
+  it("should set view mode", () => {
+    service.setViewMode("table");
+    expect(service.viewMode()).toBe("table");
+  });
 });

@@ -87,7 +87,7 @@ export class ProjectManagement {
       const matchesSearch =
         !query ||
         project.name.toLowerCase().includes(query) ||
-        (project.description && project.description.toLowerCase().includes(query)) ||
+        project.description?.toLowerCase().includes(query) ||
         clientName.includes(query);
 
       const matchesStatus = status === "ALL" || project.status === status;

@@ -60,4 +60,35 @@ describe("WorkspaceCard Component", () => {
     expect(managedWs).toEqual(mockWorkspace);
     expect(selectedWs).toBeUndefined();
   });
+
+  it("should compute initials for single word and empty names", () => {
+    fixture.componentRef.setInput("workspace", { ...mockWorkspace, name: "Agency" });
+    expect(component.initials()).toBe("AG");
+
+    fixture.componentRef.setInput("workspace", { ...mockWorkspace, name: "" });
+    expect(component.initials()).toBe("OS");
+  });
+
+  it("should return correct role badges for all roles", () => {
+    fixture.componentRef.setInput("workspace", { ...mockWorkspace, role: "ADMIN" });
+    expect(component.roleBadgeClass()).toContain("primary");
+
+    fixture.componentRef.setInput("workspace", { ...mockWorkspace, role: "MEMBER" });
+    expect(component.roleBadgeClass()).toContain("soft-stone");
+
+    fixture.componentRef.setInput("workspace", { ...mockWorkspace, role: "CLIENT" });
+    expect(component.roleBadgeClass()).toContain("slate");
+
+    fixture.componentRef.setInput("workspace", { ...mockWorkspace, role: undefined });
+    expect(component.roleBadgeClass()).toContain("muted");
+  });
+
+  it("should render active ribbon when isActive is true", () => {
+    fixture.componentRef.setInput("isActive", true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("ACTIVE");
+    expect(compiled.textContent).toContain("Enter");
+  });
 });
