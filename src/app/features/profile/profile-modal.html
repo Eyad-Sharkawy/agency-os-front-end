@@ -38,57 +38,81 @@
 
       <!-- Navigation Tabs -->
       <div class="border-hairline bg-canvas flex overflow-x-auto border-b px-6 pt-2">
-        <button
+        <aos-button
+          variant="ghost"
+          size="sm"
+          shape="square"
+          class="relative -mb-px"
           type="button"
           (click)="setTab('personal')"
-          [class.border-ink]="activeTab() === 'personal'"
-          [class.text-ink]="activeTab() === 'personal'"
-          [class.border-transparent]="activeTab() !== 'personal'"
-          [class.text-muted]="activeTab() !== 'personal'"
-          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+          (keydown.enter)="setTab('personal')"
+          [buttonClass]="
+            'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
+            (activeTab() === 'personal'
+              ? 'border-brand-green text-brand-green'
+              : 'border-transparent text-muted hover:text-ink')
+          "
         >
           <aos-icons name="lucideUser" class="size-3.5" />
           <span>Personal Info</span>
-        </button>
+        </aos-button>
 
-        <button
+        <aos-button
+          variant="ghost"
+          size="sm"
+          shape="square"
+          class="relative -mb-px"
           type="button"
           (click)="setTab('security')"
-          [class.border-ink]="activeTab() === 'security'"
-          [class.text-ink]="activeTab() === 'security'"
-          [class.border-transparent]="activeTab() !== 'security'"
-          [class.text-muted]="activeTab() !== 'security'"
-          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+          (keydown.enter)="setTab('security')"
+          [buttonClass]="
+            'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
+            (activeTab() === 'security'
+              ? 'border-brand-green text-brand-green'
+              : 'border-transparent text-muted hover:text-ink')
+          "
         >
           <aos-icons name="lucideKey" class="size-3.5" />
           <span>Security</span>
-        </button>
+        </aos-button>
 
-        <button
+        <aos-button
+          variant="ghost"
+          size="sm"
+          shape="square"
+          class="relative -mb-px"
           type="button"
           (click)="setTab('sessions')"
-          [class.border-ink]="activeTab() === 'sessions'"
-          [class.text-ink]="activeTab() === 'sessions'"
-          [class.border-transparent]="activeTab() !== 'sessions'"
-          [class.text-muted]="activeTab() !== 'sessions'"
-          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+          (keydown.enter)="setTab('sessions')"
+          [buttonClass]="
+            'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
+            (activeTab() === 'sessions'
+              ? 'border-brand-green text-brand-green'
+              : 'border-transparent text-muted hover:text-ink')
+          "
         >
           <aos-icons name="lucideMonitor" class="size-3.5" />
           <span>Active Sessions</span>
-        </button>
+        </aos-button>
 
-        <button
+        <aos-button
+          variant="ghost"
+          size="sm"
+          shape="square"
+          class="relative -mb-px"
           type="button"
           (click)="setTab('advanced')"
-          [class.border-ink]="activeTab() === 'advanced'"
-          [class.text-ink]="activeTab() === 'advanced'"
-          [class.border-transparent]="activeTab() !== 'advanced'"
-          [class.text-muted]="activeTab() !== 'advanced'"
-          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+          (keydown.enter)="setTab('advanced')"
+          [buttonClass]="
+            'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
+            (activeTab() === 'advanced'
+              ? 'border-brand-green text-brand-green'
+              : 'border-transparent text-muted hover:text-ink')
+          "
         >
           <aos-icons name="lucideSlidersHorizontal" class="size-3.5" />
           <span>Advanced</span>
-        </button>
+        </aos-button>
       </div>
 
       <!-- Modal Body Content -->

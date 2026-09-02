@@ -44,11 +44,18 @@ export class Navbar {
     this.isMenuOpen.update(open => !open);
   }
 
+  isSigningIn = signal(false);
+  isSigningUp = signal(false);
+
   onSignIn(): void {
+    if (this.isSigningIn()) return;
+    this.isSigningIn.set(true);
     this.authStore.login();
   }
 
   onSignUp(): void {
+    if (this.isSigningUp()) return;
+    this.isSigningUp.set(true);
     this.authStore.register();
   }
 

@@ -12,15 +12,18 @@
       aria-label="Mobile Navigation Sidebar"
     >
       <!-- Backdrop Button -->
-      <button
+      <aos-button
+        variant="ghost"
         type="button"
-        class="fixed inset-0 cursor-pointer border-0 bg-black/60 p-0 backdrop-blur-xs"
+        class="fixed inset-0 block !p-0"
+        buttonClass="fixed inset-0 cursor-pointer border-0 bg-black/60 p-0 backdrop-blur-xs rounded-none w-full h-full"
         (click)="closeMobileSidebar()"
+        (keydown.enter)="closeMobileSidebar()"
         (keydown.escape)="closeMobileSidebar()"
-        aria-label="Close mobile sidebar backdrop"
+        ariaLabel="Close mobile sidebar backdrop"
         animate.enter="backdrop-enter"
         animate.leave="backdrop-leave"
-      ></button>
+      />
 
       <!-- Off-Canvas Drawer -->
       <div

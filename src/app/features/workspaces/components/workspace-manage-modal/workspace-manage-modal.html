@@ -38,65 +38,94 @@
 
       <!-- Navigation Tabs -->
       <div class="border-hairline bg-canvas flex overflow-x-auto border-b px-6 pt-2">
-        <button
+        <aos-button
+          variant="ghost"
+          size="sm"
+          shape="square"
+          class="relative -mb-px"
           type="button"
           (click)="setTab('general')"
-          [class.border-ink]="activeTab() === 'general'"
-          [class.text-ink]="activeTab() === 'general'"
-          [class.border-transparent]="activeTab() !== 'general'"
-          [class.text-muted]="activeTab() !== 'general'"
-          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+          (keydown.enter)="setTab('general')"
+          [buttonClass]="
+            'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
+            (activeTab() === 'general'
+              ? 'border-brand-green text-brand-green'
+              : 'border-transparent text-muted hover:text-ink')
+          "
         >
           <aos-icons name="lucidePencil" class="size-3.5" />
           <span>General</span>
-        </button>
+        </aos-button>
 
-        <button
+        <aos-button
+          variant="ghost"
+          size="sm"
+          shape="square"
+          class="relative -mb-px"
           type="button"
           (click)="setTab('members')"
-          [class.border-ink]="activeTab() === 'members'"
-          [class.text-ink]="activeTab() === 'members'"
-          [class.border-transparent]="activeTab() !== 'members'"
-          [class.text-muted]="activeTab() !== 'members'"
-          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+          (keydown.enter)="setTab('members')"
+          [buttonClass]="
+            'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
+            (activeTab() === 'members'
+              ? 'border-brand-green text-brand-green'
+              : 'border-transparent text-muted hover:text-ink')
+          "
         >
           <aos-icons name="lucideUsers" class="size-3.5" />
           <span>Members</span>
           @if (members().length > 0) {
             <span
-              class="bg-soft-stone text-ink py-0.2 ml-1 rounded-full px-1.5 font-mono text-[10px] font-bold"
+              class="py-0.2 ml-1 rounded-full px-1.5 font-mono text-[10px] font-bold"
+              [class]="
+                activeTab() === 'members'
+                  ? 'bg-brand-green/15 text-brand-green'
+                  : 'bg-soft-stone text-ink'
+              "
             >
               {{ members().length }}
             </span>
           }
-        </button>
+        </aos-button>
 
-        <button
+        <aos-button
+          variant="ghost"
+          size="sm"
+          shape="square"
+          class="relative -mb-px"
           type="button"
           (click)="setTab('invite')"
-          [class.border-ink]="activeTab() === 'invite'"
-          [class.text-ink]="activeTab() === 'invite'"
-          [class.border-transparent]="activeTab() !== 'invite'"
-          [class.text-muted]="activeTab() !== 'invite'"
-          class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+          (keydown.enter)="setTab('invite')"
+          [buttonClass]="
+            'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
+            (activeTab() === 'invite'
+              ? 'border-brand-green text-brand-green'
+              : 'border-transparent text-muted hover:text-ink')
+          "
         >
           <aos-icons name="lucideUserPlus" class="size-3.5" />
           <span>Invite Users</span>
-        </button>
+        </aos-button>
 
         @if (workspace()?.role === "OWNER") {
-          <button
+          <aos-button
+            variant="ghost"
+            size="sm"
+            shape="square"
+            class="relative -mb-px"
             type="button"
             (click)="setTab('danger')"
-            [class.border-error]="activeTab() === 'danger'"
-            [class.text-error]="activeTab() === 'danger'"
-            [class.border-transparent]="activeTab() !== 'danger'"
-            [class.text-muted]="activeTab() !== 'danger'"
-            class="flex cursor-pointer items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors"
+            (keydown.enter)="setTab('danger')"
+            [buttonClass]="
+              'flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-xs font-semibold whitespace-nowrap transition-colors rounded-none !rounded-none ' +
+              (activeTab() === 'danger'
+                ? 'border-error text-error'
+                : 'border-transparent text-muted hover:text-error')
+            "
           >
             <aos-icons name="lucideTrash2" class="size-3.5" />
             <span>Danger Zone</span>
-          </button>
+          </aos-button>
         }
       </div>
 

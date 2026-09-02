@@ -101,70 +101,92 @@
     <div class="flex flex-wrap items-center gap-2">
       <!-- Status Filter Tabs -->
       <div class="border-hairline bg-soft-stone/40 flex items-center rounded-sm border p-0.5">
-        <button
+        <aos-button
+          variant="ghost"
+          size="xs"
+          shape="square"
           type="button"
           (click)="onStatusFilter('ALL')"
-          class="cursor-pointer rounded-xs px-2.5 py-1 font-mono text-xs transition-colors"
-          [class.bg-canvas]="cm.statusFilter() === 'ALL'"
-          [class.text-ink]="cm.statusFilter() === 'ALL'"
-          [class.font-semibold]="cm.statusFilter() === 'ALL'"
-          [class.shadow-xs]="cm.statusFilter() === 'ALL'"
-          [class.text-body-muted]="cm.statusFilter() !== 'ALL'"
+          (keydown.enter)="onStatusFilter('ALL')"
+          [buttonClass]="
+            'font-mono text-xs px-2.5 py-1 ' +
+            (cm.statusFilter() === 'ALL'
+              ? 'bg-canvas text-ink font-semibold shadow-xs'
+              : 'text-body-muted hover:text-ink')
+          "
         >
           All ({{ cm.stats().total }})
-        </button>
-        <button
+        </aos-button>
+        <aos-button
+          variant="ghost"
+          size="xs"
+          shape="square"
           type="button"
           (click)="onStatusFilter('ACTIVE')"
-          class="cursor-pointer rounded-xs px-2.5 py-1 font-mono text-xs transition-colors"
-          [class.bg-canvas]="cm.statusFilter() === 'ACTIVE'"
-          [class.text-brand-green]="cm.statusFilter() === 'ACTIVE'"
-          [class.font-semibold]="cm.statusFilter() === 'ACTIVE'"
-          [class.shadow-xs]="cm.statusFilter() === 'ACTIVE'"
-          [class.text-body-muted]="cm.statusFilter() !== 'ACTIVE'"
+          (keydown.enter)="onStatusFilter('ACTIVE')"
+          [buttonClass]="
+            'font-mono text-xs px-2.5 py-1 ' +
+            (cm.statusFilter() === 'ACTIVE'
+              ? 'bg-canvas text-brand-green font-semibold shadow-xs'
+              : 'text-body-muted hover:text-ink')
+          "
         >
           Active ({{ cm.stats().active }})
-        </button>
-        <button
+        </aos-button>
+        <aos-button
+          variant="ghost"
+          size="xs"
+          shape="square"
           type="button"
           (click)="onStatusFilter('INACTIVE')"
-          class="cursor-pointer rounded-xs px-2.5 py-1 font-mono text-xs transition-colors"
-          [class.bg-canvas]="cm.statusFilter() === 'INACTIVE'"
-          [class.text-ink]="cm.statusFilter() === 'INACTIVE'"
-          [class.font-semibold]="cm.statusFilter() === 'INACTIVE'"
-          [class.shadow-xs]="cm.statusFilter() === 'INACTIVE'"
-          [class.text-body-muted]="cm.statusFilter() !== 'INACTIVE'"
+          (keydown.enter)="onStatusFilter('INACTIVE')"
+          [buttonClass]="
+            'font-mono text-xs px-2.5 py-1 ' +
+            (cm.statusFilter() === 'INACTIVE'
+              ? 'bg-canvas text-ink font-semibold shadow-xs'
+              : 'text-body-muted hover:text-ink')
+          "
         >
           Inactive ({{ cm.stats().inactive }})
-        </button>
+        </aos-button>
       </div>
 
       <!-- View Switcher (Grid / Table) -->
       <div class="border-hairline bg-soft-stone/40 flex items-center rounded-sm border p-0.5">
-        <button
+        <aos-button
+          variant="ghost"
+          size="xs"
+          shape="square"
           type="button"
           (click)="onViewMode('grid')"
-          class="cursor-pointer rounded-xs p-1.5 transition-colors"
-          [class.bg-canvas]="cm.viewMode() === 'grid'"
-          [class.text-ink]="cm.viewMode() === 'grid'"
-          [class.shadow-xs]="cm.viewMode() === 'grid'"
-          [class.text-body-muted]="cm.viewMode() !== 'grid'"
-          aria-label="Grid view"
+          (keydown.enter)="onViewMode('grid')"
+          ariaLabel="Grid view"
+          [buttonClass]="
+            '!p-1.5 ' +
+            (cm.viewMode() === 'grid'
+              ? 'bg-canvas text-ink shadow-xs'
+              : 'text-body-muted hover:text-ink')
+          "
         >
           <aos-icons name="lucideGrid" class="size-4" />
-        </button>
-        <button
+        </aos-button>
+        <aos-button
+          variant="ghost"
+          size="xs"
+          shape="square"
           type="button"
           (click)="onViewMode('table')"
-          class="cursor-pointer rounded-xs p-1.5 transition-colors"
-          [class.bg-canvas]="cm.viewMode() === 'table'"
-          [class.text-ink]="cm.viewMode() === 'table'"
-          [class.shadow-xs]="cm.viewMode() === 'table'"
-          [class.text-body-muted]="cm.viewMode() !== 'table'"
-          aria-label="Table view"
+          (keydown.enter)="onViewMode('table')"
+          ariaLabel="Table view"
+          [buttonClass]="
+            '!p-1.5 ' +
+            (cm.viewMode() === 'table'
+              ? 'bg-canvas text-ink shadow-xs'
+              : 'text-body-muted hover:text-ink')
+          "
         >
           <aos-icons name="lucideLayoutList" class="size-4" />
-        </button>
+        </aos-button>
       </div>
 
       <!-- Reload Button -->

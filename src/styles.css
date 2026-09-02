@@ -52,6 +52,7 @@
   --color-on-warning: var(--on-warning, #ffffff);
 
   /* Radius Scale */
+  --radius-none: 0px;
   --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 16px;
@@ -369,4 +370,10 @@ body {
 .menu-leave {
   transform-origin: top;
   animation: menu-leave 0.18s ease-in forwards;
+}
+
+/* Explicit zero radius utility to prevent browser button curving on bottom borders */
+.rounded-none,
+[class*="rounded-none"] {
+  border-radius: 0px !important;
 }

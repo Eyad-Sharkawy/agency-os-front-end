@@ -34,12 +34,17 @@
 
     <!-- Workspace Switcher Dropdown -->
     <div class="relative w-full">
-      <button
+      <aos-button
+        variant="ghost"
+        shape="square"
+        fullWidth="true"
+        justify="between"
         type="button"
         (click)="toggleWorkspaceMenu()"
-        class="border-hairline bg-soft-stone/40 hover:bg-soft-stone/70 focus:border-ink flex w-full cursor-pointer items-center justify-between gap-2 rounded-sm border p-2.5 text-left transition-colors focus:outline-none"
-        [attr.aria-expanded]="isWorkspaceMenuOpen()"
-        aria-label="Toggle workspace menu"
+        (keydown.enter)="toggleWorkspaceMenu()"
+        [ariaExpanded]="isWorkspaceMenuOpen() ? 'true' : 'false'"
+        ariaLabel="Toggle workspace menu"
+        buttonClass="border-hairline bg-soft-stone/40 hover:bg-soft-stone/70 border p-2.5 w-full text-left"
       >
         <div class="flex min-w-0 items-center gap-2.5">
           <div
@@ -62,7 +67,7 @@
           class="text-muted size-3.5 shrink-0 transition-transform duration-150"
           [class.rotate-180]="isWorkspaceMenuOpen()"
         />
-      </button>
+      </aos-button>
 
       <!-- Workspace Switcher Popover -->
       @if (isWorkspaceMenuOpen()) {
@@ -81,11 +86,18 @@
                 class="hover:bg-soft-stone group/ws flex w-full items-center justify-between rounded-xs px-2 py-1.5 transition-colors"
                 [class.bg-soft-stone]="ws.tenantId === activeWorkspace()?.tenantId"
               >
-                <button
+                <aos-button
+                  variant="ghost"
+                  size="xs"
+                  shape="square"
+                  justify="start"
                   type="button"
                   (click)="selectWorkspace(ws)"
-                  class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-left"
-                  [class.font-semibold]="ws.tenantId === activeWorkspace()?.tenantId"
+                  (keydown.enter)="selectWorkspace(ws)"
+                  [buttonClass]="
+                    'flex min-w-0 flex-1 items-center gap-2 text-left !p-0 ' +
+                    (ws.tenantId === activeWorkspace()?.tenantId ? 'font-semibold' : '')
+                  "
                 >
                   <span class="text-ink truncate font-mono text-xs">{{ ws.name }}</span>
                   @if (ws.tenantId === activeWorkspace()?.tenantId) {
@@ -94,7 +106,7 @@
                       class="text-brand-green ml-1.5 size-3.5 shrink-0"
                     />
                   }
-                </button>
+                </aos-button>
 
                 @if (ws.role === "OWNER" || ws.role === "ADMIN") {
                   <aos-button
@@ -206,14 +218,18 @@
     </aos-button>
 
     <!-- Theme Switcher Button -->
-    <button
+    <aos-button
+      variant="ghost"
+      size="xs"
+      shape="square"
+      justify="between"
+      fullWidth="true"
       type="button"
       (click)="themeService.toggleTheme()"
       (keydown.enter)="themeService.toggleTheme()"
-      class="text-body-muted hover:text-ink hover:bg-soft-stone flex w-full cursor-pointer items-center justify-between rounded-sm px-2 py-1.5 font-mono text-xs transition-colors select-none focus:outline-none"
-      [attr.aria-label]="
-        themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
-      "
+      class="w-full"
+      buttonClass="text-body-muted hover:text-ink hover:bg-soft-stone px-2 py-1.5 font-mono text-xs w-full"
+      [ariaLabel]="themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
     >
       <div class="flex items-center gap-2">
         <aos-icons
@@ -245,7 +261,7 @@
           />
         </div>
       </div>
-    </button>
+    </aos-button>
 
     <!-- Current User Profile Bar -->
     <div class="border-hairline mt-2 flex items-center justify-between border-t pt-3 pr-1 pl-1.5">
