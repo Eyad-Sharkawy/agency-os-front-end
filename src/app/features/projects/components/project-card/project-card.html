@@ -1,0 +1,118 @@
+<div
+  class="border-hairline bg-canvas hover:border-ink/40 group relative flex flex-col justify-between rounded-md border p-5 transition-all duration-150 hover:shadow-sm"
+>
+  <!-- Card Header -->
+  <div>
+    <div class="flex items-start justify-between gap-3">
+      <!-- Icon & Title -->
+      <div class="flex min-w-0 items-start gap-3">
+        <div
+          class="bg-soft-stone text-ink flex size-10 shrink-0 items-center justify-center rounded-md text-sm font-bold"
+        >
+          <aos-icons name="lucideFolderKanban" class="size-5" />
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-ink font-display truncate text-base font-semibold tracking-tight">
+            {{ project().name }}
+          </h3>
+          <div class="text-body-muted flex items-center gap-1.5 truncate text-xs">
+            <aos-icons name="lucideBuilding2" class="size-3.5 shrink-0" />
+            <span class="truncate font-mono">{{ clientName() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Badge -->
+      <div class="shrink-0">
+        <span
+          class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[11px] font-medium"
+          [class]="getStatusClass(project().status)"
+        >
+          <span class="size-1.5 rounded-full" [class]="getStatusDotClass(project().status)"></span>
+          <span>{{ getStatusLabel(project().status) }}</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Description -->
+    @if (project().description) {
+      <p class="text-body-muted mt-3 line-clamp-2 text-xs leading-relaxed">
+        {{ project().description }}
+      </p>
+    }
+
+    <!-- Financial Metrics Panel -->
+    <div class="border-hairline bg-soft-stone/30 mt-4 grid grid-cols-2 gap-2 rounded-sm border p-3">
+      <div>
+        <span class="text-muted block font-mono text-[10px] tracking-wider uppercase">Budget</span>
+        <span class="text-ink font-mono text-sm font-semibold">
+          @if (project().budget !== undefined && project().budget !== null) {
+            {{ project().budget | currency: "USD" : "symbol" : "1.0-0" }}
+          } @else {
+            <span class="text-muted font-normal">—</span>
+          }
+        </span>
+      </div>
+      <div>
+        <span class="text-muted block font-mono text-[10px] tracking-wider uppercase">Rate</span>
+        <span class="text-ink font-mono text-sm font-semibold">
+          {{ project().billingRate | currency: "USD" : "symbol" : "1.0-0"
+          }}<span class="text-muted text-xs font-normal">/hr</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Metadata Section -->
+    <div
+      class="border-hairline text-body-muted mt-4 flex items-center justify-between border-t pt-3 font-mono text-[11px]"
+    >
+      <div class="flex items-center gap-1.5">
+        <aos-icons name="lucideCalendar" class="size-3.5" />
+        <span>Added {{ project().createdAt | date: "mediumDate" }}</span>
+      </div>
+
+      <aos-button
+        variant="secondary"
+        size="xs"
+        routerLink="../tasks"
+        [queryParams]="{ projectId: project().id }"
+        ariaLabel="View Project Tasks"
+      >
+        <span class="text-brand-green font-mono text-[11px]">Tasks</span>
+        <aos-icons name="lucideArrowUpRight" class="text-brand-green ml-0.5 size-3" />
+      </aos-button>
+    </div>
+  </div>
+
+  <!-- Card Action Footer -->
+  <div class="border-hairline mt-4 flex items-center justify-end gap-2 border-t pt-3">
+    @if (pm.canEdit()) {
+      <aos-button
+        variant="ghost"
+        size="xs"
+        type="button"
+        (click)="onEdit()"
+        (keydown.enter)="onEdit()"
+        ariaLabel="Edit Project"
+      >
+        <aos-icons name="lucidePencil" class="mr-1 size-3.5" />
+        <span class="font-mono text-xs">Edit</span>
+      </aos-button>
+    }
+
+    @if (pm.canDelete()) {
+      <aos-button
+        variant="ghost"
+        size="xs"
+        type="button"
+        (click)="onDelete()"
+        (keydown.enter)="onDelete()"
+        class="text-error hover:bg-error/10 hover:text-error"
+        ariaLabel="Delete Project"
+      >
+        <aos-icons name="lucideTrash2" class="mr-1 size-3.5" />
+        <span class="font-mono text-xs">Delete</span>
+      </aos-button>
+    }
+  </div>
+</div>

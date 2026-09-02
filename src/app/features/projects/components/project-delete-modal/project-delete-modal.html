@@ -1,0 +1,96 @@
+@if (isOpen()) {
+  <!-- Modal Dialog -->
+  <dialog
+    open
+    aria-labelledby="delete-project-title"
+    class="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center border-0 bg-black/60 p-4 backdrop-blur-xs"
+  >
+    <div
+      class="bg-canvas border-hairline relative w-full max-w-md overflow-hidden rounded-lg border p-6 shadow-2xl duration-150 sm:p-8"
+    >
+      <!-- Header -->
+      <div class="border-hairline flex items-center justify-between border-b pb-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-error/10 text-error flex size-10 items-center justify-center rounded-full">
+            <aos-icons name="lucideAlertTriangle" class="size-5" />
+          </div>
+          <div>
+            <h2
+              id="delete-project-title"
+              class="text-ink font-display text-lg font-bold tracking-tight"
+            >
+              Delete Project
+            </h2>
+            <p class="text-body-muted text-xs">Confirm permanent deletion of project.</p>
+          </div>
+        </div>
+
+        <aos-button
+          variant="ghost"
+          size="sm"
+          type="button"
+          (click)="onClose()"
+          (keydown.enter)="onClose()"
+          class="size-8 rounded-full !p-0"
+          ariaLabel="Close dialog"
+        >
+          <aos-icons name="lucideX" class="size-5" />
+        </aos-button>
+      </div>
+
+      <!-- Error Alert -->
+      @if (errorMessage()) {
+        <div
+          class="border-error/20 bg-error/5 text-error mt-4 flex items-start gap-2.5 rounded-sm border p-3 text-xs"
+        >
+          <aos-icons name="lucideAlertTriangle" class="mt-0.5 size-4 shrink-0" />
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- Confirmation Message -->
+      <div class="text-body-muted mt-5 space-y-2 text-sm">
+        <p>
+          Are you sure you want to delete
+          <span class="text-ink font-bold">{{ project()?.name }}</span
+          >?
+        </p>
+        <p class="text-xs">
+          This will permanently remove the project and dissociate its deliverables and time tracking
+          configurations from this workspace. This action cannot be undone.
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div
+        class="border-hairline mt-8 flex flex-col-reverse gap-2.5 border-t pt-5 sm:flex-row sm:items-center sm:justify-end sm:gap-3"
+      >
+        <aos-button
+          variant="outlined"
+          size="sm"
+          type="button"
+          (click)="onClose()"
+          (keydown.enter)="onClose()"
+          [disabled]="isDeleting()"
+          class="w-full sm:w-auto"
+        >
+          <span class="font-mono text-xs">Cancel</span>
+        </aos-button>
+
+        <aos-button
+          variant="danger"
+          size="sm"
+          type="button"
+          class="w-full sm:w-auto"
+          (click)="onDelete()"
+          (keydown.enter)="onDelete()"
+          [loading]="isDeleting()"
+          loadingText="Deleting..."
+        >
+          <aos-icons name="lucideTrash2" class="mr-1.5 size-4" />
+          <span class="font-mono text-xs">Delete Project</span>
+        </aos-button>
+      </div>
+    </div>
+  </dialog>
+}

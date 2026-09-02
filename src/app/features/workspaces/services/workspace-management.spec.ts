@@ -131,6 +131,8 @@ describe("WorkspaceManagement Service", () => {
 
     service.searchQuery.set("acme");
     expect(service.filteredWorkspaces()).toHaveLength(1);
+    service.searchQuery.set("admin@acme.com");
+    expect(service.filteredWorkspaces()).toHaveLength(1);
   });
 
   it("should select active workspace and navigate to /w/:workspaceId", () => {
@@ -189,6 +191,7 @@ describe("WorkspaceManagement Service", () => {
   });
 
   it("should update workspace name and handle error", () => {
+    service.workspaceStore.setActiveWorkspace(mockWorkspace);
     service.setModalWorkspace(mockWorkspace);
     service.editName.set("Acme Agency Updated");
 

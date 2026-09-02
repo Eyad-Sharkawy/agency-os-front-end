@@ -13,7 +13,8 @@ export const tenantGuard: CanActivateFn = async (
   const workspaceStore = inject(WorkspaceStore);
   const router = inject(Router);
 
-  const workspaceId = route.paramMap.get("workspaceId");
+  const workspaceId =
+    route.paramMap.get("workspaceId") || route.parent?.paramMap.get("workspaceId");
 
   if (workspaceId) {
     let workspaces = workspaceStore.workspaces();

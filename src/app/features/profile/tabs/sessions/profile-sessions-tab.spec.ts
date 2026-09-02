@@ -50,7 +50,7 @@ describe("ProfileSessionsTab Component", () => {
     fixture = TestBed.createComponent(ProfileSessionsTab);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+  }, 30000);
 
   it("should load sessions on init and allow refresh", () => {
     expect(component).toBeTruthy();

@@ -100,6 +100,15 @@ export class ClientManagement {
   });
 
   constructor() {
+    let lastTenantId: string | null = null;
+    effect(() => {
+      const tenantId = this.workspaceStore.activeTenantId();
+      if (tenantId && tenantId !== lastTenantId) {
+        lastTenantId = tenantId;
+        this.loadClients();
+      }
+    });
+
     effect(() => {
       const params = this.queryParams();
       const action = params?.["action"] as ClientAction | undefined;

@@ -25,7 +25,15 @@ export const WorkspaceStore = signalStore(
   { providedIn: "root" },
   withState(initialState),
   withComputed(store => ({
-    activeTenantId: computed(() => store.activeWorkspace()?.tenantId ?? null),
+    activeTenantId: computed(() => {
+      const active = store.activeWorkspace()?.tenantId;
+      if (active) return active;
+      try {
+        return localStorage.getItem(ACTIVE_TENANT_STORAGE_KEY) ?? null;
+      } catch {
+        return null;
+      }
+    }),
     activeRole: computed(() => store.activeWorkspace()?.role ?? null),
     hasActiveWorkspace: computed(() => store.activeWorkspace() !== null),
     workspaceCount: computed(() => store.workspaces().length),
