@@ -217,6 +217,7 @@ describe("TaskApi", () => {
       priority: "HIGH",
       status: "TODO",
       projectId: "p-1",
+      assigneeIds: [],
     };
     const mockResponse: TaskResponse = {
       id: "t-1",
@@ -249,6 +250,7 @@ describe("TaskApi", () => {
       priority: "URGENT",
       status: "IN_PROGRESS",
       projectId: "p-1",
+      assigneeIds: [],
     };
     const mockResponse: TaskResponse = {
       id: "t-1",

@@ -1,0 +1,177 @@
+<div
+  class="border-hairline bg-canvas hover:border-ink/40 group relative flex cursor-grab flex-col justify-between rounded-md border p-4 shadow-xs transition-colors duration-150 select-none hover:shadow-md active:cursor-grabbing"
+>
+  <div>
+    <!-- Top Metadata Bar -->
+    <div class="flex items-center justify-between gap-2">
+      <!-- Priority Pill -->
+      <span
+        class="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[10px] font-medium"
+        [class]="getPriorityClass(task().priority)"
+      >
+        <span class="size-1.5 rounded-full" [class]="getPriorityDotClass(task().priority)"></span>
+        <span>{{ task().priority }}</span>
+      </span>
+
+      <!-- Project Badge -->
+      <a
+        routerLink="../projects"
+        [queryParams]="{ projectId: task().projectId }"
+        class="text-muted hover:text-ink flex max-w-[140px] items-center gap-1 truncate font-mono text-[11px] transition-colors"
+        [title]="projectName()"
+      >
+        <aos-icons name="lucideFolderKanban" class="size-3 shrink-0" />
+        <span class="truncate">{{ projectName() }}</span>
+      </a>
+    </div>
+
+    <!-- Title & Description -->
+    <div class="mt-2.5">
+      <h4
+        class="text-ink font-display line-clamp-2 text-sm leading-snug font-semibold tracking-tight"
+      >
+        {{ task().title }}
+      </h4>
+      @if (task().description) {
+        <p class="text-body-muted mt-1.5 line-clamp-2 text-xs leading-relaxed">
+          {{ task().description }}
+        </p>
+      }
+    </div>
+
+    <!-- Time & Over Budget Tracking -->
+    <div
+      class="border-hairline/60 mt-3 flex items-center justify-between gap-2 border-t pt-2.5 font-mono text-xs"
+    >
+      <div class="text-body-muted flex items-center gap-1.5">
+        <aos-icons name="lucideClock" class="size-3.5 shrink-0" />
+        <span>
+          {{ loggedHours() }}h
+          @if (estimatedHours() !== null) {
+            <span class="text-muted">/ {{ estimatedHours() }}h</span>
+          }
+        </span>
+      </div>
+
+      @if (task().isOverBudget) {
+        <span
+          class="bg-error/10 text-error inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[10px] font-semibold"
+          title="Logged hours exceed initial estimate"
+        >
+          <aos-icons name="lucideAlertTriangle" class="size-3" />
+          <span>Over Budget</span>
+        </span>
+      }
+    </div>
+
+    <!-- Due Date & Assignees -->
+    <div class="mt-2.5 flex items-center justify-between gap-2 text-xs">
+      @if (task().dueDate) {
+        <div
+          class="flex items-center gap-1 font-mono text-[11px]"
+          [class.text-error]="isOverdue()"
+          [class.text-body-muted]="!isOverdue()"
+          [title]="isOverdue() ? 'Task is past due date!' : 'Due date'"
+        >
+          <aos-icons name="lucideCalendar" class="size-3.5" />
+          <span>{{ task().dueDate | date: "MMM d" }}</span>
+          @if (isOverdue()) {
+            <span class="text-error text-[10px] font-bold uppercase">(Overdue)</span>
+          }
+        </div>
+      } @else {
+        <span class="text-muted font-mono text-[11px]">No due date</span>
+      }
+
+      <!-- Assignees Count -->
+      @if (task().assigneeIds && task().assigneeIds.length > 0) {
+        <div
+          class="flex items-center -space-x-1.5"
+          [title]="task().assigneeIds.length + ' assignee(s)'"
+        >
+          @for (id of task().assigneeIds.slice(0, 3); track id) {
+            <div
+              class="bg-soft-stone border-canvas text-ink flex size-5 items-center justify-center rounded-full border font-mono text-[9px] font-bold uppercase"
+            >
+              {{ id.substring(0, 2) }}
+            </div>
+          }
+          @if (task().assigneeIds.length > 3) {
+            <div
+              class="bg-soft-stone border-canvas text-muted flex size-5 items-center justify-center rounded-full border font-mono text-[9px]"
+            >
+              +{{ task().assigneeIds.length - 3 }}
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Card Action Footer -->
+  @if (tm.canUpdateStatus() || tm.canEdit() || tm.canDelete()) {
+    <div class="border-hairline/80 mt-3 flex items-center justify-between border-t pt-2.5">
+      <!-- Quick Status Transition Buttons -->
+      @if (tm.canUpdateStatus()) {
+        <div class="flex items-center gap-1">
+          @if (previousStatus(); as prev) {
+            <button
+              type="button"
+              (click)="onMoveStatus(prev)"
+              (keydown.enter)="onMoveStatus(prev)"
+              class="text-muted hover:text-ink hover:bg-soft-stone rounded-xs p-1 transition-colors"
+              [title]="'Move back to ' + prev"
+              aria-label="Move task back"
+            >
+              <aos-icons name="lucideArrowLeft" class="size-3.5" />
+            </button>
+          }
+          @if (nextStatus(); as next) {
+            <button
+              type="button"
+              (click)="onMoveStatus(next)"
+              (keydown.enter)="onMoveStatus(next)"
+              class="text-brand-green hover:text-brand-green-dark hover:bg-brand-green/10 rounded-xs p-1 transition-colors"
+              [title]="'Move to ' + next"
+              aria-label="Advance task status"
+            >
+              <aos-icons name="lucideArrowRight" class="size-3.5" />
+            </button>
+          }
+        </div>
+      } @else {
+        <div></div>
+      }
+
+      <!-- Edit & Delete Buttons -->
+      <div class="flex items-center gap-1">
+        @if (tm.canEdit()) {
+          <aos-button
+            variant="ghost"
+            size="xs"
+            type="button"
+            (click)="onEdit()"
+            (keydown.enter)="onEdit()"
+            ariaLabel="Edit Task"
+          >
+            <aos-icons name="lucidePencil" class="size-3" />
+          </aos-button>
+        }
+
+        @if (tm.canDelete()) {
+          <aos-button
+            variant="ghost"
+            size="xs"
+            type="button"
+            (click)="onDelete()"
+            (keydown.enter)="onDelete()"
+            class="text-error hover:bg-error/10 hover:text-error"
+            ariaLabel="Delete Task"
+          >
+            <aos-icons name="lucideTrash2" class="size-3" />
+          </aos-button>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -91,4 +91,21 @@ describe("WorkspaceCard Component", () => {
     expect(compiled.textContent).toContain("ACTIVE");
     expect(compiled.textContent).toContain("Enter");
   });
+
+  it("should render archived status when workspace is not active", () => {
+    fixture.componentRef.setInput("workspace", { ...mockWorkspace, isActive: false });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Archived");
+    expect(compiled.textContent).toContain("Launch");
+  });
+
+  it("should disable canManage for MEMBER and CLIENT roles", () => {
+    fixture.componentRef.setInput("workspace", { ...mockWorkspace, role: "MEMBER" });
+    expect(component.canManage()).toBe(false);
+
+    fixture.componentRef.setInput("workspace", { ...mockWorkspace, role: "CLIENT" });
+    expect(component.canManage()).toBe(false);
+  });
 });
