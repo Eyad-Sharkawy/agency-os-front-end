@@ -359,4 +359,88 @@ describe("ProjectManagement", () => {
     expect(service.stats().total).toBe(4);
     expect(service.stats().totalBudget).toBe(43000);
   });
+
+  it("should not open modals when unauthorized", () => {
+    activeWorkspaceSignal.set({ role: "CLIENT" });
+
+    service.openCreateModal();
+    expect(service.isCreateModalOpen()).toBe(false);
+
+    service.openEditModal(mockProjects[0]);
+    expect(service.isEditModalOpen()).toBe(false);
+
+    service.openDeleteModal(mockProjects[0]);
+    expect(service.isDeleteModalOpen()).toBe(false);
+  });
+
+  it("should filter projects by client and status", () => {
+    service.loadProjects();
+
+    service.setClientFilter("client-2");
+    expect(service.filteredProjects()).toHaveLength(1);
+    expect(service.filteredProjects()[0].id).toBe("proj-2");
+
+    service.setClientFilter("ALL");
+    service.setStatusFilter("DELIVERED");
+    expect(service.filteredProjects()).toHaveLength(1);
+    expect(service.filteredProjects()[0].id).toBe("proj-3");
+  });
+
+  it("should search projects by description and client name", () => {
+    service.loadProjects();
+
+    service.setSearchQuery("marketing");
+    expect(service.filteredProjects()).toHaveLength(1);
+    expect(service.filteredProjects()[0].id).toBe("proj-1");
+
+    service.setSearchQuery("Globex");
+    expect(service.filteredProjects()).toHaveLength(1);
+    expect(service.filteredProjects()[0].id).toBe("proj-2");
+  });
+
+  it("should set view mode", () => {
+    service.setViewMode("table");
+    expect(service.viewMode()).toBe("table");
+  });
+
+  it("should create, update, and delete projects", () => {
+    service.loadProjects();
+
+    const newProject: ProjectResponse = {
+      id: "proj-new",
+      name: "New Project",
+      status: "PLANNING",
+      clientId: "client-1",
+      budget: 10000,
+      billingRate: 150,
+      createdAt: "2026-01-20T00:00:00Z",
+      updatedAt: "2026-01-20T00:00:00Z",
+    };
+    const req: ProjectRequest = {
+      name: "New Project",
+      status: "PLANNING",
+      clientId: "client-1",
+      billingRate: 150,
+    };
+    projectApiMock.createProject.mockReturnValue(of(newProject));
+    service.createProject(req).subscribe();
+    expect(service.projects().find(p => p.id === "proj-new")).toBeTruthy();
+
+    const updatedProject = { ...newProject, name: "Updated Name" };
+    projectApiMock.updateProject.mockReturnValue(of(updatedProject));
+    service.updateProject("proj-new", { ...req, name: "Updated Name" }).subscribe();
+    expect(service.projects().find(p => p.id === "proj-new")?.name).toBe("Updated Name");
+
+    projectApiMock.deleteProject.mockReturnValue(of(undefined));
+    service.deleteProject("proj-new").subscribe();
+    expect(service.projects().find(p => p.id === "proj-new")).toBeUndefined();
+  });
+
+  it("should extract error detail on loadProjects error", () => {
+    projectApiMock.getProjects.mockReturnValue(
+      throwError(() => ({ error: { detail: "Access denied to project list" } })),
+    );
+    service.loadProjects();
+    expect(service.errorMessage()).toBe("Access denied to project list");
+  });
 });

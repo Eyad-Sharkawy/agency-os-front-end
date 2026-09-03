@@ -1,5 +1,5 @@
 export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
-export type TaskStatus = "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE" | "BLOCKED";
+export type TaskStatus = "TODO" | "IN_PROGRESS" | "REVIEW" | "DONE";
 
 export interface TaskRequest {
   title: string;
@@ -10,7 +10,7 @@ export interface TaskRequest {
   priority: TaskPriority;
   status: TaskStatus;
   projectId: string;
-  assigneeIds?: string[];
+  assigneeIds: string[];
 }
 
 export interface TaskResponse {

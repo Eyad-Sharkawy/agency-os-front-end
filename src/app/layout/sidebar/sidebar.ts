@@ -120,14 +120,28 @@ export class Sidebar {
   readonly navItems = computed<NavItem[]>(() => {
     const tenantId = this.activeWorkspace()?.tenantId || "";
     const base = tenantId ? `/w/${tenantId}` : "/workspaces";
-    return [
+    const role = this.activeWorkspace()?.role;
+
+    const items: NavItem[] = [
       { label: "Overview", route: base, icon: "lucideLayoutDashboard", exact: true },
-      { label: "Clients", route: `${base}/clients`, icon: "lucideUsers" },
+    ];
+
+    if (role !== "CLIENT") {
+      items.push({ label: "Clients", route: `${base}/clients`, icon: "lucideUsers" });
+    }
+
+    items.push(
       { label: "Projects", route: `${base}/projects`, icon: "lucideFolderKanban" },
       { label: "Tasks", route: `${base}/tasks`, icon: "lucideCheckSquare" },
-      { label: "Time Tracking", route: `${base}/time-tracking`, icon: "lucideClock" },
-      { label: "Invoices", route: `${base}/invoices`, icon: "lucideReceipt" },
-    ];
+    );
+
+    if (role !== "CLIENT") {
+      items.push({ label: "Time Tracking", route: `${base}/time-tracking`, icon: "lucideClock" });
+    }
+
+    items.push({ label: "Invoices", route: `${base}/invoices`, icon: "lucideReceipt" });
+
+    return items;
   });
 
   @HostListener("document:click", ["$event"])

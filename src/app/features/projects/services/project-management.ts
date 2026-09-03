@@ -60,6 +60,7 @@ export class ProjectManagement {
     const role = this.userRole();
     return role === "OWNER";
   });
+  readonly isReadOnly = computed(() => this.userRole() === "CLIENT");
   readonly canChangeClient = computed(() => {
     const role = this.userRole();
     return role === "OWNER";
@@ -127,49 +128,66 @@ export class ProjectManagement {
     });
 
     effect(() => {
-      const params = this.queryParams();
-      const action = params?.["action"] as ProjectAction | undefined;
-      const projectId = params?.["projectId"] as string | undefined;
+      this.syncUrlActionState(this.queryParams());
+    });
+  }
 
-      if (!action) {
-        if (this.isCreateModalOpen() || this.isEditModalOpen() || this.isDeleteModalOpen()) {
-          this.resetModalSignals();
-        }
-        return;
+  private syncUrlActionState(params: Record<string, unknown> | undefined): void {
+    const action = params?.["action"] as ProjectAction | undefined;
+    const projectId = params?.["projectId"] as string | undefined;
+
+    if (!action) {
+      if (this.isCreateModalOpen() || this.isEditModalOpen() || this.isDeleteModalOpen()) {
+        this.resetModalSignals();
       }
+      return;
+    }
 
-      if (action === "create") {
-        this.selectedProject.set(null);
-        this.isCreateModalOpen.set(true);
-        this.isEditModalOpen.set(false);
-        this.isDeleteModalOpen.set(false);
-        return;
-      }
+    if (action === "create") {
+      this.handleCreateAction();
+      return;
+    }
 
-      if (projectId && (action === "edit" || action === "delete")) {
-        if (this.selectedProject()?.id === projectId) {
-          this.isCreateModalOpen.set(false);
-          this.isEditModalOpen.set(action === "edit");
-          this.isDeleteModalOpen.set(action === "delete");
-          return;
+    if (projectId && (action === "edit" || action === "delete")) {
+      this.handleEntityAction(action, projectId);
+    }
+  }
+
+  private handleCreateAction(): void {
+    if (!this.canCreate()) return;
+    this.selectedProject.set(null);
+    this.isCreateModalOpen.set(true);
+    this.isEditModalOpen.set(false);
+    this.isDeleteModalOpen.set(false);
+  }
+
+  private handleEntityAction(action: "edit" | "delete", projectId: string): void {
+    if ((action === "edit" && !this.canEdit()) || (action === "delete" && !this.canDelete())) {
+      return;
+    }
+
+    if (this.selectedProject()?.id === projectId) {
+      this.isCreateModalOpen.set(false);
+      this.isEditModalOpen.set(action === "edit");
+      this.isDeleteModalOpen.set(action === "delete");
+      return;
+    }
+
+    const project = this.projects().find(p => p.id === projectId);
+    if (project) {
+      this.applyModalAction(action, project);
+      return;
+    }
+
+    this.projectApi.getProjectById(projectId).subscribe({
+      next: fetchedProject => {
+        if (fetchedProject) {
+          this.applyModalAction(action, fetchedProject);
         }
-
-        const project = this.projects().find(p => p.id === projectId);
-        if (project) {
-          this.applyModalAction(action, project);
-        } else {
-          this.projectApi.getProjectById(projectId).subscribe({
-            next: fetchedProject => {
-              if (fetchedProject) {
-                this.applyModalAction(action, fetchedProject);
-              }
-            },
-            error: () => {
-              this.closeModals();
-            },
-          });
-        }
-      }
+      },
+      error: () => {
+        this.closeModals();
+      },
     });
   }
 
@@ -260,6 +278,7 @@ export class ProjectManagement {
   // --- Navigation & Query Param Sync Methods ---
 
   openCreateModal(): void {
+    if (!this.canCreate()) return;
     this.selectedProject.set(null);
     this.isCreateModalOpen.set(true);
     this.isEditModalOpen.set(false);
@@ -271,6 +290,7 @@ export class ProjectManagement {
   }
 
   openEditModal(project: ProjectResponse): void {
+    if (!this.canEdit()) return;
     this.applyModalAction("edit", project);
     void this.router.navigate([], {
       queryParams: { action: "edit", projectId: project.id },
@@ -279,6 +299,7 @@ export class ProjectManagement {
   }
 
   openDeleteModal(project: ProjectResponse): void {
+    if (!this.canDelete()) return;
     this.applyModalAction("delete", project);
     void this.router.navigate([], {
       queryParams: { action: "delete", projectId: project.id },

@@ -1,0 +1,284 @@
+@if (isOpen()) {
+  <!-- Modal Dialog -->
+  <dialog
+    open
+    aria-labelledby="task-modal-title"
+    class="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center border-0 bg-black/60 p-4 backdrop-blur-xs"
+  >
+    <div
+      class="bg-canvas border-hairline relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border p-6 shadow-2xl duration-150 sm:p-8"
+    >
+      <!-- Modal Header -->
+      <div class="border-hairline flex items-center justify-between border-b pb-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-soft-stone text-ink flex size-10 items-center justify-center rounded-full">
+            <aos-icons name="lucideFolderKanban" class="size-5" />
+          </div>
+          <div>
+            <h2
+              id="task-modal-title"
+              class="text-ink font-display text-lg font-bold tracking-tight sm:text-xl"
+            >
+              {{ isEditMode() ? "Edit Task" : "Create New Task" }}
+            </h2>
+            <p class="text-body-muted text-xs">
+              {{
+                isEditMode()
+                  ? "Update task specifications and team assignment."
+                  : "Add an actionable item to the project backlog."
+              }}
+            </p>
+          </div>
+        </div>
+
+        <aos-button
+          variant="ghost"
+          size="sm"
+          type="button"
+          (click)="onClose()"
+          (keydown.enter)="onClose()"
+          class="size-8 rounded-full !p-0"
+          ariaLabel="Close dialog"
+        >
+          <aos-icons name="lucideX" class="size-5" />
+        </aos-button>
+      </div>
+
+      <!-- Error Alert -->
+      @if (errorMessage()) {
+        <div
+          class="border-error/20 bg-error/5 text-error mt-4 flex items-start gap-2.5 rounded-sm border p-3 text-xs"
+        >
+          <aos-icons name="lucideAlertCircle" class="mt-0.5 size-4 shrink-0" />
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- Modal Body Form -->
+      <form (ngSubmit)="onSubmit()" class="mt-6 space-y-4">
+        <!-- Task Title -->
+        <div class="space-y-1.5">
+          <label
+            for="task-title"
+            class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+          >
+            Task Title <span class="text-error">*</span>
+          </label>
+          <input
+            id="task-title"
+            type="text"
+            [ngModel]="title()"
+            (ngModelChange)="title.set($event)"
+            name="taskTitle"
+            placeholder="e.g., Design Checkout Flow Wireframes"
+            required
+            class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border px-3.5 py-2.5 text-sm transition-colors focus:outline-none"
+          />
+        </div>
+
+        <!-- Project & Status Grid -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <!-- Associated Project -->
+          <div class="space-y-1.5">
+            <span
+              id="task-project-label"
+              class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+            >
+              Project <span class="text-error">*</span>
+            </span>
+            <aos-select
+              [options]="projectOptions()"
+              [value]="projectId()"
+              (valueChange)="projectId.set($event)"
+              placeholder="Select project..."
+              ariaLabelledby="task-project-label"
+            />
+          </div>
+
+          <!-- Status -->
+          <div class="space-y-1.5">
+            <span
+              id="task-status-label"
+              class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+            >
+              Status <span class="text-error">*</span>
+            </span>
+            <aos-select
+              [options]="statusOptions"
+              [value]="status()"
+              (valueChange)="status.set($event)"
+              ariaLabelledby="task-status-label"
+            />
+          </div>
+        </div>
+
+        <!-- Priority & Estimation Grid -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <!-- Priority -->
+          <div class="space-y-1.5">
+            <span
+              id="task-priority-label"
+              class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+            >
+              Priority <span class="text-error">*</span>
+            </span>
+            <aos-select
+              [options]="priorityOptions"
+              [value]="priority()"
+              (valueChange)="priority.set($event)"
+              ariaLabelledby="task-priority-label"
+            />
+          </div>
+
+          <!-- Estimated Hours -->
+          <div class="space-y-1.5">
+            <label
+              for="task-estimation"
+              class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+            >
+              Estimated Hours
+            </label>
+            <div class="relative">
+              <div
+                class="text-muted pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5"
+              >
+                <aos-icons name="lucideClock" class="size-4" />
+              </div>
+              <input
+                id="task-estimation"
+                type="number"
+                step="0.5"
+                min="0"
+                [ngModel]="estimatedHours()"
+                (ngModelChange)="estimatedHours.set($event)"
+                name="taskEstimation"
+                placeholder="e.g. 8"
+                class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border py-2.5 pr-3.5 pl-10 text-sm transition-colors focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Start Date & Due Date Grid -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <!-- Start Date -->
+          <div class="space-y-1.5">
+            <label
+              for="task-start-date"
+              class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+            >
+              Start Date
+            </label>
+            <input
+              id="task-start-date"
+              type="date"
+              [ngModel]="startDate()"
+              (ngModelChange)="startDate.set($event)"
+              name="taskStartDate"
+              class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border px-3.5 py-2.5 text-sm transition-colors focus:outline-none"
+            />
+          </div>
+
+          <!-- Due Date -->
+          <div class="space-y-1.5">
+            <label
+              for="task-due-date"
+              class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+            >
+              Due Date
+            </label>
+            <input
+              id="task-due-date"
+              type="date"
+              [ngModel]="dueDate()"
+              (ngModelChange)="dueDate.set($event)"
+              name="taskDueDate"
+              class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border px-3.5 py-2.5 text-sm transition-colors focus:outline-none"
+            />
+          </div>
+        </div>
+
+        <!-- Assignees (Comma-separated IDs) -->
+        <div class="space-y-1.5">
+          <label
+            for="task-assignees"
+            class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+          >
+            Assignee User IDs
+          </label>
+          <div class="relative">
+            <div
+              class="text-muted pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5"
+            >
+              <aos-icons name="lucideUsers" class="size-4" />
+            </div>
+            <input
+              id="task-assignees"
+              type="text"
+              [ngModel]="assigneesText()"
+              (ngModelChange)="assigneesText.set($event)"
+              name="taskAssignees"
+              placeholder="e.g., user-01, user-02 (comma separated)"
+              class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border py-2.5 pr-3.5 pl-10 text-sm transition-colors focus:outline-none"
+            />
+          </div>
+          <span class="text-muted block font-mono text-[11px]">
+            Leave empty for unassigned backlog item. Note: Only workspace team members can be
+            assigned; client accounts cannot be assigned.
+          </span>
+        </div>
+
+        <!-- Description -->
+        <div class="space-y-1.5">
+          <label
+            for="task-desc"
+            class="text-ink block font-mono text-xs font-semibold tracking-wider uppercase"
+          >
+            Description
+          </label>
+          <textarea
+            id="task-desc"
+            [ngModel]="description()"
+            (ngModelChange)="description.set($event)"
+            name="taskDesc"
+            rows="3"
+            placeholder="Key deliverables, acceptance criteria, technical details..."
+            class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink w-full rounded-md border px-3.5 py-2.5 text-sm transition-colors focus:outline-none"
+          ></textarea>
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div
+          class="border-hairline mt-8 flex flex-col-reverse gap-2.5 border-t pt-5 sm:flex-row sm:items-center sm:justify-end sm:gap-3"
+        >
+          <aos-button
+            variant="outlined"
+            size="sm"
+            type="button"
+            (click)="onClose()"
+            (keydown.enter)="onClose()"
+            [disabled]="isSubmitting()"
+            class="w-full sm:w-auto"
+          >
+            <span class="font-mono text-xs">Cancel</span>
+          </aos-button>
+
+          <aos-button
+            variant="primary"
+            size="sm"
+            type="submit"
+            class="w-full sm:w-auto"
+            [disabled]="!isFormValid() || isSubmitting()"
+            [loading]="isSubmitting()"
+            [loadingText]="isEditMode() ? 'Updating...' : 'Creating...'"
+          >
+            <aos-icons name="lucideCheck" class="mr-1.5 size-4" />
+            <span class="font-mono text-xs">{{
+              isEditMode() ? "Update Task" : "Create Task"
+            }}</span>
+          </aos-button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+}

@@ -22,7 +22,7 @@ import {
   lucideTrash2,
   lucideX,
 } from "@ng-icons/lucide";
-import { ProjectStatus } from "../../core/api/models/project.models";
+import { ProjectStatus } from "../../core/api/models";
 import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
 import { Select, SelectOption } from "../../shared/components/select/select";

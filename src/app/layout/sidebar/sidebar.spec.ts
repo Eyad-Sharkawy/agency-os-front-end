@@ -1,5 +1,6 @@
 import { provideHttpClient } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { signal, WritableSignal } from "@angular/core";
 import { provideRouter } from "@angular/router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { WorkspaceResponse } from "../../core/api/models";
@@ -14,6 +15,7 @@ import { Sidebar } from "./sidebar";
 describe("Sidebar Component", () => {
   let component: Sidebar;
   let fixture: ComponentFixture<Sidebar>;
+  let activeWorkspaceSignal: WritableSignal<WorkspaceResponse | null>;
 
   const mockWorkspaces: WorkspaceResponse[] = [
     {
@@ -39,7 +41,7 @@ describe("Sidebar Component", () => {
   ];
 
   let mockWorkspaceStore: {
-    activeWorkspace: ReturnType<typeof vi.fn>;
+    activeWorkspace: WritableSignal<WorkspaceResponse | null>;
     workspaces: ReturnType<typeof vi.fn>;
     setActiveWorkspace: ReturnType<typeof vi.fn>;
   };
@@ -52,8 +54,9 @@ describe("Sidebar Component", () => {
   };
 
   beforeEach(async () => {
+    activeWorkspaceSignal = signal<WorkspaceResponse | null>(mockWorkspaces[0]);
     mockWorkspaceStore = {
-      activeWorkspace: vi.fn().mockReturnValue(mockWorkspaces[0]),
+      activeWorkspace: activeWorkspaceSignal,
       workspaces: vi.fn().mockReturnValue(mockWorkspaces),
       setActiveWorkspace: vi.fn(),
     };
@@ -90,7 +93,7 @@ describe("Sidebar Component", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should render all 6 core navigation items", () => {
+  it("should render all 6 core navigation items for team member roles", () => {
     expect(component.navItems()).toHaveLength(6);
     expect(component.navItems().map(i => i.label)).toEqual([
       "Overview",
@@ -101,6 +104,20 @@ describe("Sidebar Component", () => {
       "Invoices",
     ]);
     expect(component.navItems()[0].route).toBe("/w/acme-corp");
+  });
+
+  it("should hide Clients and Time Tracking navigation items for CLIENT role", () => {
+    activeWorkspaceSignal.set({
+      ...mockWorkspaces[0],
+      role: "CLIENT",
+    });
+    expect(component.navItems()).toHaveLength(4);
+    expect(component.navItems().map(i => i.label)).toEqual([
+      "Overview",
+      "Projects",
+      "Tasks",
+      "Invoices",
+    ]);
   });
 
   it("should compute active workspace initials correctly", () => {
