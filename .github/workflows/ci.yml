@@ -6,23 +6,11 @@ on:
       - main
       - master
       - develop
-    paths-ignore:
-      - "**.md"
-      - "docs/**"
-      - ".vscode/**"
-      - ".idea/**"
-      - "LICENSE"
   pull_request:
     branches:
       - main
       - master
       - develop
-    paths-ignore:
-      - "**.md"
-      - "docs/**"
-      - ".vscode/**"
-      - ".idea/**"
-      - "LICENSE"
   workflow_dispatch:
 
 concurrency:
@@ -40,7 +28,21 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Check for Code Changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            code:
+              - '!**.md'
+              - '!docs/**'
+              - '!.vscode/**'
+              - '!.idea/**'
+              - '!LICENSE'
+              - '**'
+
       - name: Set up Node.js
+        if: steps.filter.outputs.code == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -48,13 +50,20 @@ jobs:
           cache-dependency-path: "package-lock.json"
 
       - name: Install Dependencies
+        if: steps.filter.outputs.code == 'true'
         run: npm ci
 
       - name: Check Code Formatting
+        if: steps.filter.outputs.code == 'true'
         run: npm run format:check
 
       - name: Run ESLint
+        if: steps.filter.outputs.code == 'true'
         run: npm run lint
+
+      - name: Skip Notification
+        if: steps.filter.outputs.code != 'true'
+        run: echo "Markdown/docs only changes detected. Skipping lint & format."
 
   test:
     name: Unit Tests & Coverage
@@ -63,7 +72,21 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Check for Code Changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            code:
+              - '!**.md'
+              - '!docs/**'
+              - '!.vscode/**'
+              - '!.idea/**'
+              - '!LICENSE'
+              - '**'
+
       - name: Set up Node.js
+        if: steps.filter.outputs.code == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -71,17 +94,24 @@ jobs:
           cache-dependency-path: "package-lock.json"
 
       - name: Install Dependencies
+        if: steps.filter.outputs.code == 'true'
         run: npm ci
 
       - name: Run Unit Tests & Generate Coverage
+        if: steps.filter.outputs.code == 'true'
         run: npm run test:ci
 
       - name: Upload Coverage Artifact
+        if: steps.filter.outputs.code == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage/
           retention-days: 1
+
+      - name: Skip Notification
+        if: steps.filter.outputs.code != 'true'
+        run: echo "Markdown/docs only changes detected. Skipping unit tests."
 
   sonar:
     name: SonarQube Analysis
@@ -91,15 +121,30 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Full git history required for Sonar analysis and blame
+          fetch-depth: 0
+
+      - name: Check for Code Changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            code:
+              - '!**.md'
+              - '!docs/**'
+              - '!.vscode/**'
+              - '!.idea/**'
+              - '!LICENSE'
+              - '**'
 
       - name: Download Coverage Artifact
+        if: steps.filter.outputs.code == 'true'
         uses: actions/download-artifact@v4
         with:
           name: coverage-report
           path: coverage/
 
       - name: SonarQube / SonarCloud Scan
+        if: steps.filter.outputs.code == 'true'
         uses: sonarsource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -108,8 +153,13 @@ jobs:
           projectBaseDir: .
 
       - name: SonarQube Quality Gate Check
+        if: steps.filter.outputs.code == 'true'
         uses: SonarSource/sonarqube-quality-gate-action@v1
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Skip Notification
+        if: steps.filter.outputs.code != 'true'
+        run: echo "Markdown/docs only changes detected. Skipping SonarQube scan."
