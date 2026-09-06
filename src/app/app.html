@@ -18,6 +18,10 @@
     <aos-footer />
   }
 
-  <aos-workspace-manage-modal />
-  <aos-profile-modal />
+  @if (wm.isManageModalOpen()) {
+    <aos-workspace-manage-modal />
+  }
+  @if (profileModalService.isOpen()) {
+    <aos-profile-modal />
+  }
 </div>

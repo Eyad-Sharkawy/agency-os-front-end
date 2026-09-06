@@ -12,7 +12,9 @@ import { provideIcons } from "@ng-icons/core";
 import { lucideMenu } from "@ng-icons/lucide";
 import { filter, map } from "rxjs";
 import { ProfileModal } from "./features/profile/profile-modal";
+import { ProfileModalService } from "./features/profile/services/profile-modal.service";
 import { WorkspaceManageModal } from "./features/workspaces/components/workspace-manage-modal/workspace-manage-modal";
+import { WorkspaceManagement } from "./features/workspaces/services/workspace-management";
 import { Footer } from "./layout/footer/footer";
 import { Navbar } from "./layout/navbar/navbar";
 
@@ -25,6 +27,8 @@ import { Navbar } from "./layout/navbar/navbar";
 })
 export class App {
   private readonly router = inject(Router);
+  readonly wm = inject(WorkspaceManagement);
+  readonly profileModalService = inject(ProfileModalService);
 
   private readonly currentUrl = toSignal(
     this.router.events.pipe(

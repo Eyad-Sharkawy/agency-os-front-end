@@ -40,6 +40,22 @@ export class InvoiceApi {
     return this.http.post<InvoiceResponse>(this.baseUrl, req);
   }
 
+  getInvoiceById(id: string): Observable<InvoiceResponse> {
+    return this.http.get<InvoiceResponse>(`${this.baseUrl}/${id}`);
+  }
+
+  getInvoicesByClientId(clientId: string): Observable<InvoiceResponse[]> {
+    return this.http.get<InvoiceResponse[]>(`${this.baseUrl}/client/${clientId}`);
+  }
+
+  updateInvoice(id: string, req: InvoiceRequest): Observable<InvoiceResponse> {
+    return this.http.put<InvoiceResponse>(`${this.baseUrl}/${id}`, req);
+  }
+
+  deleteInvoice(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
   downloadInvoicePdf(id: string): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/${id}/pdf`, {
       responseType: "blob",

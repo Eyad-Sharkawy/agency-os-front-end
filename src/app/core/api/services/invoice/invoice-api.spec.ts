@@ -104,7 +104,7 @@ describe("InvoiceApi", () => {
   });
 
   it("should create invoice via POST", () => {
-    const payload: InvoiceRequest = { clientId: "c-1" };
+    const payload: InvoiceRequest = { clientId: "c-1", status: "DRAFT" };
     const mockResponse: InvoiceResponse = {
       id: "inv-1",
       clientId: "c-1",
@@ -122,6 +122,75 @@ describe("InvoiceApi", () => {
     expect(req.request.method).toBe("POST");
     expect(req.request.body).toEqual(payload);
     req.flush(mockResponse);
+  });
+
+  it("should get invoice by id via GET", () => {
+    const mockResponse: InvoiceResponse = {
+      id: "inv-1",
+      clientId: "c-1",
+      totalAmount: 3750.0,
+      status: "SENT",
+      createdAt: "2026-01-01T00:00:00Z",
+      updatedAt: "2026-01-01T00:00:00Z",
+    };
+
+    service.getInvoiceById("inv-1").subscribe(res => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpTesting.expectOne("https://api.example.com/api/v1/invoices/inv-1");
+    expect(req.request.method).toBe("GET");
+    req.flush(mockResponse);
+  });
+
+  it("should get invoices by client id via GET", () => {
+    const mockResponses: InvoiceResponse[] = [
+      {
+        id: "inv-1",
+        clientId: "c-1",
+        totalAmount: 3750.0,
+        status: "PAID",
+        createdAt: "2026-01-01T00:00:00Z",
+        updatedAt: "2026-01-01T00:00:00Z",
+      },
+    ];
+
+    service.getInvoicesByClientId("c-1").subscribe(res => {
+      expect(res).toEqual(mockResponses);
+    });
+
+    const req = httpTesting.expectOne("https://api.example.com/api/v1/invoices/client/c-1");
+    expect(req.request.method).toBe("GET");
+    req.flush(mockResponses);
+  });
+
+  it("should update invoice via PUT", () => {
+    const payload: InvoiceRequest = { clientId: "c-1", status: "PAID" };
+    const mockResponse: InvoiceResponse = {
+      id: "inv-1",
+      clientId: "c-1",
+      totalAmount: 3750.0,
+      status: "PAID",
+      createdAt: "2026-01-01T00:00:00Z",
+      updatedAt: "2026-01-02T00:00:00Z",
+    };
+
+    service.updateInvoice("inv-1", payload).subscribe(res => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpTesting.expectOne("https://api.example.com/api/v1/invoices/inv-1");
+    expect(req.request.method).toBe("PUT");
+    expect(req.request.body).toEqual(payload);
+    req.flush(mockResponse);
+  });
+
+  it("should delete invoice via DELETE", () => {
+    service.deleteInvoice("inv-1").subscribe();
+
+    const req = httpTesting.expectOne("https://api.example.com/api/v1/invoices/inv-1");
+    expect(req.request.method).toBe("DELETE");
+    req.flush(null);
   });
 
   it("should stream invoice PDF via GET", () => {
