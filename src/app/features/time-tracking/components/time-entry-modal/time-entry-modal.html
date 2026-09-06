@@ -1,0 +1,256 @@
+@if (isOpen()) {
+  <!-- Modal Dialog -->
+  <dialog
+    open
+    aria-labelledby="time-entry-modal-title"
+    class="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center border-0 bg-black/60 p-4 backdrop-blur-xs"
+  >
+    <div
+      class="bg-canvas border-hairline relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border p-6 shadow-2xl duration-150 sm:p-8"
+    >
+      <!-- Modal Header -->
+      <div class="border-hairline flex items-center justify-between border-b pb-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-soft-stone text-ink flex size-10 items-center justify-center rounded-full">
+            @if (activeTab() === "timer") {
+              <aos-icons name="lucidePlay" class="size-5" />
+            } @else {
+              <aos-icons name="lucideClock" class="size-5" />
+            }
+          </div>
+          <div>
+            <h2
+              id="time-entry-modal-title"
+              class="text-ink font-display text-lg font-bold tracking-tight sm:text-xl"
+            >
+              {{ activeTab() === "timer" ? "Start Live Stopwatch" : "Log Time Entry" }}
+            </h2>
+            <p class="text-body-muted text-xs">
+              {{
+                activeTab() === "timer"
+                  ? "Select a project and task to start tracking time in real-time."
+                  : "Record billable or non-billable hours logged against a task."
+              }}
+            </p>
+          </div>
+        </div>
+
+        <aos-button
+          variant="ghost"
+          size="sm"
+          type="button"
+          (click)="onClose()"
+          (keydown.enter)="onClose()"
+          class="size-8 rounded-full !p-0"
+          ariaLabel="Close dialog"
+        >
+          <aos-icons name="lucideX" class="size-5" />
+        </aos-button>
+      </div>
+
+      <!-- Mode Selector Tabs -->
+      <div class="border-hairline bg-soft-stone/40 mt-4 flex items-center rounded-sm border p-0.5">
+        <button
+          type="button"
+          (click)="setTab('timer')"
+          (keydown.enter)="setTab('timer')"
+          [class]="
+            'flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xs py-1.5 font-mono text-xs font-semibold transition-all ' +
+            (activeTab() === 'timer'
+              ? 'bg-canvas text-ink shadow-xs'
+              : 'text-body-muted hover:text-ink')
+          "
+        >
+          <aos-icons name="lucidePlay" class="size-3.5" />
+          <span>Start Timer</span>
+        </button>
+        <button
+          type="button"
+          (click)="setTab('manual')"
+          (keydown.enter)="setTab('manual')"
+          [class]="
+            'flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xs py-1.5 font-mono text-xs font-semibold transition-all ' +
+            (activeTab() === 'manual'
+              ? 'bg-canvas text-ink shadow-xs'
+              : 'text-body-muted hover:text-ink')
+          "
+        >
+          <aos-icons name="lucideClock" class="size-3.5" />
+          <span>Manual Entry</span>
+        </button>
+      </div>
+
+      <!-- Error Alert -->
+      @if (errorMessage()) {
+        <div
+          class="border-error/20 bg-error/5 text-error mt-4 flex items-start gap-2.5 rounded-sm border p-3 text-xs"
+        >
+          <aos-icons name="lucideAlertCircle" class="mt-0.5 size-4 shrink-0" />
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- Form -->
+      <form (ngSubmit)="onSubmit()" class="mt-5 space-y-4">
+        <!-- Project Selector -->
+        <div class="space-y-1.5">
+          <span class="text-ink block font-mono text-xs font-medium tracking-wider uppercase">
+            Project
+          </span>
+          <aos-select
+            [options]="projectOptions()"
+            [value]="selectedProjectId()"
+            (valueChange)="onProjectChange($event)"
+            placeholder="Select project..."
+            [fullWidth]="true"
+          />
+        </div>
+
+        <!-- Task Selector -->
+        <div class="space-y-1.5">
+          <span class="text-ink block font-mono text-xs font-medium tracking-wider uppercase">
+            Task <span class="text-brand-green">*</span>
+          </span>
+          <aos-select
+            [options]="taskOptions()"
+            [value]="selectedTaskId()"
+            (valueChange)="onTaskChange($event)"
+            placeholder="Select task..."
+            [fullWidth]="true"
+          />
+          @if (taskOptions().length === 0) {
+            <p class="text-muted text-xs">No tasks found for this project.</p>
+          }
+        </div>
+
+        <!-- Selected Task Details Card -->
+        @if (selectedTask()) {
+          <div class="border-hairline bg-soft-stone/30 space-y-1 rounded-sm border p-3 text-xs">
+            <div class="text-ink flex items-center justify-between font-semibold">
+              <span class="truncate">Selected: {{ selectedTask()?.title }}</span>
+              <span class="text-body-muted font-mono text-[10px] uppercase">
+                {{ selectedTask()?.status }}
+              </span>
+            </div>
+            <div class="text-body-muted flex items-center gap-2 text-[11px]">
+              <span>Priority: {{ selectedTask()?.priority }}</span>
+              @if (selectedProject()) {
+                <span>• {{ selectedProject()?.name }}</span>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Manual Duration & Billable Controls (Shown in Manual Mode Only) -->
+        @if (activeTab() === "manual") {
+          <!-- Duration Inputs (Hours & Minutes) -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+              <label
+                for="time-entry-hours"
+                class="text-ink block font-mono text-xs font-medium tracking-wider uppercase"
+              >
+                Hours
+              </label>
+              <input
+                id="time-entry-hours"
+                type="number"
+                min="0"
+                max="24"
+                [ngModel]="hours()"
+                (ngModelChange)="hours.set($event)"
+                name="hours"
+                class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink/60 focus:ring-ink/20 w-full rounded-sm border px-3 py-2 text-sm focus:ring-1 focus:outline-hidden"
+                placeholder="0"
+              />
+            </div>
+
+            <div class="space-y-1.5">
+              <label
+                for="time-entry-minutes"
+                class="text-ink block font-mono text-xs font-medium tracking-wider uppercase"
+              >
+                Minutes
+              </label>
+              <input
+                id="time-entry-minutes"
+                type="number"
+                min="0"
+                max="59"
+                [ngModel]="minutes()"
+                (ngModelChange)="minutes.set($event)"
+                name="minutes"
+                class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink/60 focus:ring-ink/20 w-full rounded-sm border px-3 py-2 text-sm focus:ring-1 focus:outline-hidden"
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          <!-- Billable Checkbox -->
+          <div
+            class="border-hairline bg-soft-stone/30 flex items-center justify-between rounded-sm border p-3"
+          >
+            <label for="billable-checkbox" class="cursor-pointer">
+              <span class="text-ink block text-xs font-semibold">Billable Entry</span>
+              <span class="text-body-muted block text-xs">
+                Include this duration in client invoices and billable budget calculations.
+              </span>
+            </label>
+            <input
+              type="checkbox"
+              [checked]="isBillable()"
+              (change)="isBillable.set(!isBillable())"
+              id="billable-checkbox"
+              class="accent-brand-green size-4 cursor-pointer rounded"
+            />
+          </div>
+        }
+
+        <!-- Modal Actions -->
+        <div class="border-hairline flex items-center justify-end gap-3 border-t pt-4">
+          <aos-button
+            variant="outlined"
+            size="sm"
+            type="button"
+            (click)="onClose()"
+            (keydown.enter)="onClose()"
+          >
+            Cancel
+          </aos-button>
+
+          @if (activeTab() === "timer") {
+            <aos-button
+              variant="primary"
+              size="sm"
+              type="submit"
+              [disabled]="tm.isSubmitting() || !selectedTaskId()"
+            >
+              @if (tm.isSubmitting()) {
+                <aos-icons name="lucideLoader2" class="size-4 animate-spin" />
+                <span class="ml-1.5">Starting...</span>
+              } @else {
+                <aos-icons name="lucidePlay" class="size-4" />
+                <span class="ml-1.5">Start Timer</span>
+              }
+            </aos-button>
+          } @else {
+            <aos-button
+              variant="primary"
+              size="sm"
+              type="submit"
+              [disabled]="tm.isSubmitting() || !selectedTaskId()"
+            >
+              @if (tm.isSubmitting()) {
+                <aos-icons name="lucideLoader2" class="size-4 animate-spin" />
+                <span class="ml-1.5">Saving...</span>
+              } @else {
+                <aos-icons name="lucideCheck" class="size-4" />
+                <span class="ml-1.5">Record Entry</span>
+              }
+            </aos-button>
+          }
+        </div>
+      </form>
+    </div>
+  </dialog>
+}

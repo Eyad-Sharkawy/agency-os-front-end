@@ -7,6 +7,7 @@ import { ClientResponse } from "../../../core/api/models/client.models";
 import { ProjectRequest, ProjectResponse } from "../../../core/api/models/project.models";
 import { ClientApi } from "../../../core/api/services/client/client-api";
 import { ProjectApi } from "../../../core/api/services/project/project-api";
+import { TaskApi } from "../../../core/api/services/task/task-api";
 import { WorkspaceStore } from "../../../core/multitenancy/workspace.store";
 import { ProjectManagement } from "./project-management";
 
@@ -22,6 +23,9 @@ describe("ProjectManagement", () => {
   };
   let clientApiMock: {
     getClients: ReturnType<typeof vi.fn>;
+  };
+  let taskApiMock: {
+    getTasks: ReturnType<typeof vi.fn>;
   };
   let activeWorkspaceSignal: WritableSignal<{ role: string } | null>;
   let workspaceStoreMock: {
@@ -102,6 +106,10 @@ describe("ProjectManagement", () => {
       getClients: vi.fn().mockReturnValue(of(mockClients)),
     };
 
+    taskApiMock = {
+      getTasks: vi.fn().mockReturnValue(of([])),
+    };
+
     workspaceStoreMock = {
       activeWorkspace: activeWorkspaceSignal,
     };
@@ -112,6 +120,7 @@ describe("ProjectManagement", () => {
         ProjectManagement,
         { provide: ProjectApi, useValue: projectApiMock },
         { provide: ClientApi, useValue: clientApiMock },
+        { provide: TaskApi, useValue: taskApiMock },
         { provide: WorkspaceStore, useValue: workspaceStoreMock },
       ],
     });
@@ -314,6 +323,16 @@ describe("ProjectManagement", () => {
     expect(service.canDelete()).toBe(false);
   });
 
+  it("should compute isModalOpen accurately based on create and edit signals", () => {
+    service.isCreateModalOpen.set(true);
+    expect(service.isModalOpen()).toBe(true);
+    service.isCreateModalOpen.set(false);
+    service.isEditModalOpen.set(true);
+    expect(service.isModalOpen()).toBe(true);
+    service.isEditModalOpen.set(false);
+    expect(service.isModalOpen()).toBe(false);
+  });
+
   it("should return client name or fallback to 'Unknown Client'", () => {
     service.clients.set(mockClients);
     expect(service.getClientName("client-1")).toBe("Acme Corp");
@@ -442,5 +461,144 @@ describe("ProjectManagement", () => {
     );
     service.loadProjects();
     expect(service.errorMessage()).toBe("Access denied to project list");
+  });
+
+  describe("URL Action State & Modal Sync", () => {
+    const syncState = (params: Record<string, unknown>) =>
+      (
+        service as unknown as { syncUrlActionState: (p: Record<string, unknown>) => void }
+      ).syncUrlActionState(params);
+
+    beforeEach(() => {
+      service.projects.set(mockProjects);
+    });
+
+    it("should open create modal on create action if allowed", () => {
+      syncState({ action: "create" });
+      expect(service.isCreateModalOpen()).toBe(true);
+      expect(service.selectedProject()).toBeNull();
+    });
+
+    it("should open edit modal on edit action if project found", () => {
+      syncState({ action: "edit", projectId: "proj-1" });
+      expect(service.isEditModalOpen()).toBe(true);
+      expect(service.selectedProject()?.id).toBe("proj-1");
+
+      // Repeated when already selected
+      syncState({ action: "edit", projectId: "proj-1" });
+      expect(service.isEditModalOpen()).toBe(true);
+    });
+
+    it("should open delete modal on delete action if project found", () => {
+      syncState({ action: "delete", projectId: "proj-2" });
+      expect(service.isDeleteModalOpen()).toBe(true);
+      expect(service.selectedProject()?.id).toBe("proj-2");
+    });
+
+    it("should fetch project by id if not in memory", () => {
+      service.projects.set([]);
+      syncState({ action: "edit", projectId: "proj-1" });
+      expect(projectApiMock.getProjectById).toHaveBeenCalledWith("proj-1");
+      expect(service.isEditModalOpen()).toBe(true);
+    });
+
+    it("should close modals if fetch project fails", () => {
+      service.projects.set([]);
+      projectApiMock.getProjectById.mockReturnValue(throwError(() => new Error("Not found")));
+      syncState({ action: "edit", projectId: "unknown" });
+      expect(service.isEditModalOpen()).toBe(false);
+    });
+
+    it("should reset modals when action is absent", () => {
+      service.openCreateModal();
+      expect(service.isCreateModalOpen()).toBe(true);
+
+      syncState({});
+      expect(service.isCreateModalOpen()).toBe(false);
+    });
+
+    it("should not open modal if permissions are insufficient", () => {
+      activeWorkspaceSignal.set({ role: "CLIENT" });
+      syncState({ action: "create" });
+      expect(service.isCreateModalOpen()).toBe(false);
+
+      syncState({ action: "edit", projectId: "proj-1" });
+      expect(service.isEditModalOpen()).toBe(false);
+
+      syncState({ action: "delete", projectId: "proj-1" });
+      expect(service.isDeleteModalOpen()).toBe(false);
+    });
+  });
+
+  describe("Budget & Spent Tracking", () => {
+    it("should calculate project spent and budget progress correctly", () => {
+      service.projects.set(mockProjects);
+      service.tasks.set([
+        {
+          id: "t-1",
+          title: "Task 1",
+          projectId: "proj-1",
+          totalLoggedMinutes: 480, // 8 hours * 150/hr = $1200
+          priority: "HIGH",
+          status: "DONE",
+          assigneeIds: [],
+          isOverBudget: false,
+          createdAt: "",
+          updatedAt: "",
+        },
+      ]);
+
+      expect(service.getProjectSpent("proj-1")).toBe(1200);
+      const progress = service.getProjectBudgetProgress("proj-1");
+      expect(progress.spent).toBe(1200);
+      expect(progress.budget).toBe(12000);
+      expect(progress.percentage).toBe(10);
+      expect(progress.isOverBudget).toBe(false);
+      expect(progress.isNearBudget).toBe(false);
+
+      // Near budget: 84%
+      service.tasks.set([
+        {
+          id: "t-2",
+          title: "Task 2",
+          projectId: "proj-3",
+          totalLoggedMinutes: 2100, // 35 hrs * 120 = 4200 (84% of 5000)
+          priority: "HIGH",
+          status: "DONE",
+          assigneeIds: [],
+          isOverBudget: false,
+          createdAt: "",
+          updatedAt: "",
+        },
+      ]);
+      const progressNear = service.getProjectBudgetProgress("proj-3");
+      expect(progressNear.isNearBudget).toBe(true);
+      expect(progressNear.isOverBudget).toBe(false);
+
+      // Over budget: 120%
+      service.tasks.set([
+        {
+          id: "t-3",
+          title: "Task 3",
+          projectId: "proj-3",
+          totalLoggedMinutes: 3000, // 50 hrs * 120 = 6000
+          priority: "HIGH",
+          status: "DONE",
+          assigneeIds: [],
+          isOverBudget: false,
+          createdAt: "",
+          updatedAt: "",
+        },
+      ]);
+      const progressOver = service.getProjectBudgetProgress("proj-3");
+      expect(progressOver.isOverBudget).toBe(true);
+      expect(progressOver.percentage).toBe(120);
+
+      // Missing project or missing budget
+      expect(service.getProjectSpent("non-existent")).toBe(0);
+      const progressMissing = service.getProjectBudgetProgress("non-existent");
+      expect(progressMissing.budget).toBeNull();
+      expect(progressMissing.percentage).toBe(0);
+    });
   });
 });

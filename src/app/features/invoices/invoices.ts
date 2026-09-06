@@ -1,6 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, computed, inject } from "@angular/core";
 import { provideIcons } from "@ng-icons/core";
 import { lucidePlus, lucideReceipt } from "@ng-icons/lucide";
+import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
 
@@ -18,10 +19,12 @@ import { Icons } from "../../shared/components/icons/icons";
             Generate invoices, monitor client payments, and track receivables.
           </p>
         </div>
-        <aos-button variant="primary" size="sm">
-          <aos-icons name="lucidePlus" class="size-4" />
-          <span class="ml-1.5 font-mono text-xs">Create Invoice</span>
-        </aos-button>
+        @if (canCreateInvoice()) {
+          <aos-button variant="primary" size="sm">
+            <aos-icons name="lucidePlus" class="size-4" />
+            <span class="ml-1.5 font-mono text-xs">Create Invoice</span>
+          </aos-button>
+        }
       </div>
 
       <div class="border-hairline bg-canvas rounded-md border p-12 text-center">
@@ -38,4 +41,11 @@ import { Icons } from "../../shared/components/icons/icons";
     </div>
   `,
 })
-export class InvoicesComponent {}
+export class InvoicesComponent {
+  private readonly workspaceStore = inject(WorkspaceStore);
+
+  readonly canCreateInvoice = computed(() => {
+    const role = this.workspaceStore.activeWorkspace()?.role;
+    return role === "OWNER" || role === "ADMIN";
+  });
+}

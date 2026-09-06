@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { provideRouter } from "@angular/router";
 import { ProfileMenu } from "./profile-menu";
 import { ENVIRONMENT } from "../../../core/tokens/enviroment/environment.token";
 import { environment } from "../../../../environments/environment";
@@ -13,7 +14,7 @@ describe("ProfileMenu", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ProfileMenu],
-      providers: [{ provide: ENVIRONMENT, useValue: environment }],
+      providers: [{ provide: ENVIRONMENT, useValue: environment }, provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProfileMenu);
@@ -65,5 +66,13 @@ describe("ProfileMenu", () => {
     component.onSignOut();
     expect(component.isOpen()).toBe(false);
     expect(logoutSpy).toHaveBeenCalled();
+  });
+
+  it("should render dropdown menu content when open", () => {
+    component.isOpen.set(true);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Account Settings");
+    expect(compiled.textContent).toContain("Sign out");
   });
 });

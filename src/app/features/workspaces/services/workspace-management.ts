@@ -122,41 +122,44 @@ export class WorkspaceManagement {
 
   constructor() {
     effect(() => {
-      const params = this.queryParams();
-      const manageTenantId = params?.["manage"];
-      const tab = (params?.["tab"] as ManageTab) || "general";
-
-      if (manageTenantId) {
-        const list = this.workspacesList();
-        const ws =
-          list.find(w => w.tenantId === manageTenantId || w.id === manageTenantId) ||
-          this.workspaceStore
-            .workspaces()
-            .find(w => w.tenantId === manageTenantId || w.id === manageTenantId) ||
-          (this.workspaceStore.activeWorkspace()?.tenantId === manageTenantId ||
-          this.workspaceStore.activeWorkspace()?.id === manageTenantId
-            ? this.workspaceStore.activeWorkspace()
-            : null);
-
-        if (ws) {
-          this.setModalWorkspace(ws, tab);
-        } else {
-          this.workspaceApi.getWorkspaces().subscribe({
-            next: workspaces => {
-              const matched = workspaces.find(
-                w => w.tenantId === manageTenantId || w.id === manageTenantId,
-              );
-              if (matched) {
-                this.setModalWorkspace(matched, tab);
-              }
-            },
-          });
-        }
-      } else if (params && "manage" in params && this.isManageModalOpen()) {
-        this.isManageModalOpen.set(false);
-        this.selectedManageWorkspace.set(null);
-      }
+      this.syncUrlManageState(this.queryParams());
     });
+  }
+
+  private syncUrlManageState(params: Record<string, unknown> | undefined): void {
+    const manageTenantId = (params?.["manage"] || params?.["workspaceId"]) as string | undefined;
+    const tab = (params?.["tab"] as ManageTab) || "general";
+
+    if (manageTenantId) {
+      const list = this.workspacesList();
+      const ws =
+        list.find(w => w.tenantId === manageTenantId || w.id === manageTenantId) ||
+        this.workspaceStore
+          .workspaces()
+          .find(w => w.tenantId === manageTenantId || w.id === manageTenantId) ||
+        (this.workspaceStore.activeWorkspace()?.tenantId === manageTenantId ||
+        this.workspaceStore.activeWorkspace()?.id === manageTenantId
+          ? this.workspaceStore.activeWorkspace()
+          : null);
+
+      if (ws) {
+        this.setModalWorkspace(ws, tab);
+      } else {
+        this.workspaceApi.getWorkspaces().subscribe({
+          next: workspaces => {
+            const matched = workspaces.find(
+              w => w.tenantId === manageTenantId || w.id === manageTenantId,
+            );
+            if (matched) {
+              this.setModalWorkspace(matched, tab);
+            }
+          },
+        });
+      }
+    } else if (params && "manage" in params && this.isManageModalOpen()) {
+      this.isManageModalOpen.set(false);
+      this.selectedManageWorkspace.set(null);
+    }
   }
 
   // --- Directory & Navigation Methods ---

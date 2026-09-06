@@ -251,6 +251,42 @@ describe("AuthStore", () => {
       expect(store.user()).toBeNull();
       expect(store.token()).toBeNull();
     });
+
+    it("should support custom redirectUri for login, register, logout, and accountManagement", async () => {
+      await store.login("https://custom.com/callback");
+      expect(mockKeycloakInstance.createLoginUrl).toHaveBeenCalledWith({
+        redirectUri: "https://custom.com/callback",
+      });
+
+      await store.register("https://custom.com/callback");
+      expect(mockKeycloakInstance.createRegisterUrl).toHaveBeenCalledWith({
+        redirectUri: "https://custom.com/callback",
+      });
+
+      await store.logout("https://custom.com/callback");
+      expect(mockKeycloakInstance.logout).toHaveBeenCalledWith({
+        redirectUri: "https://custom.com/callback",
+      });
+
+      await store.accountManagement("https://custom.com/callback");
+      expect(mockKeycloakInstance.createAccountUrl).toHaveBeenCalledWith({
+        redirectUri: "https://custom.com/callback",
+      });
+    });
+
+    it("should use fallback URL when createAccountUrl throws in accountManagement", async () => {
+      mockKeycloakInstance.createAccountUrl.mockRejectedValue(new Error("Account URL failed"));
+
+      await store.accountManagement();
+      expect(window.location.assign).toHaveBeenCalledWith(
+        "https://auth.example.com/realms/test-realm/account",
+      );
+    });
+
+    it("should not crash when updateUser is called with null user", () => {
+      store.updateUser({ firstName: "Test" });
+      expect(store.user()).toBeNull();
+    });
   });
 
   describe("getValidToken()", () => {
@@ -303,6 +339,12 @@ describe("AuthStore", () => {
       expect(token).toBeNull();
       expect(store.isAuthenticated()).toBe(false);
       expect(store.token()).toBeNull();
+    });
+
+    it("should return null if store token is null", async () => {
+      await store.logout();
+      const token = await store.getValidToken();
+      expect(token).toBeNull();
     });
   });
 });

@@ -130,4 +130,45 @@ describe("ProfilePersonalTab Component", () => {
     expect(component.errorMessage()).toBe("Email already in use");
     expect(component.isSaving()).toBe(false);
   });
+
+  it("should not submit if form is invalid or already saving", () => {
+    mockAccountApi.updateProfile.mockClear();
+    component.form.setErrors({ invalid: true });
+    component.onSubmit();
+    expect(mockAccountApi.updateProfile).not.toHaveBeenCalled();
+
+    component.form.setErrors(null);
+    component.isSaving.set(true);
+    component.onSubmit();
+    expect(mockAccountApi.updateProfile).not.toHaveBeenCalled();
+  });
+
+  it("should handle error in loadProfile gracefully", () => {
+    mockAccountApi.getProfile.mockReturnValue(throwError(() => new Error("Failed to load")));
+    component.loadProfile();
+    expect(component.isLoading()).toBe(false);
+  });
+
+  it("should handle alternate error formats in updateProfile", () => {
+    mockAccountApi.updateProfile.mockReturnValue(
+      throwError(() => ({ error: { error: "Direct error" } })),
+    );
+    component.onSubmit();
+    expect(component.errorMessage()).toBe("Direct error");
+
+    mockAccountApi.updateProfile.mockReturnValue(throwError(() => new Error("Message fallback")));
+    component.onSubmit();
+    expect(component.errorMessage()).toBe("Message fallback");
+
+    mockAccountApi.updateProfile.mockReturnValue(throwError(() => ({})));
+    component.onSubmit();
+    expect(component.errorMessage()).toContain("Failed to update profile");
+  });
+
+  it("should handle null authStore user and empty profile gracefully", () => {
+    mockAuthStore.user.mockReturnValue(null);
+    mockAccountApi.getProfile.mockReturnValue(of({}));
+    component.loadProfile();
+    expect(component.isLoading()).toBe(false);
+  });
 });

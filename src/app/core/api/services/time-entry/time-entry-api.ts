@@ -1,5 +1,5 @@
 import { Service, inject, ResourceRef, Signal } from "@angular/core";
-import { HttpClient, httpResource, HttpResourceOptions } from "@angular/common/http";
+import { HttpClient, HttpParams, httpResource, HttpResourceOptions } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { ENVIRONMENT } from "../../../tokens/enviroment/environment.token";
 import {
@@ -36,6 +36,17 @@ export class TimeEntryApi {
     }, options);
   }
 
+  getTimeEntries(params?: { taskId?: string; userId?: string }): Observable<TimeEntryResponse[]> {
+    let httpParams = new HttpParams();
+    if (params?.taskId) {
+      httpParams = httpParams.set("taskId", params.taskId);
+    }
+    if (params?.userId) {
+      httpParams = httpParams.set("userId", params.userId);
+    }
+    return this.http.get<TimeEntryResponse[]>(this.baseUrl, { params: httpParams });
+  }
+
   logTime(req: TimeEntryRequest): Observable<TimeEntryResponse> {
     return this.http.post<TimeEntryResponse>(this.baseUrl, req);
   }
@@ -44,8 +55,20 @@ export class TimeEntryApi {
     return this.http.post<ActiveTimerResponse>(`${this.baseUrl}/start/${taskId}`, {});
   }
 
-  stopTimer(): Observable<TimeEntryResponse> {
-    return this.http.post<TimeEntryResponse>(`${this.baseUrl}/stop`, {});
+  pauseTimer(): Observable<ActiveTimerResponse> {
+    return this.http.post<ActiveTimerResponse>(`${this.baseUrl}/pause`, {});
+  }
+
+  resumeTimer(): Observable<ActiveTimerResponse> {
+    return this.http.post<ActiveTimerResponse>(`${this.baseUrl}/resume`, {});
+  }
+
+  stopTimer(isBillable = true, durationMinutes?: number): Observable<TimeEntryResponse> {
+    let params = new HttpParams().set("isBillable", isBillable.toString());
+    if (durationMinutes !== undefined && durationMinutes > 0) {
+      params = params.set("durationMinutes", durationMinutes.toString());
+    }
+    return this.http.post<TimeEntryResponse>(`${this.baseUrl}/stop`, {}, { params });
   }
 
   getActiveTimer(): Observable<ActiveTimerResponse | null> {

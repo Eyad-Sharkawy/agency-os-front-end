@@ -58,6 +58,7 @@ export class TaskManagement {
   readonly isCreateModalOpen = signal<boolean>(false);
   readonly isEditModalOpen = signal<boolean>(false);
   readonly isDeleteModalOpen = signal<boolean>(false);
+  readonly isModalOpen = computed(() => this.isCreateModalOpen() || this.isEditModalOpen());
   readonly selectedTask = signal<TaskResponse | null>(null);
   readonly defaultStatusForCreate = signal<TaskStatus>("TODO");
 

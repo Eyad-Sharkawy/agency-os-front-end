@@ -42,24 +42,62 @@
     }
 
     <!-- Financial Metrics Panel -->
-    <div class="border-hairline bg-soft-stone/30 mt-4 grid grid-cols-2 gap-2 rounded-sm border p-3">
-      <div>
-        <span class="text-muted block font-mono text-[10px] tracking-wider uppercase">Budget</span>
-        <span class="text-ink font-mono text-sm font-semibold">
-          @if (project().budget !== undefined && project().budget !== null) {
-            {{ project().budget | currency: "USD" : "symbol" : "1.0-0" }}
-          } @else {
-            <span class="text-muted font-normal">—</span>
-          }
-        </span>
+    <div class="border-hairline bg-soft-stone/30 mt-4 space-y-2.5 rounded-sm border p-3">
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <span class="text-muted block font-mono text-[10px] tracking-wider uppercase"
+            >Budget</span
+          >
+          <span class="text-ink font-mono text-sm font-semibold">
+            @if (project().budget !== undefined && project().budget !== null) {
+              {{ project().budget | currency: "USD" : "symbol" : "1.0-0" }}
+            } @else {
+              <span class="text-muted font-normal">—</span>
+            }
+          </span>
+        </div>
+        <div>
+          <span class="text-muted block font-mono text-[10px] tracking-wider uppercase">Spent</span>
+          <span class="text-ink font-mono text-sm font-semibold">
+            {{ budgetProgress().spent | currency: "USD" : "symbol" : "1.0-0" }}
+          </span>
+        </div>
       </div>
-      <div>
-        <span class="text-muted block font-mono text-[10px] tracking-wider uppercase">Rate</span>
-        <span class="text-ink font-mono text-sm font-semibold">
-          {{ project().billingRate | currency: "USD" : "symbol" : "1.0-0"
-          }}<span class="text-muted text-xs font-normal">/hr</span>
-        </span>
-      </div>
+
+      <!-- Budget Progress Meter -->
+      @if (budgetProgress().budget !== null) {
+        <div class="border-hairline/60 space-y-1 border-t pt-2">
+          <div class="flex items-center justify-between font-mono text-[10px]">
+            <span class="text-muted">Utilization</span>
+            @if (budgetProgress().isOverBudget) {
+              <span class="text-error flex items-center gap-1 font-semibold">
+                <aos-icons name="lucideAlertTriangle" class="size-3" />
+                <span>Over Budget ({{ budgetProgress().percentage }}%)</span>
+              </span>
+            } @else if (budgetProgress().isNearBudget) {
+              <span
+                class="flex items-center gap-1 font-semibold text-amber-600 dark:text-amber-400"
+              >
+                <aos-icons name="lucideAlertTriangle" class="size-3" />
+                <span>Near Limit ({{ budgetProgress().percentage }}%)</span>
+              </span>
+            } @else {
+              <span class="text-muted">{{ budgetProgress().percentage }}% used</span>
+            }
+          </div>
+          <div class="bg-soft-stone/80 h-1.5 w-full overflow-hidden rounded-full">
+            <div
+              class="h-full rounded-full transition-all duration-300"
+              [class.bg-error]="budgetProgress().isOverBudget"
+              [class.bg-amber-500]="budgetProgress().isNearBudget"
+              [class.bg-brand-green]="
+                !budgetProgress().isOverBudget && !budgetProgress().isNearBudget
+              "
+              [style.width.%]="budgetProgressCapped()"
+            ></div>
+          </div>
+        </div>
+      }
     </div>
 
     <!-- Metadata Section -->

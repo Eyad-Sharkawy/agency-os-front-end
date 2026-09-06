@@ -5,6 +5,7 @@ import { RouterLink } from "@angular/router";
 import { provideIcons } from "@ng-icons/core";
 import {
   lucideAlertCircle,
+  lucideAlertTriangle,
   lucideArrowUpRight,
   lucideBuilding2,
   lucideCheckCircle2,
@@ -69,12 +70,18 @@ import {
       lucideFilter,
       lucideDollarSign,
       lucideClock,
+      lucideAlertTriangle,
     }),
   ],
   templateUrl: "./projects.html",
 })
 export class ProjectsComponent implements OnInit {
   readonly pm = inject(ProjectManagement);
+  readonly Math = Math;
+
+  getCappedPercentage(percentage: number): number {
+    return Math.min(100, Math.max(0, percentage));
+  }
 
   readonly clientFilterOptions = computed<SelectOption<string>[]>(() => {
     const list: SelectOption<string>[] = [{ label: "All Clients", value: "ALL" }];

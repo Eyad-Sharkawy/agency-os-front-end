@@ -11,7 +11,10 @@ import {
   lucideClock,
   lucideFolderKanban,
   lucideGripVertical,
+  lucidePause,
   lucidePencil,
+  lucidePlay,
+  lucideSquare,
   lucideTrash2,
   lucideUser,
 } from "@ng-icons/lucide";
@@ -19,6 +22,9 @@ import { TaskPriority, TaskResponse, TaskStatus } from "../../../../core/api/mod
 import { Button } from "../../../../shared/components/button/button";
 import { Icons } from "../../../../shared/components/icons/icons";
 import { TaskManagement } from "../../services/task-management";
+
+import { WorkspaceStore } from "../../../../core/multitenancy/workspace.store";
+import { TimeTrackingManagement } from "../../../time-tracking/services/time-tracking-management";
 
 @Component({
   selector: "aos-task-card",
@@ -37,13 +43,39 @@ import { TaskManagement } from "../../services/task-management";
       lucideArrowRight,
       lucideCheckCircle2,
       lucideUser,
+      lucidePlay,
+      lucidePause,
+      lucideSquare,
     }),
   ],
   templateUrl: "./task-card.html",
 })
 export class TaskCard {
   readonly tm = inject(TaskManagement);
+  readonly ttm = inject(TimeTrackingManagement);
+  private readonly workspaceStore = inject(WorkspaceStore);
+
   readonly task = input.required<TaskResponse>();
+
+  readonly canTrackTime = computed(() => {
+    return this.workspaceStore.activeWorkspace()?.role !== "CLIENT";
+  });
+
+  readonly isTrackingThisTask = computed(() => {
+    return this.ttm.activeTimer()?.taskId === this.task().id;
+  });
+
+  readonly isTimerPaused = computed(() => {
+    return this.ttm.isPaused();
+  });
+
+  readonly activeTimerFormatted = computed(() => {
+    return this.ttm.activeTimerFormatted();
+  });
+
+  readonly isTimerSubmitting = computed(() => {
+    return this.ttm.isSubmitting();
+  });
 
   readonly projectName = computed(() => {
     return this.tm.getProjectName(this.task().projectId);
@@ -63,6 +95,58 @@ export class TaskCard {
     const mins = this.task().estimatedMinutes;
     return mins ? Math.round((mins / 60) * 10) / 10 : null;
   });
+
+  readonly timeProgress = computed<number | null>(() => {
+    const est = this.task().estimatedMinutes;
+    if (!est || est <= 0) return null;
+    const logged = this.task().totalLoggedMinutes || 0;
+    return Math.round((logged / est) * 100);
+  });
+
+  readonly isOverBudget = computed<boolean>(() => {
+    const progress = this.timeProgress();
+    return (progress !== null && progress > 100) || this.task().isOverBudget;
+  });
+
+  readonly isNearBudget = computed<boolean>(() => {
+    const progress = this.timeProgress();
+    return progress !== null && progress >= 80 && progress <= 100;
+  });
+
+  readonly progressPercentageCapped = computed<number>(() => {
+    const progress = this.timeProgress();
+    if (progress === null) return 0;
+    return Math.min(100, Math.max(0, progress));
+  });
+
+  onStartTracking(event: Event): void {
+    event.stopPropagation();
+    this.ttm.startTimer(this.task().id);
+  }
+
+  onPauseTracking(event: Event): void {
+    event.stopPropagation();
+    this.ttm.pauseTimer();
+  }
+
+  onResumeTracking(event: Event): void {
+    event.stopPropagation();
+    this.ttm.resumeTimer();
+  }
+
+  onStopAndSaveTracking(event: Event): void {
+    event.stopPropagation();
+    this.ttm.stopTimer(true);
+  }
+
+  onDiscardTracking(event: Event): void {
+    event.stopPropagation();
+    this.ttm.openDiscardModal();
+  }
+
+  onLogTime(event: Event): void {
+    this.onStartTracking(event);
+  }
 
   readonly previousStatus = computed<TaskStatus | null>(() => {
     switch (this.task().status) {

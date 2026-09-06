@@ -1,0 +1,58 @@
+<div class="flex min-h-[60vh] flex-col items-center justify-center p-4 text-center sm:p-8">
+  <div
+    class="bg-canvas border-hairline max-w-lg overflow-hidden rounded-lg border p-6 shadow-xl sm:p-8"
+  >
+    <!-- Icon & Badge -->
+    <div
+      class="bg-error/10 text-error mx-auto flex size-14 items-center justify-center rounded-full"
+    >
+      <aos-icons name="lucideShieldAlert" class="size-7" />
+    </div>
+
+    <div
+      class="border-error/30 bg-error/5 text-error mt-4 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-xs font-semibold"
+    >
+      <span>HTTP 403</span>
+      <span class="text-error/50">/</span>
+      <span>ACCESS RESTRICTED</span>
+    </div>
+
+    <!-- Title & Description -->
+    <h1 class="text-ink font-display mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
+      Permission Denied
+    </h1>
+    <p class="text-body-muted mt-3 text-sm leading-relaxed">
+      Your current workspace role (<span class="text-ink font-mono font-semibold">{{
+        activeRole()
+      }}</span
+      >) in <span class="text-ink font-semibold">"{{ workspaceName() }}"</span> does not have access
+      to this section.
+    </p>
+
+    <!-- Context Card -->
+    <div class="border-hairline bg-soft-stone/30 mt-6 rounded-md border p-4 text-left text-xs">
+      <div class="text-ink font-medium">Why am I seeing this?</div>
+      <p class="text-body-muted mt-1">
+        Access to client management and internal time tracking operations is restricted to workspace
+        administrators and team members. If you need access, please contact your workspace owner.
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a [routerLink]="overviewRoute()">
+        <aos-button variant="primary" size="sm">
+          <aos-icons name="lucideArrowLeft" class="size-4" />
+          <span class="ml-1.5 font-mono text-xs">Back to Overview</span>
+        </aos-button>
+      </a>
+
+      <a routerLink="/workspaces">
+        <aos-button variant="outlined" size="sm">
+          <aos-icons name="lucideBuilding2" class="size-4" />
+          <span class="ml-1.5 font-mono text-xs">Switch Workspace</span>
+        </aos-button>
+      </a>
+    </div>
+  </div>
+</div>

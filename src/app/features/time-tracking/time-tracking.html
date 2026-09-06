@@ -1,0 +1,395 @@
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+    <div>
+      <h1 class="text-ink font-display text-2xl font-bold tracking-tight">Time Tracking</h1>
+      <p class="text-body-muted text-sm">
+        Record billable hours, monitor active timers, and review team timesheet activity.
+      </p>
+    </div>
+    @if (canTrackTime()) {
+      <div class="flex items-center gap-2">
+        <aos-button
+          variant="outlined"
+          size="sm"
+          (click)="tm.openManualModal()"
+          (keydown.enter)="tm.openManualModal()"
+        >
+          <aos-icons name="lucidePlus" class="size-4" />
+          <span class="ml-1.5 font-mono text-xs">Manual Entry</span>
+        </aos-button>
+        @if (!tm.activeTimer()) {
+          <aos-button
+            variant="primary"
+            size="sm"
+            (click)="onStartActiveTimer()"
+            (keydown.enter)="onStartActiveTimer()"
+          >
+            <aos-icons name="lucidePlay" class="size-4" />
+            <span class="ml-1.5 font-mono text-xs">Start Timer</span>
+          </aos-button>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Active Stopwatch Widget (Visible when timer is running) -->
+  @if (tm.activeTimer()) {
+    <div
+      class="relative overflow-hidden rounded-md border p-4 shadow-xs transition-colors sm:p-6"
+      [class.border-brand-green/30]="!tm.isPaused()"
+      [class.bg-brand-green/5]="!tm.isPaused()"
+      [class.border-amber-500/30]="tm.isPaused()"
+      [class.bg-amber-500/5]="tm.isPaused()"
+    >
+      <div class="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            @if (!tm.isPaused()) {
+              <span class="bg-brand-green relative flex size-2.5">
+                <span
+                  class="bg-brand-green absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+                ></span>
+                <span class="bg-brand-green relative inline-flex size-2.5 rounded-full"></span>
+              </span>
+              <span
+                class="text-brand-green font-mono text-xs font-semibold tracking-wider uppercase"
+              >
+                Stopwatch Active
+              </span>
+            } @else {
+              <span class="relative flex size-2.5 bg-amber-500">
+                <span class="relative inline-flex size-2.5 rounded-full bg-amber-500"></span>
+              </span>
+              <span class="font-mono text-xs font-semibold tracking-wider text-amber-500 uppercase">
+                Stopwatch Paused
+              </span>
+            }
+          </div>
+
+          <h2 class="text-ink font-display text-lg font-bold">
+            {{ tm.activeTask()?.title || "Active Task" }}
+          </h2>
+          <p class="text-body-muted text-xs">
+            Project: {{ tm.activeProject()?.name || "General Work" }}
+          </p>
+        </div>
+
+        <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center md:gap-6">
+          <div
+            class="font-mono text-3xl font-bold tracking-wider transition-colors sm:text-4xl"
+            [class.text-ink]="!tm.isPaused()"
+            [class.text-amber-600]="tm.isPaused()"
+            [class.dark:text-amber-400]="tm.isPaused()"
+          >
+            {{ tm.activeTimerFormatted() }}
+          </div>
+
+          <!-- Stopwatch Action Buttons: flex-wrap to fit mobile gracefully -->
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Pause / Continue Button -->
+            @if (!tm.isPaused()) {
+              <aos-button
+                variant="outlined"
+                size="sm"
+                [disabled]="tm.isSubmitting()"
+                (click)="onTogglePause()"
+                (keydown.enter)="onTogglePause()"
+                title="Pause stopwatch"
+              >
+                <aos-icons name="lucidePause" class="size-4" />
+                <span class="ml-1.5 font-mono text-xs">Pause</span>
+              </aos-button>
+            } @else {
+              <aos-button
+                variant="primary"
+                size="sm"
+                [disabled]="tm.isSubmitting()"
+                (click)="onTogglePause()"
+                (keydown.enter)="onTogglePause()"
+                title="Continue stopwatch"
+              >
+                <aos-icons name="lucidePlay" class="size-4" />
+                <span class="ml-1.5 font-mono text-xs">Continue</span>
+              </aos-button>
+            }
+
+            <aos-button
+              variant="primary"
+              size="sm"
+              [disabled]="tm.isSubmitting()"
+              (click)="onStopActiveTimer(true)"
+              (keydown.enter)="onStopActiveTimer(true)"
+            >
+              <aos-icons name="lucideSquare" class="size-4" />
+              <span class="ml-1.5 font-mono text-xs">Stop & Save</span>
+            </aos-button>
+
+            <aos-button
+              variant="outlined"
+              size="sm"
+              [disabled]="tm.isSubmitting()"
+              (click)="onStopActiveTimer(false)"
+              (keydown.enter)="onStopActiveTimer(false)"
+            >
+              <span class="font-mono text-xs">Non-Billable</span>
+            </aos-button>
+
+            <aos-button
+              variant="ghost"
+              size="sm"
+              [disabled]="tm.isSubmitting()"
+              (click)="onDiscardActiveTimer()"
+              (keydown.enter)="onDiscardActiveTimer()"
+              class="text-error hover:bg-error/10 hover:text-error"
+              title="Discard stopwatch session without logging time"
+            >
+              <aos-icons name="lucideTrash2" class="size-4" />
+              <span class="ml-1.5 font-mono text-xs">Discard</span>
+            </aos-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Summary Metric Cards -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <!-- Metric 1: Total Logged -->
+    <div class="border-hairline bg-canvas flex flex-col justify-between rounded-sm border p-5">
+      <div class="flex items-center justify-between">
+        <span class="text-muted font-mono text-xs uppercase">Total Tracked</span>
+        <div class="bg-soft-stone text-ink flex size-8 items-center justify-center rounded-sm">
+          <aos-icons name="lucideClock" class="size-4" />
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="text-ink font-display text-2xl font-semibold">
+          {{ tm.totalHoursFormatted() }}
+        </div>
+        <p class="text-body-muted mt-1 text-xs">
+          {{ tm.totalMinutesLogged() }} minutes across entries
+        </p>
+      </div>
+    </div>
+
+    <!-- Metric 2: Billable Hours -->
+    <div class="border-hairline bg-canvas flex flex-col justify-between rounded-sm border p-5">
+      <div class="flex items-center justify-between">
+        <span class="text-muted font-mono text-xs uppercase">Billable Hours</span>
+        <div class="bg-soft-stone text-ink flex size-8 items-center justify-center rounded-sm">
+          <aos-icons name="lucideDollarSign" class="size-4" />
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="text-ink font-display text-2xl font-semibold">
+          {{ tm.billableHoursFormatted() }}
+        </div>
+        <p class="text-brand-green mt-1 text-xs font-medium">
+          {{ tm.billablePercentage() }}% of total time logged
+        </p>
+      </div>
+    </div>
+
+    <!-- Metric 3: Active Timer Status -->
+    <div class="border-hairline bg-canvas flex flex-col justify-between rounded-sm border p-5">
+      <div class="flex items-center justify-between">
+        <span class="text-muted font-mono text-xs uppercase">Current Timer</span>
+        <div class="bg-soft-stone text-ink flex size-8 items-center justify-center rounded-sm">
+          <aos-icons name="lucidePlay" class="size-4" />
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="text-ink font-display text-2xl font-semibold">
+          {{ tm.activeTimer() ? tm.activeTimerFormatted() : "Idle" }}
+        </div>
+        <p class="text-body-muted mt-1 text-xs">
+          {{ tm.activeTimer() ? "Stopwatch in progress" : "No active timer" }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Metric 4: Total Entries -->
+    <div class="border-hairline bg-canvas flex flex-col justify-between rounded-sm border p-5">
+      <div class="flex items-center justify-between">
+        <span class="text-muted font-mono text-xs uppercase">Logged Entries</span>
+        <div class="bg-soft-stone text-ink flex size-8 items-center justify-center rounded-sm">
+          <aos-icons name="lucideCheckCircle2" class="size-4" />
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="text-ink font-display text-2xl font-semibold">
+          {{ tm.filteredEntries().length }}
+        </div>
+        <p class="text-body-muted mt-1 text-xs">Recorded timesheet rows</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter and Search Bar -->
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div class="relative max-w-xs flex-1">
+      <label for="search-task-input" class="sr-only">Search by task title</label>
+      <aos-icons
+        name="lucideSearch"
+        class="text-muted pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+      />
+      <input
+        id="search-task-input"
+        type="text"
+        placeholder="Search by task title..."
+        [ngModel]="tm.searchQuery()"
+        (ngModelChange)="tm.searchQuery.set($event)"
+        class="border-hairline bg-canvas text-ink placeholder:text-muted focus:border-ink/60 focus:ring-ink/20 w-full rounded-sm border py-2 pr-3 pl-9 text-xs focus:ring-1 focus:outline-hidden"
+      />
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <div class="w-44">
+        <aos-select
+          [options]="projectFilterOptions()"
+          [value]="tm.projectFilter()"
+          (valueChange)="tm.projectFilter.set($event)"
+          [fullWidth]="true"
+        />
+      </div>
+
+      <div class="w-40">
+        <aos-select
+          [options]="billableFilterOptions"
+          [value]="tm.billableFilter()"
+          (valueChange)="tm.billableFilter.set($event)"
+          [fullWidth]="true"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Timesheet Ledger Table -->
+  <div class="border-hairline bg-canvas overflow-hidden rounded-md border">
+    @if (tm.isLoading()) {
+      <!-- Skeleton Loading Rows -->
+      <div class="divide-hairline divide-y">
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+          <div class="flex animate-pulse items-center justify-between p-4">
+            <div class="space-y-2">
+              <div class="bg-soft-stone h-4 w-48 rounded-xs"></div>
+              <div class="bg-soft-stone h-3 w-32 rounded-xs"></div>
+            </div>
+            <div class="flex items-center gap-6">
+              <div class="bg-soft-stone h-4 w-16 rounded-xs"></div>
+              <div class="bg-soft-stone rounded-pill h-5 w-20"></div>
+              <div class="bg-soft-stone size-7 rounded-sm"></div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (tm.filteredEntries().length === 0) {
+      <!-- Empty State -->
+      <div class="p-12 text-center">
+        <div
+          class="bg-soft-stone text-muted mx-auto flex size-12 items-center justify-center rounded-full"
+        >
+          <aos-icons name="lucideClock" class="size-6" />
+        </div>
+        <h3 class="text-ink mt-4 text-base font-semibold">No Time Entries Found</h3>
+        <p class="text-body-muted mx-auto mt-1 max-w-sm text-xs">
+          Start a stopwatch timer or record a manual time entry to track billable work.
+        </p>
+        <div class="mt-6 flex items-center justify-center gap-2">
+          <aos-button
+            variant="primary"
+            size="sm"
+            (click)="tm.openManualModal()"
+            (keydown.enter)="tm.openManualModal()"
+          >
+            <aos-icons name="lucidePlus" class="size-4" />
+            <span class="ml-1.5 font-mono text-xs">Log First Entry</span>
+          </aos-button>
+        </div>
+      </div>
+    } @else {
+      <!-- Ledger Table -->
+      <div class="overflow-x-auto">
+        <table class="divide-hairline w-full divide-y text-left text-sm">
+          <thead class="bg-soft-stone/40 text-muted font-mono text-xs uppercase">
+            <tr>
+              <th scope="col" class="px-5 py-3">Task & Project</th>
+              <th scope="col" class="px-5 py-3">Duration</th>
+              <th scope="col" class="px-5 py-3">Type</th>
+              <th scope="col" class="px-5 py-3">Logged Date</th>
+              <th scope="col" class="px-5 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-hairline divide-y">
+            @for (entry of tm.filteredEntries(); track entry.id) {
+              <tr class="hover:bg-soft-stone/20 transition-colors">
+                <!-- Task & Project -->
+                <td class="px-5 py-3.5">
+                  <div class="text-ink font-medium">{{ getTaskTitle(entry.taskId) }}</div>
+                  <div class="text-body-muted font-mono text-xs">
+                    {{ getProjectName(entry.taskId) }}
+                  </div>
+                </td>
+
+                <!-- Duration -->
+                <td class="px-5 py-3.5">
+                  <span class="text-ink font-mono text-sm font-semibold">
+                    {{ formatDuration(entry.durationMinutes) }}
+                  </span>
+                </td>
+
+                <!-- Billable Status -->
+                <td class="px-5 py-3.5">
+                  @if (entry.isBillable) {
+                    <span
+                      class="border-brand-green/30 bg-brand-green/10 text-brand-green rounded-pill inline-flex items-center border px-2 py-0.5 font-mono text-[11px] font-medium"
+                    >
+                      BILLABLE
+                    </span>
+                  } @else {
+                    <span
+                      class="border-hairline bg-soft-stone text-muted rounded-pill inline-flex items-center border px-2 py-0.5 font-mono text-[11px] font-medium"
+                    >
+                      NON-BILLABLE
+                    </span>
+                  }
+                </td>
+
+                <!-- Logged Date -->
+                <td class="text-body-muted px-5 py-3.5 font-mono text-xs">
+                  {{ entry.createdAt | date: "mediumDate" }}
+                </td>
+
+                <!-- Actions -->
+                <td class="px-5 py-3.5 text-right">
+                  <aos-button
+                    variant="ghost"
+                    size="sm"
+                    (click)="onDeleteEntry(entry)"
+                    (keydown.enter)="onDeleteEntry(entry)"
+                    class="hover:text-error text-muted size-8 rounded-sm !p-0"
+                    ariaLabel="Delete time entry"
+                  >
+                    <aos-icons name="lucideTrash2" class="size-4" />
+                  </aos-button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Time Tracking Modals -->
+  @if (tm.isManualModalOpen()) {
+    <aos-time-entry-modal />
+  }
+  @if (tm.isDeleteModalOpen()) {
+    <aos-time-entry-delete-modal />
+  }
+  @if (tm.isDiscardModalOpen()) {
+    <aos-time-tracking-discard-modal />
+  }
+</div>

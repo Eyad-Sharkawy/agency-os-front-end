@@ -176,6 +176,36 @@ describe("Workspace Manage Modal Tabs", () => {
       component.loadMembers();
       expect(loadSpy).toHaveBeenCalled();
     });
+
+    it("should render members table and modals in template when state is active", () => {
+      wm.members.set(mockMembers);
+      wm.isLoadingMembers.set(false);
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.textContent).toContain("alex_dev");
+
+      // Transfer ownership modal dialog
+      wm.transferTarget.set(mockMembers[1]);
+      fixture.detectChanges();
+      expect(compiled.textContent).toContain("Transfer Workspace Ownership");
+
+      // Remove member modal dialog
+      wm.transferTarget.set(null);
+      wm.removeTarget.set(mockMembers[1]);
+      fixture.detectChanges();
+      expect(compiled.textContent).toContain("Remove Member from Workspace");
+
+      // Success & error banners
+      wm.removeTarget.set(null);
+      wm.membersError.set("Failed to load members");
+      wm.memberActionSuccess.set("Role updated successfully");
+      wm.memberActionError.set("Operation failed");
+      fixture.detectChanges();
+      expect(compiled.textContent).toContain("Failed to load members");
+      expect(compiled.textContent).toContain("Role updated successfully");
+      expect(compiled.textContent).toContain("Operation failed");
+    });
   });
 
   describe("WorkspaceInviteTab", () => {

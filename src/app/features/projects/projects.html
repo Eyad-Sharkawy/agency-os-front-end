@@ -382,10 +382,43 @@
                     </span>
                   </td>
 
-                  <!-- Budget -->
-                  <td class="px-5 py-4 font-mono text-xs font-semibold">
+                  <!-- Budget & Utilization -->
+                  <td class="px-5 py-4 font-mono text-xs">
                     @if (project.budget !== undefined && project.budget !== null) {
-                      {{ project.budget | currency: "USD" : "symbol" : "1.0-0" }}
+                      @let prog = pm.getProjectBudgetProgress(project.id);
+                      <div class="min-w-[120px] space-y-1">
+                        <div class="flex items-center justify-between text-[11px]">
+                          <span class="font-semibold">{{
+                            project.budget | currency: "USD" : "symbol" : "1.0-0"
+                          }}</span>
+                          @if (prog.isOverBudget) {
+                            <span
+                              class="text-error flex items-center gap-0.5 text-[10px] font-bold"
+                            >
+                              <aos-icons name="lucideAlertTriangle" class="size-2.5" />
+                              <span>Over</span>
+                            </span>
+                          } @else if (prog.isNearBudget) {
+                            <span
+                              class="flex items-center gap-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400"
+                            >
+                              <aos-icons name="lucideAlertTriangle" class="size-2.5" />
+                              <span>Near</span>
+                            </span>
+                          } @else {
+                            <span class="text-muted text-[10px]">{{ prog.percentage }}%</span>
+                          }
+                        </div>
+                        <div class="bg-soft-stone/80 h-1.5 w-full overflow-hidden rounded-full">
+                          <div
+                            class="h-full rounded-full transition-all"
+                            [class.bg-error]="prog.isOverBudget"
+                            [class.bg-amber-500]="prog.isNearBudget"
+                            [class.bg-brand-green]="!prog.isOverBudget && !prog.isNearBudget"
+                            [style.width.%]="getCappedPercentage(prog.percentage)"
+                          ></div>
+                        </div>
+                      </div>
                     } @else {
                       <span class="text-muted font-normal">—</span>
                     }
@@ -453,6 +486,10 @@
   }
 
   <!-- Modals -->
-  <aos-project-modal />
-  <aos-project-delete-modal />
+  @if (pm.isModalOpen()) {
+    <aos-project-modal />
+  }
+  @if (pm.isDeleteModalOpen()) {
+    <aos-project-delete-modal />
+  }
 </div>

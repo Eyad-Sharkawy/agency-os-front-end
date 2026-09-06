@@ -7,7 +7,7 @@ import { DashboardShell } from "./layout/dashboard-shell/dashboard-shell";
 
 describe("App Routes Configuration", () => {
   it("should have correct route paths defined", () => {
-    expect(routes).toHaveLength(6);
+    expect(routes).toHaveLength(7);
 
     // Root landing page route
     const rootRoute = routes[0];
@@ -26,21 +26,26 @@ describe("App Routes Configuration", () => {
     expect(workspacesRoute.path).toBe("workspaces");
     expect(workspacesRoute.canActivate).toEqual([authGuard]);
 
+    // Standalone unauthorized route
+    const unauthorizedRoute = routes[3];
+    expect(unauthorizedRoute.path).toBe("unauthorized");
+    expect(typeof unauthorizedRoute.loadComponent).toBe("function");
+
     // Authenticated Dashboard shell route tree
-    const workspaceShellRoute = routes[3];
+    const workspaceShellRoute = routes[4];
     expect(workspaceShellRoute.path).toBe("w/:workspaceId");
     expect(workspaceShellRoute.component).toBe(DashboardShell);
     expect(workspaceShellRoute.canActivate).toEqual([authGuard, tenantGuard]);
-    expect(workspaceShellRoute.children).toHaveLength(6);
+    expect(workspaceShellRoute.children).toHaveLength(7);
 
     // App backwards compatibility route
-    const appRoute = routes[4];
+    const appRoute = routes[5];
     expect(appRoute.path).toBe("app");
     expect(appRoute.redirectTo).toBe("workspaces");
   });
 
   it("should lazy load children features under /w/:workspaceId", async () => {
-    const workspaceShellRoute = routes[3];
+    const workspaceShellRoute = routes[4];
     const children = workspaceShellRoute.children ?? [];
 
     for (const child of children) {

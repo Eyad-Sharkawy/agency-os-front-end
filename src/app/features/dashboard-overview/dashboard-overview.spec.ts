@@ -19,6 +19,7 @@ describe("DashboardOverview Component", () => {
         name: "Acme Agency",
         tenantId: "acme-agency",
         ownerId: "user-1",
+        role: "ADMIN",
         createdAt: "2026-01-01T00:00:00Z",
       }),
       isLoading: vi.fn().mockReturnValue(false),
@@ -76,5 +77,57 @@ describe("DashboardOverview Component", () => {
     expect(component.isLoading()).toBe(true);
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelectorAll(".animate-pulse").length).toBeGreaterThan(0);
+  });
+
+  it("should restrict action buttons and metrics for CLIENT role", () => {
+    mockWorkspaceStore.activeWorkspace.mockReturnValue({
+      id: "ws-1",
+      name: "Acme Agency",
+      tenantId: "acme-agency",
+      ownerId: "user-1",
+      role: "CLIENT",
+      createdAt: "2026-01-01T00:00:00Z",
+    });
+    fixture = TestBed.createComponent(DashboardOverview);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.canTrackTime()).toBe(false);
+    expect(component.canCreateProject()).toBe(false);
+    expect(component.canViewClients()).toBe(false);
+    expect(component.canCreateInvoice()).toBe(false);
+
+    const text = fixture.nativeElement.textContent;
+    expect(text).not.toContain("Track Time");
+    expect(text).not.toContain("New Project");
+    expect(text).not.toContain("Manage clients");
+    expect(text).not.toContain("View timesheet");
+    expect(text).toContain("View invoices");
+  });
+
+  it("should allow tracking and viewing clients for MEMBER role, but restrict creation", () => {
+    mockWorkspaceStore.activeWorkspace.mockReturnValue({
+      id: "ws-1",
+      name: "Acme Agency",
+      tenantId: "acme-agency",
+      ownerId: "user-1",
+      role: "MEMBER",
+      createdAt: "2026-01-01T00:00:00Z",
+    });
+    fixture = TestBed.createComponent(DashboardOverview);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.canTrackTime()).toBe(true);
+    expect(component.canCreateProject()).toBe(false);
+    expect(component.canViewClients()).toBe(true);
+    expect(component.canCreateInvoice()).toBe(false);
+
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain("Track Time");
+    expect(text).not.toContain("New Project");
+    expect(text).toContain("Manage clients");
+    expect(text).toContain("View timesheet");
+    expect(text).toContain("View invoices");
   });
 });

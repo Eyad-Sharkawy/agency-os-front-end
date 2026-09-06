@@ -8,8 +8,10 @@ import {
   ProjectResponse,
   ProjectStatus,
 } from "../../../core/api/models/project.models";
+import { TaskResponse } from "../../../core/api/models/task.models";
 import { ClientApi } from "../../../core/api/services/client/client-api";
 import { ProjectApi } from "../../../core/api/services/project/project-api";
+import { TaskApi } from "../../../core/api/services/task/task-api";
 import { WorkspaceStore } from "../../../core/multitenancy/workspace.store";
 
 export type ProjectFilterStatus = "ALL" | ProjectStatus;
@@ -22,6 +24,7 @@ export type ProjectAction = "create" | "edit" | "delete";
 export class ProjectManagement {
   private readonly projectApi = inject(ProjectApi);
   private readonly clientApi = inject(ClientApi);
+  private readonly taskApi = inject(TaskApi);
   readonly workspaceStore = inject(WorkspaceStore);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -31,6 +34,7 @@ export class ProjectManagement {
   // State Signals
   readonly projects = signal<ProjectResponse[]>([]);
   readonly clients = signal<ClientResponse[]>([]);
+  readonly tasks = signal<TaskResponse[]>([]);
   readonly isLoading = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
 
@@ -44,6 +48,7 @@ export class ProjectManagement {
   readonly isCreateModalOpen = signal<boolean>(false);
   readonly isEditModalOpen = signal<boolean>(false);
   readonly isDeleteModalOpen = signal<boolean>(false);
+  readonly isModalOpen = computed(() => this.isCreateModalOpen() || this.isEditModalOpen());
   readonly selectedProject = signal<ProjectResponse | null>(null);
 
   // User Permissions
@@ -214,10 +219,12 @@ export class ProjectManagement {
     forkJoin({
       projects: this.projectApi.getProjects(),
       clients: this.clientApi.getClients().pipe(catchError(() => of([]))),
+      tasks: this.taskApi.getTasks().pipe(catchError(() => of([]))),
     }).subscribe({
-      next: ({ projects, clients }) => {
+      next: ({ projects, clients, tasks }) => {
         this.projects.set(projects || []);
         this.clients.set(clients || []);
+        this.tasks.set(tasks || []);
         this.isLoading.set(false);
 
         const params = this.queryParams();
@@ -333,5 +340,32 @@ export class ProjectManagement {
 
   getClientName(clientId: string): string {
     return this.clientMap().get(clientId)?.name ?? "Unknown Client";
+  }
+
+  getProjectSpent(projectId: string): number {
+    const project = this.projects().find(p => p.id === projectId);
+    if (!project) return 0;
+    const projectTasks = this.tasks().filter(t => t.projectId === projectId);
+    const totalMinutes = projectTasks.reduce((acc, t) => acc + (t.totalLoggedMinutes || 0), 0);
+    return Math.round((totalMinutes / 60) * (project.billingRate || 0));
+  }
+
+  getProjectBudgetProgress(projectId: string): {
+    spent: number;
+    budget: number | null;
+    percentage: number;
+    isOverBudget: boolean;
+    isNearBudget: boolean;
+  } {
+    const project = this.projects().find(p => p.id === projectId);
+    const spent = this.getProjectSpent(projectId);
+    const budget = project?.budget ?? null;
+    if (!budget || budget <= 0) {
+      return { spent, budget, percentage: 0, isOverBudget: false, isNearBudget: false };
+    }
+    const percentage = Math.round((spent / budget) * 100);
+    const isOverBudget = spent > budget;
+    const isNearBudget = percentage >= 80 && !isOverBudget;
+    return { spent, budget, percentage, isOverBudget, isNearBudget };
   }
 }
