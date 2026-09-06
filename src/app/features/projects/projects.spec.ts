@@ -31,6 +31,7 @@ describe("ProjectsComponent", () => {
     isCreateModalOpen: ReturnType<typeof signal<boolean>>;
     isEditModalOpen: ReturnType<typeof signal<boolean>>;
     isDeleteModalOpen: ReturnType<typeof signal<boolean>>;
+    isModalOpen: ReturnType<typeof signal<boolean>>;
     selectedProject: ReturnType<typeof signal<ProjectResponse | null>>;
     stats: ReturnType<
       typeof signal<{
@@ -52,6 +53,7 @@ describe("ProjectsComponent", () => {
     setClientFilter: ReturnType<typeof vi.fn>;
     setViewMode: ReturnType<typeof vi.fn>;
     getClientName: ReturnType<typeof vi.fn>;
+    getProjectBudgetProgress: ReturnType<typeof vi.fn>;
   };
 
   const mockClients: ClientResponse[] = [
@@ -96,6 +98,7 @@ describe("ProjectsComponent", () => {
       isCreateModalOpen: signal<boolean>(false),
       isEditModalOpen: signal<boolean>(false),
       isDeleteModalOpen: signal<boolean>(false),
+      isModalOpen: signal<boolean>(false),
       selectedProject: signal<ProjectResponse | null>(null),
       stats: signal({
         total: 1,
@@ -115,6 +118,13 @@ describe("ProjectsComponent", () => {
       setClientFilter: vi.fn(),
       setViewMode: vi.fn(),
       getClientName: vi.fn().mockReturnValue("Acme Corp"),
+      getProjectBudgetProgress: vi.fn().mockReturnValue({
+        spent: 5000,
+        budget: 35000,
+        percentage: 14,
+        isOverBudget: false,
+        isNearBudget: false,
+      }),
     };
 
     await TestBed.configureTestingModule({

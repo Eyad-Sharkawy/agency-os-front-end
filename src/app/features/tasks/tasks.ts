@@ -23,10 +23,13 @@ import {
   lucideGrid,
   lucideLayoutList,
   lucideLoader2,
+  lucidePause,
   lucidePencil,
+  lucidePlay,
   lucidePlus,
   lucideRefreshCw,
   lucideSearch,
+  lucideSquare,
   lucideTrash2,
   lucideX,
 } from "@ng-icons/lucide";
@@ -43,6 +46,9 @@ import {
   TaskManagement,
   TaskViewMode,
 } from "./services/task-management";
+import { TimeTrackingDiscardModal } from "../time-tracking/components/time-tracking-discard-modal/time-tracking-discard-modal";
+import { TimeTrackingManagement } from "../time-tracking/services/time-tracking-management";
+import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 
 @Component({
   selector: "aos-tasks",
@@ -61,6 +67,7 @@ import {
     TaskCard,
     TaskModal,
     TaskDeleteModal,
+    TimeTrackingDiscardModal,
   ],
   providers: [
     provideIcons({
@@ -82,12 +89,21 @@ import {
       lucidePencil,
       lucideTrash2,
       lucideChevronDown,
+      lucidePlay,
+      lucidePause,
+      lucideSquare,
     }),
   ],
   templateUrl: "./tasks.html",
 })
 export class TasksComponent implements OnInit {
   readonly tm = inject(TaskManagement);
+  readonly ttm = inject(TimeTrackingManagement);
+  private readonly workspaceStore = inject(WorkspaceStore);
+
+  readonly canTrackTime = computed(() => {
+    return this.workspaceStore.activeWorkspace()?.role !== "CLIENT";
+  });
 
   readonly projectFilterOptions = computed<SelectOption<string>[]>(() => {
     const list: SelectOption<string>[] = [{ label: "All Projects", value: "ALL" }];
@@ -256,5 +272,34 @@ export class TasksComponent implements OnInit {
 
   getEstimatedHours(task: TaskResponse): number | null {
     return task.estimatedMinutes ? Math.round((task.estimatedMinutes / 60) * 10) / 10 : null;
+  }
+
+  isTrackingTask(taskId: string): boolean {
+    return this.ttm.activeTimer()?.taskId === taskId;
+  }
+
+  onStartTracking(taskId: string, event: Event): void {
+    event.stopPropagation();
+    this.ttm.startTimer(taskId);
+  }
+
+  onPauseTracking(event: Event): void {
+    event.stopPropagation();
+    this.ttm.pauseTimer();
+  }
+
+  onResumeTracking(event: Event): void {
+    event.stopPropagation();
+    this.ttm.resumeTimer();
+  }
+
+  onStopAndSaveTracking(event: Event): void {
+    event.stopPropagation();
+    this.ttm.stopTimer(true);
+  }
+
+  onDiscardTracking(event: Event): void {
+    event.stopPropagation();
+    this.ttm.openDiscardModal();
   }
 }

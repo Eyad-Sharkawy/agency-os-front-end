@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { provideHttpClient } from "@angular/common/http";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { TimeEntryApi } from "./time-entry-api";
 import { ENVIRONMENT } from "../../../tokens/enviroment/environment.token";
 import {
@@ -103,7 +104,7 @@ describe("TimeEntryApi", () => {
     req.flush(mockResponse);
   });
 
-  it("should stop timer via POST", () => {
+  it("should stop timer via POST with isBillable query param", () => {
     const mockResponse: TimeEntryResponse = {
       id: "te-1",
       taskId: "t-1",
@@ -114,13 +115,37 @@ describe("TimeEntryApi", () => {
       updatedAt: "2026-01-01T00:00:00Z",
     };
 
-    service.stopTimer().subscribe(res => {
+    service.stopTimer(false).subscribe(res => {
       expect(res).toEqual(mockResponse);
     });
 
-    const req = httpTesting.expectOne("https://api.example.com/api/v1/time-entries/stop");
+    const req = httpTesting.expectOne(
+      "https://api.example.com/api/v1/time-entries/stop?isBillable=false",
+    );
     expect(req.request.method).toBe("POST");
     req.flush(mockResponse);
+  });
+
+  it("should get time entries via GET with and without filters", () => {
+    const mockResponses: TimeEntryResponse[] = [];
+
+    // Without params
+    service.getTimeEntries().subscribe(res => {
+      expect(res).toEqual(mockResponses);
+    });
+    const req1 = httpTesting.expectOne("https://api.example.com/api/v1/time-entries");
+    expect(req1.request.method).toBe("GET");
+    req1.flush(mockResponses);
+
+    // With params
+    service.getTimeEntries({ taskId: "t-1", userId: "u-1" }).subscribe(res => {
+      expect(res).toEqual(mockResponses);
+    });
+    const req2 = httpTesting.expectOne(
+      "https://api.example.com/api/v1/time-entries?taskId=t-1&userId=u-1",
+    );
+    expect(req2.request.method).toBe("GET");
+    req2.flush(mockResponses);
   });
 
   it("should get active timer via GET", () => {

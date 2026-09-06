@@ -43,6 +43,7 @@ export class ClientManagement {
   readonly isEditModalOpen = signal<boolean>(false);
   readonly isDeleteModalOpen = signal<boolean>(false);
   readonly isInviteModalOpen = signal<boolean>(false);
+  readonly isModalOpen = computed(() => this.isCreateModalOpen() || this.isEditModalOpen());
   readonly selectedClient = signal<ClientResponse | null>(null);
 
   // Client User Invitation State
@@ -110,57 +111,80 @@ export class ClientManagement {
     });
 
     effect(() => {
-      const params = this.queryParams();
-      const action = params?.["action"] as ClientAction | undefined;
-      const clientId = params?.["clientId"] as string | undefined;
+      this.syncUrlActionState(this.queryParams());
+    });
+  }
 
-      if (!action) {
-        if (
-          this.isCreateModalOpen() ||
-          this.isEditModalOpen() ||
-          this.isDeleteModalOpen() ||
-          this.isInviteModalOpen()
-        ) {
-          this.resetModalSignals();
-        }
-        return;
+  private syncUrlActionState(params: Record<string, unknown> | undefined): void {
+    const action = params?.["action"] as ClientAction | undefined;
+    const clientId = params?.["clientId"] as string | undefined;
+
+    if (!action) {
+      if (
+        this.isCreateModalOpen() ||
+        this.isEditModalOpen() ||
+        this.isDeleteModalOpen() ||
+        this.isInviteModalOpen()
+      ) {
+        this.resetModalSignals();
       }
+      return;
+    }
 
-      if (action === "create") {
-        this.selectedClient.set(null);
-        this.isCreateModalOpen.set(true);
-        this.isEditModalOpen.set(false);
-        this.isDeleteModalOpen.set(false);
-        this.isInviteModalOpen.set(false);
-        return;
-      }
+    if (action === "create") {
+      this.handleCreateAction();
+      return;
+    }
 
-      if (clientId && (action === "edit" || action === "delete" || action === "invite")) {
-        if (this.selectedClient()?.id === clientId) {
-          this.isCreateModalOpen.set(false);
-          this.isEditModalOpen.set(action === "edit");
-          this.isDeleteModalOpen.set(action === "delete");
-          this.isInviteModalOpen.set(action === "invite");
-          return;
+    if (clientId && (action === "edit" || action === "delete" || action === "invite")) {
+      this.handleClientAction(action, clientId);
+    }
+  }
+
+  private handleCreateAction(): void {
+    if (!this.canCreate()) return;
+    this.selectedClient.set(null);
+    this.isCreateModalOpen.set(true);
+    this.isEditModalOpen.set(false);
+    this.isDeleteModalOpen.set(false);
+    this.isInviteModalOpen.set(false);
+  }
+
+  private isActionAllowed(action: ClientAction): boolean {
+    if (action === "edit") return this.canEdit();
+    if (action === "delete") return this.canDelete();
+    if (action === "invite") return this.canInviteClient();
+    return false;
+  }
+
+  private handleClientAction(action: "edit" | "delete" | "invite", clientId: string): void {
+    if (!this.isActionAllowed(action)) {
+      return;
+    }
+
+    if (this.selectedClient()?.id === clientId) {
+      this.isCreateModalOpen.set(false);
+      this.isEditModalOpen.set(action === "edit");
+      this.isDeleteModalOpen.set(action === "delete");
+      this.isInviteModalOpen.set(action === "invite");
+      return;
+    }
+
+    const client = this.clients().find(c => c.id === clientId);
+    if (client) {
+      this.applyModalAction(action, client);
+      return;
+    }
+
+    this.clientApi.getClientById(clientId).subscribe({
+      next: fetchedClient => {
+        if (fetchedClient) {
+          this.applyModalAction(action, fetchedClient);
         }
-
-        const client = this.clients().find(c => c.id === clientId);
-        if (client) {
-          this.applyModalAction(action, client);
-        } else {
-          // If clients list is not populated yet, fetch the specific client
-          this.clientApi.getClientById(clientId).subscribe({
-            next: fetchedClient => {
-              if (fetchedClient) {
-                this.applyModalAction(action, fetchedClient);
-              }
-            },
-            error: () => {
-              this.closeModals();
-            },
-          });
-        }
-      }
+      },
+      error: () => {
+        this.closeModals();
+      },
     });
   }
 

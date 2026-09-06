@@ -444,6 +444,12 @@
 </div>
 
 <!-- Modals -->
-<aos-client-modal />
-<aos-client-delete-modal />
-<aos-client-invite-modal />
+@if (cm.isModalOpen()) {
+  <aos-client-modal />
+}
+@if (cm.isDeleteModalOpen()) {
+  <aos-client-delete-modal />
+}
+@if (cm.isInviteModalOpen()) {
+  <aos-client-invite-modal />
+}

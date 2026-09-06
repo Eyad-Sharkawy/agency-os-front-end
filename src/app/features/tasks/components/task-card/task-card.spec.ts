@@ -6,6 +6,11 @@ import { TaskResponse } from "../../../../core/api/models/task.models";
 import { TaskManagement } from "../../services/task-management";
 import { TaskCard } from "./task-card";
 
+import { signal, WritableSignal } from "@angular/core";
+import { WorkspaceStore } from "../../../../core/multitenancy/workspace.store";
+import { TimeTrackingManagement } from "../../../time-tracking/services/time-tracking-management";
+import { ActiveTimerResponse } from "../../../../core/api/models/time-entry.models";
+
 describe("TaskCard", () => {
   let component: TaskCard;
   let fixture: ComponentFixture<TaskCard>;
@@ -17,6 +22,21 @@ describe("TaskCard", () => {
     canUpdateStatus: ReturnType<typeof vi.fn>;
     getProjectName: ReturnType<typeof vi.fn>;
     updateTaskStatus: ReturnType<typeof vi.fn>;
+  };
+  let timeTrackingMock: {
+    startTimer: ReturnType<typeof vi.fn>;
+    pauseTimer: ReturnType<typeof vi.fn>;
+    resumeTimer: ReturnType<typeof vi.fn>;
+    stopTimer: ReturnType<typeof vi.fn>;
+    openDiscardModal: ReturnType<typeof vi.fn>;
+    openStartTimerModal: ReturnType<typeof vi.fn>;
+    activeTimer: WritableSignal<ActiveTimerResponse | null>;
+    isPaused: WritableSignal<boolean>;
+    activeTimerFormatted: WritableSignal<string>;
+    isSubmitting: WritableSignal<boolean>;
+  };
+  let workspaceStoreMock: {
+    activeWorkspace: ReturnType<typeof signal<{ role: string } | null>>;
   };
 
   const mockTask: TaskResponse = {
@@ -46,9 +66,31 @@ describe("TaskCard", () => {
       updateTaskStatus: vi.fn().mockReturnValue(of({ ...mockTask, status: "REVIEW" })),
     };
 
+    timeTrackingMock = {
+      startTimer: vi.fn(),
+      pauseTimer: vi.fn(),
+      resumeTimer: vi.fn(),
+      stopTimer: vi.fn(),
+      openDiscardModal: vi.fn(),
+      openStartTimerModal: vi.fn(),
+      activeTimer: signal(null),
+      isPaused: signal(false),
+      activeTimerFormatted: signal("00:00:00"),
+      isSubmitting: signal(false),
+    };
+
+    workspaceStoreMock = {
+      activeWorkspace: signal({ role: "MEMBER" }),
+    };
+
     await TestBed.configureTestingModule({
       imports: [TaskCard],
-      providers: [provideRouter([]), { provide: TaskManagement, useValue: tmMock }],
+      providers: [
+        provideRouter([]),
+        { provide: TaskManagement, useValue: tmMock },
+        { provide: TimeTrackingManagement, useValue: timeTrackingMock },
+        { provide: WorkspaceStore, useValue: workspaceStoreMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TaskCard);
@@ -156,5 +198,88 @@ describe("TaskCard", () => {
   it("should open delete modal when onDelete is called", () => {
     component.onDelete();
     expect(tmMock.openDeleteModal).toHaveBeenCalledWith(mockTask);
+  });
+
+  it("should calculate timeProgress, isNearBudget, and isOverBudget correctly", () => {
+    // 600 / 480 = 125% -> Over budget
+    expect(component.timeProgress()).toBe(125);
+    expect(component.isOverBudget()).toBe(true);
+    expect(component.isNearBudget()).toBe(false);
+    expect(component.progressPercentageCapped()).toBe(100);
+
+    // Near limit (85%)
+    fixture.componentRef.setInput("task", {
+      ...mockTask,
+      estimatedMinutes: 100,
+      totalLoggedMinutes: 85,
+      isOverBudget: false,
+    });
+    expect(component.timeProgress()).toBe(85);
+    expect(component.isNearBudget()).toBe(true);
+    expect(component.isOverBudget()).toBe(false);
+    expect(component.progressPercentageCapped()).toBe(85);
+
+    // Normal on-track (50%)
+    fixture.componentRef.setInput("task", {
+      ...mockTask,
+      estimatedMinutes: 100,
+      totalLoggedMinutes: 50,
+      isOverBudget: false,
+    });
+    expect(component.timeProgress()).toBe(50);
+    expect(component.isNearBudget()).toBe(false);
+    expect(component.isOverBudget()).toBe(false);
+
+    // No estimated minutes
+    fixture.componentRef.setInput("task", {
+      ...mockTask,
+      estimatedMinutes: 0,
+      totalLoggedMinutes: 50,
+    });
+    expect(component.timeProgress()).toBeNull();
+    expect(component.progressPercentageCapped()).toBe(0);
+  });
+
+  it("should delegate to timeTrackingManagement when onStartTracking is clicked", () => {
+    const fakeEvent = { stopPropagation: vi.fn() } as unknown as Event;
+    component.onStartTracking(fakeEvent);
+    expect(fakeEvent.stopPropagation).toHaveBeenCalled();
+    expect(timeTrackingMock.startTimer).toHaveBeenCalledWith("task-123");
+  });
+
+  it("should handle pause, resume, stop and save, and discard tracking", () => {
+    const fakeEvent = { stopPropagation: vi.fn() } as unknown as Event;
+
+    component.onPauseTracking(fakeEvent);
+    expect(timeTrackingMock.pauseTimer).toHaveBeenCalled();
+
+    component.onResumeTracking(fakeEvent);
+    expect(timeTrackingMock.resumeTimer).toHaveBeenCalled();
+
+    component.onStopAndSaveTracking(fakeEvent);
+    expect(timeTrackingMock.stopTimer).toHaveBeenCalledWith(true);
+
+    component.onDiscardTracking(fakeEvent);
+    expect(timeTrackingMock.openDiscardModal).toHaveBeenCalled();
+  });
+
+  it("should detect when this task is being tracked", () => {
+    expect(component.isTrackingThisTask()).toBe(false);
+
+    timeTrackingMock.activeTimer.set({
+      userId: "u-1",
+      taskId: "task-123",
+      startTime: "2026-08-14T00:00:00Z",
+    });
+    expect(component.isTrackingThisTask()).toBe(true);
+
+    timeTrackingMock.isPaused.set(true);
+    expect(component.isTimerPaused()).toBe(true);
+  });
+
+  it("should disable canTrackTime for CLIENT role", () => {
+    expect(component.canTrackTime()).toBe(true);
+    workspaceStoreMock.activeWorkspace.set({ role: "CLIENT" });
+    expect(component.canTrackTime()).toBe(false);
   });
 });

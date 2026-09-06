@@ -26,6 +26,7 @@ describe("ClientsComponent", () => {
     isEditModalOpen: ReturnType<typeof signal<boolean>>;
     isDeleteModalOpen: ReturnType<typeof signal<boolean>>;
     isInviteModalOpen: ReturnType<typeof signal<boolean>>;
+    isModalOpen: ReturnType<typeof signal<boolean>>;
     selectedClient: ReturnType<typeof signal<ClientResponse | null>>;
     inviteTarget: ReturnType<typeof signal<string>>;
     isInviting: ReturnType<typeof signal<boolean>>;
@@ -73,6 +74,7 @@ describe("ClientsComponent", () => {
       isEditModalOpen: signal(false),
       isDeleteModalOpen: signal(false),
       isInviteModalOpen: signal(false),
+      isModalOpen: signal(false),
       selectedClient: signal(null),
       inviteTarget: signal(""),
       isInviting: signal(false),
@@ -123,5 +125,47 @@ describe("ClientsComponent", () => {
 
     component.onViewMode("table");
     expect(cmMock.setViewMode).toHaveBeenCalledWith("table");
+  });
+
+  it("should render table view when viewMode is table", () => {
+    cmMock.viewMode.set("table");
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector("table")).toBeTruthy();
+    expect(compiled.textContent).toContain("contact@acme.com");
+  });
+
+  it("should render skeleton loading state when isLoading is true", () => {
+    cmMock.clients.set([]);
+    cmMock.isLoading.set(true);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelectorAll(".animate-pulse").length).toBeGreaterThan(0);
+  });
+
+  it("should render empty state when filteredClients is empty", () => {
+    cmMock.filteredClients.set([]);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("No Matching Clients");
+  });
+
+  it("should render error message when errorMessage is present", () => {
+    cmMock.errorMessage.set("Database connection failed");
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Database connection failed");
+  });
+
+  it("should render clear search button when searchQuery is active", () => {
+    cmMock.searchQuery.set("Acme");
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('[aria-label="Clear search"]')).toBeTruthy();
   });
 });

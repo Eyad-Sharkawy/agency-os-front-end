@@ -14,6 +14,7 @@ describe("ProjectCard", () => {
     canEdit: ReturnType<typeof vi.fn>;
     canDelete: ReturnType<typeof vi.fn>;
     getClientName: ReturnType<typeof vi.fn>;
+    getProjectBudgetProgress: ReturnType<typeof vi.fn>;
   };
 
   const mockProject: ProjectResponse = {
@@ -35,6 +36,13 @@ describe("ProjectCard", () => {
       canEdit: vi.fn().mockReturnValue(true),
       canDelete: vi.fn().mockReturnValue(true),
       getClientName: vi.fn().mockReturnValue("Acme Corp"),
+      getProjectBudgetProgress: vi.fn().mockReturnValue({
+        spent: 45000,
+        budget: 50000,
+        percentage: 90,
+        isOverBudget: false,
+        isNearBudget: true,
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -88,5 +96,22 @@ describe("ProjectCard", () => {
   it("should trigger delete modal on delete click", () => {
     component.onDelete();
     expect(pmMock.openDeleteModal).toHaveBeenCalledWith(mockProject);
+  });
+
+  it("should compute budgetProgress and budgetProgressCapped correctly", () => {
+    expect(component.budgetProgress().percentage).toBe(90);
+    expect(component.budgetProgress().isNearBudget).toBe(true);
+    expect(component.budgetProgressCapped()).toBe(90);
+
+    pmMock.getProjectBudgetProgress.mockReturnValue({
+      spent: 60000,
+      budget: 50000,
+      percentage: 120,
+      isOverBudget: true,
+      isNearBudget: false,
+    });
+    fixture.componentRef.setInput("project", { ...mockProject, id: "proj-over" });
+    expect(component.budgetProgress().isOverBudget).toBe(true);
+    expect(component.budgetProgressCapped()).toBe(100);
   });
 });

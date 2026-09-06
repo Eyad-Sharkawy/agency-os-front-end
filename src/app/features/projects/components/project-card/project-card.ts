@@ -3,6 +3,7 @@ import { Component, computed, inject, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { provideIcons } from "@ng-icons/core";
 import {
+  lucideAlertTriangle,
   lucideArrowUpRight,
   lucideBuilding2,
   lucideCalendar,
@@ -35,6 +36,7 @@ import { ProjectManagement } from "../../services/project-management";
       lucideTrash2,
       lucideMoreVertical,
       lucideArrowUpRight,
+      lucideAlertTriangle,
     }),
   ],
   templateUrl: "./project-card.html",
@@ -45,6 +47,14 @@ export class ProjectCard {
 
   readonly clientName = computed(() => {
     return this.pm.getClientName(this.project().clientId);
+  });
+
+  readonly budgetProgress = computed(() => {
+    return this.pm.getProjectBudgetProgress(this.project().id);
+  });
+
+  readonly budgetProgressCapped = computed(() => {
+    return Math.min(100, Math.max(0, this.budgetProgress().percentage));
   });
 
   getStatusClass(status: ProjectStatus): string {

@@ -90,18 +90,22 @@ import { Icons } from "../../shared/components/icons/icons";
             </div>
 
             <div class="flex items-center gap-2.5">
-              <a routerLink="time-tracking">
-                <aos-button variant="outlined" size="sm">
-                  <aos-icons name="lucideClock" class="size-4" />
-                  <span class="ml-1.5 font-mono text-xs">Track Time</span>
-                </aos-button>
-              </a>
-              <a routerLink="projects">
-                <aos-button variant="primary" size="sm">
-                  <aos-icons name="lucidePlus" class="size-4" />
-                  <span class="ml-1.5 font-mono text-xs">New Project</span>
-                </aos-button>
-              </a>
+              @if (canTrackTime()) {
+                <a routerLink="time-tracking">
+                  <aos-button variant="outlined" size="sm">
+                    <aos-icons name="lucideClock" class="size-4" />
+                    <span class="ml-1.5 font-mono text-xs">Track Time</span>
+                  </aos-button>
+                </a>
+              }
+              @if (canCreateProject()) {
+                <a routerLink="projects">
+                  <aos-button variant="primary" size="sm">
+                    <aos-icons name="lucidePlus" class="size-4" />
+                    <span class="ml-1.5 font-mono text-xs">New Project</span>
+                  </aos-button>
+                </a>
+              }
             </div>
           </div>
         </div>
@@ -109,28 +113,30 @@ import { Icons } from "../../shared/components/icons/icons";
         <!-- Quick Metrics Grid -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <!-- Metric 1: Clients -->
-          <div
-            class="border-hairline bg-canvas hover:border-ink/40 flex flex-col justify-between rounded-sm border p-5 transition-colors"
-          >
-            <div class="flex items-center justify-between">
-              <span class="text-muted font-mono text-xs uppercase">Clients</span>
-              <div
-                class="bg-soft-stone text-ink flex size-8 items-center justify-center rounded-sm"
-              >
-                <aos-icons name="lucideUsers" class="size-4" />
+          @if (canViewClients()) {
+            <div
+              class="border-hairline bg-canvas hover:border-ink/40 flex flex-col justify-between rounded-sm border p-5 transition-colors"
+            >
+              <div class="flex items-center justify-between">
+                <span class="text-muted font-mono text-xs uppercase">Clients</span>
+                <div
+                  class="bg-soft-stone text-ink flex size-8 items-center justify-center rounded-sm"
+                >
+                  <aos-icons name="lucideUsers" class="size-4" />
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="text-ink font-display text-2xl font-semibold">Active</div>
+                <a
+                  routerLink="clients"
+                  class="text-brand-green hover:text-brand-green-dark dark:hover:text-brand-green-light mt-2 inline-flex items-center gap-1 font-mono text-xs transition-colors"
+                >
+                  <span>Manage clients</span>
+                  <aos-icons name="lucideArrowUpRight" class="size-3" />
+                </a>
               </div>
             </div>
-            <div class="mt-4">
-              <div class="text-ink font-display text-2xl font-semibold">Active</div>
-              <a
-                routerLink="clients"
-                class="text-brand-green hover:text-brand-green-dark dark:hover:text-brand-green-light mt-2 inline-flex items-center gap-1 font-mono text-xs transition-colors"
-              >
-                <span>Manage clients</span>
-                <aos-icons name="lucideArrowUpRight" class="size-3" />
-              </a>
-            </div>
-          </div>
+          }
 
           <!-- Metric 2: Projects -->
           <div
@@ -157,28 +163,30 @@ import { Icons } from "../../shared/components/icons/icons";
           </div>
 
           <!-- Metric 3: Time Tracked -->
-          <div
-            class="border-hairline bg-canvas hover:border-ink/40 flex flex-col justify-between rounded-sm border p-5 transition-colors"
-          >
-            <div class="flex items-center justify-between">
-              <span class="text-muted font-mono text-xs uppercase">Time Tracked</span>
-              <div
-                class="bg-soft-stone text-ink flex size-8 items-center justify-center rounded-sm"
-              >
-                <aos-icons name="lucideClock" class="size-4" />
+          @if (canTrackTime()) {
+            <div
+              class="border-hairline bg-canvas hover:border-ink/40 flex flex-col justify-between rounded-sm border p-5 transition-colors"
+            >
+              <div class="flex items-center justify-between">
+                <span class="text-muted font-mono text-xs uppercase">Time Tracked</span>
+                <div
+                  class="bg-soft-stone text-ink flex size-8 items-center justify-center rounded-sm"
+                >
+                  <aos-icons name="lucideClock" class="size-4" />
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="text-ink font-display text-2xl font-semibold">This Week</div>
+                <a
+                  routerLink="time-tracking"
+                  class="text-brand-green hover:text-brand-green-dark dark:hover:text-brand-green-light mt-2 inline-flex items-center gap-1 font-mono text-xs transition-colors"
+                >
+                  <span>View timesheet</span>
+                  <aos-icons name="lucideArrowUpRight" class="size-3" />
+                </a>
               </div>
             </div>
-            <div class="mt-4">
-              <div class="text-ink font-display text-2xl font-semibold">This Week</div>
-              <a
-                routerLink="time-tracking"
-                class="text-brand-green hover:text-brand-green-dark dark:hover:text-brand-green-light mt-2 inline-flex items-center gap-1 font-mono text-xs transition-colors"
-              >
-                <span>View timesheet</span>
-                <aos-icons name="lucideArrowUpRight" class="size-3" />
-              </a>
-            </div>
-          </div>
+          }
 
           <!-- Metric 4: Invoices -->
           <div
@@ -198,7 +206,7 @@ import { Icons } from "../../shared/components/icons/icons";
                 routerLink="invoices"
                 class="text-brand-green hover:text-brand-green-dark dark:hover:text-brand-green-light mt-2 inline-flex items-center gap-1 font-mono text-xs transition-colors"
               >
-                <span>Manage invoices</span>
+                <span>{{ canCreateInvoice() ? "Manage invoices" : "View invoices" }}</span>
                 <aos-icons name="lucideArrowUpRight" class="size-3" />
               </a>
             </div>
@@ -212,4 +220,24 @@ export class DashboardOverview {
   private readonly workspaceStore = inject(WorkspaceStore);
   readonly activeWorkspace = computed(() => this.workspaceStore.activeWorkspace());
   readonly isLoading = computed(() => this.workspaceStore.isLoading() || !this.activeWorkspace());
+
+  readonly userRole = computed(() => this.activeWorkspace()?.role);
+
+  readonly canTrackTime = computed(() => {
+    return this.userRole() !== "CLIENT";
+  });
+
+  readonly canCreateProject = computed(() => {
+    const role = this.userRole();
+    return role === "OWNER" || role === "ADMIN";
+  });
+
+  readonly canViewClients = computed(() => {
+    return this.userRole() !== "CLIENT";
+  });
+
+  readonly canCreateInvoice = computed(() => {
+    const role = this.userRole();
+    return role === "OWNER" || role === "ADMIN";
+  });
 }

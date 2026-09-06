@@ -712,6 +712,100 @@
                     <!-- Actions -->
                     <td class="px-5 py-3.5 text-right">
                       <div class="flex items-center justify-end gap-1">
+                        @if (canTrackTime()) {
+                          @if (isTrackingTask(task.id)) {
+                            <div
+                              class="border-brand-green/30 bg-brand-green/10 flex items-center gap-1 rounded-sm border px-1.5 py-0.5"
+                            >
+                              <!-- Live Status & Elapsed time -->
+                              <div
+                                class="flex items-center gap-1 font-mono text-[10px] font-bold"
+                                [class.text-amber-600]="ttm.isPaused()"
+                                [class.dark:text-amber-400]="ttm.isPaused()"
+                                [class.text-brand-green]="!ttm.isPaused()"
+                              >
+                                @if (!ttm.isPaused()) {
+                                  <span class="relative flex size-2">
+                                    <span
+                                      class="bg-brand-green absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+                                    ></span>
+                                    <span
+                                      class="bg-brand-green relative inline-flex size-2 rounded-full"
+                                    ></span>
+                                  </span>
+                                } @else {
+                                  <span class="size-2 rounded-full bg-amber-500"></span>
+                                }
+                                <span>{{ ttm.activeTimerFormatted() }}</span>
+                              </div>
+
+                              <!-- Pause / Resume Button -->
+                              @if (ttm.isPaused()) {
+                                <button
+                                  type="button"
+                                  (click)="onResumeTracking($event)"
+                                  (keydown.enter)="onResumeTracking($event)"
+                                  class="text-brand-green hover:bg-brand-green/20 rounded-xs p-0.5 transition-colors"
+                                  title="Resume stopwatch"
+                                  aria-label="Resume stopwatch"
+                                >
+                                  <aos-icons name="lucidePlay" class="size-3" />
+                                </button>
+                              } @else {
+                                <button
+                                  type="button"
+                                  (click)="onPauseTracking($event)"
+                                  (keydown.enter)="onPauseTracking($event)"
+                                  class="hover:bg-brand-green/20 rounded-xs p-0.5 text-amber-600 transition-colors dark:text-amber-400"
+                                  title="Pause stopwatch"
+                                  aria-label="Pause stopwatch"
+                                >
+                                  <aos-icons name="lucidePause" class="size-3" />
+                                </button>
+                              }
+
+                              <!-- Stop & Save Button -->
+                              <button
+                                type="button"
+                                (click)="onStopAndSaveTracking($event)"
+                                (keydown.enter)="onStopAndSaveTracking($event)"
+                                [disabled]="ttm.isSubmitting()"
+                                class="text-brand-green hover:bg-brand-green/20 rounded-xs p-0.5 transition-colors disabled:opacity-50"
+                                title="Stop & Save time entry"
+                                aria-label="Stop & Save time entry"
+                              >
+                                <aos-icons name="lucideSquare" class="size-3" />
+                              </button>
+
+                              <!-- Discard Button -->
+                              <button
+                                type="button"
+                                (click)="onDiscardTracking($event)"
+                                (keydown.enter)="onDiscardTracking($event)"
+                                [disabled]="ttm.isSubmitting()"
+                                class="text-error hover:bg-error/20 rounded-xs p-0.5 transition-colors disabled:opacity-50"
+                                title="Discard stopwatch"
+                                aria-label="Discard stopwatch"
+                              >
+                                <aos-icons name="lucideTrash2" class="size-3" />
+                              </button>
+                            </div>
+                          } @else {
+                            <aos-button
+                              variant="ghost"
+                              size="xs"
+                              type="button"
+                              (click)="onStartTracking(task.id, $event)"
+                              (keydown.enter)="onStartTracking(task.id, $event)"
+                              title="Start tracking time on this task"
+                              ariaLabel="Track time on task"
+                              class="text-brand-green hover:bg-brand-green/10 hover:text-brand-green-dark"
+                            >
+                              <aos-icons name="lucideClock" class="size-3" />
+                              <span class="ml-1 font-mono text-[10px]">Track</span>
+                            </aos-button>
+                          }
+                        }
                         @if (tm.canEdit()) {
                           <aos-button
                             variant="ghost"
@@ -750,8 +844,17 @@
   }
 
   <!-- Task Create/Edit Modal -->
-  <aos-task-modal />
+  @if (tm.isModalOpen()) {
+    <aos-task-modal />
+  }
 
   <!-- Task Delete Modal -->
-  <aos-task-delete-modal />
+  @if (tm.isDeleteModalOpen()) {
+    <aos-task-delete-modal />
+  }
+
+  <!-- Time Tracking Discard Modal -->
+  @if (ttm.isDiscardModalOpen()) {
+    <aos-time-tracking-discard-modal />
+  }
 </div>

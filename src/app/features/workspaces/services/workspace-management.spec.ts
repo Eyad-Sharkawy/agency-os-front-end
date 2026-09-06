@@ -452,4 +452,35 @@ describe("WorkspaceManagement Service", () => {
     service.declineInvitation(mockInvitation);
     expect(service.processingInvitationId()).toBeNull();
   });
+
+  describe("URL Manage State Synchronization", () => {
+    const syncState = (params: Record<string, unknown>) =>
+      (
+        service as unknown as { syncUrlManageState: (p: Record<string, unknown>) => void }
+      ).syncUrlManageState(params);
+
+    it("should open manage modal when manage query param matches existing workspace", () => {
+      syncState({ manage: "tenant_acme", tab: "members" });
+
+      expect(service.isManageModalOpen()).toBe(true);
+      expect(service.selectedManageWorkspace()).toEqual(mockWorkspace);
+      expect(service.selectedManageTab()).toBe("members");
+    });
+
+    it("should open manage modal matching by workspace id", () => {
+      syncState({ manage: "w-1", tab: "general" });
+
+      expect(service.isManageModalOpen()).toBe(true);
+      expect(service.selectedManageWorkspace()?.id).toBe("w-1");
+    });
+
+    it("should close manage modal when manage param is removed", () => {
+      service.setModalWorkspace(mockWorkspace);
+      expect(service.isManageModalOpen()).toBe(true);
+
+      syncState({ manage: undefined });
+      expect(service.isManageModalOpen()).toBe(false);
+      expect(service.selectedManageWorkspace()).toBeNull();
+    });
+  });
 });

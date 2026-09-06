@@ -19,4 +19,7 @@ export interface ActiveTimerResponse {
   userId: string;
   taskId: string;
   startTime: string;
+  isPaused?: boolean;
+  accumulatedSeconds?: number;
+  lastResumeTimestamp?: string | null;
 }

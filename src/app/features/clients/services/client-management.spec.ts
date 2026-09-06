@@ -211,6 +211,14 @@ describe("ClientManagement", () => {
       queryParams: { action: null, clientId: null },
       queryParamsHandling: "merge",
     });
+
+    service.isCreateModalOpen.set(true);
+    expect(service.isModalOpen()).toBe(true);
+    service.isCreateModalOpen.set(false);
+    service.isEditModalOpen.set(true);
+    expect(service.isModalOpen()).toBe(true);
+    service.isEditModalOpen.set(false);
+    expect(service.isModalOpen()).toBe(false);
   });
 
   it("should invite a client user and set success message", () => {
@@ -313,5 +321,82 @@ describe("ClientManagement", () => {
   it("should set view mode", () => {
     service.setViewMode("table");
     expect(service.viewMode()).toBe("table");
+  });
+
+  describe("URL Action State & Modal Sync", () => {
+    const syncState = (params: Record<string, unknown>) =>
+      (
+        service as unknown as { syncUrlActionState: (p: Record<string, unknown>) => void }
+      ).syncUrlActionState(params);
+
+    beforeEach(() => {
+      service.clients.set(mockClients);
+    });
+
+    it("should open create modal on create action if allowed", () => {
+      syncState({ action: "create" });
+      expect(service.isCreateModalOpen()).toBe(true);
+      expect(service.selectedClient()).toBeNull();
+    });
+
+    it("should open edit modal on edit action if client found", () => {
+      syncState({ action: "edit", clientId: "c-1" });
+      expect(service.isEditModalOpen()).toBe(true);
+      expect(service.selectedClient()?.id).toBe("c-1");
+
+      // Repeated when already selected
+      syncState({ action: "edit", clientId: "c-1" });
+      expect(service.isEditModalOpen()).toBe(true);
+    });
+
+    it("should open delete modal on delete action if client found", () => {
+      syncState({ action: "delete", clientId: "c-2" });
+      expect(service.isDeleteModalOpen()).toBe(true);
+      expect(service.selectedClient()?.id).toBe("c-2");
+    });
+
+    it("should open invite modal on invite action", () => {
+      syncState({ action: "invite", clientId: "c-1" });
+      expect(service.isInviteModalOpen()).toBe(true);
+      expect(service.inviteTarget()).toBe(mockClients[0].email);
+    });
+
+    it("should fetch client by id if not in memory", () => {
+      service.clients.set([]);
+      clientApiMock.getClientById.mockReturnValue(of(mockClients[0]));
+      syncState({ action: "edit", clientId: "c-1" });
+      expect(clientApiMock.getClientById).toHaveBeenCalledWith("c-1");
+      expect(service.isEditModalOpen()).toBe(true);
+    });
+
+    it("should close modals if fetch client fails", () => {
+      service.clients.set([]);
+      clientApiMock.getClientById.mockReturnValue(throwError(() => new Error("Not found")));
+      syncState({ action: "edit", clientId: "unknown" });
+      expect(service.isEditModalOpen()).toBe(false);
+    });
+
+    it("should reset modals when action is absent", () => {
+      service.openCreateModal();
+      expect(service.isCreateModalOpen()).toBe(true);
+
+      syncState({});
+      expect(service.isCreateModalOpen()).toBe(false);
+    });
+
+    it("should not open modal if permissions are insufficient", () => {
+      activeWorkspaceSignal.set({ role: "CLIENT" });
+      syncState({ action: "create" });
+      expect(service.isCreateModalOpen()).toBe(false);
+
+      syncState({ action: "edit", clientId: "c-1" });
+      expect(service.isEditModalOpen()).toBe(false);
+
+      syncState({ action: "delete", clientId: "c-1" });
+      expect(service.isDeleteModalOpen()).toBe(false);
+
+      syncState({ action: "invite", clientId: "c-1" });
+      expect(service.isInviteModalOpen()).toBe(false);
+    });
   });
 });

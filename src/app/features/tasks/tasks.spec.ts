@@ -13,6 +13,9 @@ import {
   TaskViewMode,
 } from "./services/task-management";
 import { TasksComponent } from "./tasks";
+import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
+import { TimeTrackingManagement } from "../time-tracking/services/time-tracking-management";
+import { ActiveTimerResponse } from "../../core/api/models/time-entry.models";
 
 describe("TasksComponent", () => {
   let component: TasksComponent;
@@ -40,6 +43,7 @@ describe("TasksComponent", () => {
     isCreateModalOpen: WritableSignal<boolean>;
     isEditModalOpen: WritableSignal<boolean>;
     isDeleteModalOpen: WritableSignal<boolean>;
+    isModalOpen: WritableSignal<boolean>;
     selectedTask: WritableSignal<TaskResponse | null>;
     defaultStatusForCreate: WritableSignal<TaskStatus>;
     stats: WritableSignal<TaskStats>;
@@ -124,6 +128,7 @@ describe("TasksComponent", () => {
       isCreateModalOpen: signal(false),
       isEditModalOpen: signal(false),
       isDeleteModalOpen: signal(false),
+      isModalOpen: signal(false),
       selectedTask: signal(null),
       defaultStatusForCreate: signal("TODO"),
       stats: signal({
@@ -149,9 +154,35 @@ describe("TasksComponent", () => {
       getProjectName: vi.fn().mockReturnValue("Alpha Redesign"),
     };
 
+    const ttmMock = {
+      openStartTimerModal: vi.fn(),
+      openManualModal: vi.fn(),
+      startTimer: vi.fn(),
+      pauseTimer: vi.fn(),
+      resumeTimer: vi.fn(),
+      stopTimer: vi.fn(),
+      openDiscardModal: vi.fn(),
+      activeTimer: signal(null),
+      isPaused: signal(false),
+      activeTimerFormatted: signal("00:00:00"),
+      isSubmitting: signal(false),
+      isDiscardModalOpen: signal(false),
+    };
+
     await TestBed.configureTestingModule({
       imports: [TasksComponent],
-      providers: [provideRouter([]), { provide: TaskManagement, useValue: tmMock }],
+      providers: [
+        provideRouter([]),
+        { provide: TaskManagement, useValue: tmMock },
+        {
+          provide: TimeTrackingManagement,
+          useValue: ttmMock,
+        },
+        {
+          provide: WorkspaceStore,
+          useValue: { activeWorkspace: signal({ role: "ADMIN" }) },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TasksComponent);
@@ -362,5 +393,33 @@ describe("TasksComponent", () => {
 
     component.onDrop(crossColumnEvent);
     expect(tmMock.errorMessage()).toBe("Database connection failed");
+  });
+
+  it("should handle tracking methods on TasksComponent", () => {
+    const fakeEvent = { stopPropagation: vi.fn() } as unknown as Event;
+
+    component.onStartTracking("task-1", fakeEvent);
+    expect(fakeEvent.stopPropagation).toHaveBeenCalled();
+    expect(component.ttm.startTimer).toHaveBeenCalledWith("task-1");
+
+    component.onPauseTracking(fakeEvent);
+    expect(component.ttm.pauseTimer).toHaveBeenCalled();
+
+    component.onResumeTracking(fakeEvent);
+    expect(component.ttm.resumeTimer).toHaveBeenCalled();
+
+    component.onStopAndSaveTracking(fakeEvent);
+    expect(component.ttm.stopTimer).toHaveBeenCalledWith(true);
+
+    component.onDiscardTracking(fakeEvent);
+    expect(component.ttm.openDiscardModal).toHaveBeenCalled();
+
+    expect(component.isTrackingTask("task-1")).toBe(false);
+    (component.ttm.activeTimer as WritableSignal<ActiveTimerResponse | null>).set({
+      userId: "u-1",
+      taskId: "task-1",
+      startTime: "2026-08-14T00:00:00Z",
+    });
+    expect(component.isTrackingTask("task-1")).toBe(true);
   });
 });

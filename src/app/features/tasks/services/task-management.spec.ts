@@ -360,6 +360,14 @@ describe("TaskManagement", () => {
     expect(service.isEditModalOpen()).toBe(false);
     expect(service.isDeleteModalOpen()).toBe(false);
     expect(service.selectedTask()).toBeNull();
+
+    service.isCreateModalOpen.set(true);
+    expect(service.isModalOpen()).toBe(true);
+    service.isCreateModalOpen.set(false);
+    service.isEditModalOpen.set(true);
+    expect(service.isModalOpen()).toBe(true);
+    service.isEditModalOpen.set(false);
+    expect(service.isModalOpen()).toBe(false);
   });
 
   it("should compute user permissions based on active workspace role", () => {
@@ -492,5 +500,78 @@ describe("TaskManagement", () => {
     );
     service.loadTasks();
     expect(service.errorMessage()).toBe("Access denied to tasks");
+  });
+
+  describe("URL Action State & Modal Sync", () => {
+    const syncState = (params: Record<string, unknown>) =>
+      (
+        service as unknown as { syncUrlActionState: (p: Record<string, unknown>) => void }
+      ).syncUrlActionState(params);
+
+    beforeEach(() => {
+      service.tasks.set(mockTasks);
+      service.projects.set(mockProjects);
+    });
+
+    it("should set project filter from query param when no action", () => {
+      syncState({ projectId: "proj-1" });
+      expect(service.projectFilter()).toBe("proj-1");
+    });
+
+    it("should open create modal on create action if allowed", () => {
+      syncState({ action: "create" });
+      expect(service.isCreateModalOpen()).toBe(true);
+      expect(service.selectedTask()).toBeNull();
+    });
+
+    it("should open edit modal on edit action if task found", () => {
+      syncState({ action: "edit", taskId: "task-1" });
+      expect(service.isEditModalOpen()).toBe(true);
+      expect(service.selectedTask()?.id).toBe("task-1");
+
+      // Repeated action when already selected
+      syncState({ action: "edit", taskId: "task-1" });
+      expect(service.isEditModalOpen()).toBe(true);
+    });
+
+    it("should open delete modal on delete action if task found", () => {
+      syncState({ action: "delete", taskId: "task-2" });
+      expect(service.isDeleteModalOpen()).toBe(true);
+      expect(service.selectedTask()?.id).toBe("task-2");
+    });
+
+    it("should fetch task by id if not in memory when action is edit", () => {
+      service.tasks.set([]);
+      syncState({ action: "edit", taskId: "task-1" });
+      expect(taskApiMock.getTaskById).toHaveBeenCalledWith("task-1");
+      expect(service.isEditModalOpen()).toBe(true);
+    });
+
+    it("should close modals if fetch task by id fails", () => {
+      service.tasks.set([]);
+      taskApiMock.getTaskById.mockReturnValue(throwError(() => new Error("Not found")));
+      syncState({ action: "edit", taskId: "unknown" });
+      expect(service.isEditModalOpen()).toBe(false);
+    });
+
+    it("should reset modals when action is absent and modals were open", () => {
+      service.openCreateModal();
+      expect(service.isCreateModalOpen()).toBe(true);
+
+      syncState({});
+      expect(service.isCreateModalOpen()).toBe(false);
+    });
+
+    it("should not open modal if permissions are insufficient", () => {
+      activeWorkspaceSignal.set({ role: "CLIENT", tenantId: "tenant-1" });
+      syncState({ action: "create" });
+      expect(service.isCreateModalOpen()).toBe(false);
+
+      syncState({ action: "edit", taskId: "task-1" });
+      expect(service.isEditModalOpen()).toBe(false);
+
+      syncState({ action: "delete", taskId: "task-1" });
+      expect(service.isDeleteModalOpen()).toBe(false);
+    });
   });
 });

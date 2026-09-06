@@ -1,0 +1,79 @@
+@if (isOpen()) {
+  <dialog
+    open
+    aria-labelledby="discard-session-title"
+    class="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center border-0 bg-black/60 p-4 backdrop-blur-xs"
+  >
+    <div
+      class="bg-canvas border-hairline relative w-full max-w-md overflow-hidden rounded-lg border p-6 shadow-2xl duration-150 sm:p-8"
+    >
+      <!-- Header -->
+      <div class="border-hairline flex items-center justify-between border-b pb-4">
+        <div class="flex items-center gap-3">
+          <div class="bg-error/10 text-error flex size-10 items-center justify-center rounded-full">
+            <aos-icons name="lucideAlertTriangle" class="size-5" />
+          </div>
+          <div>
+            <h2
+              id="discard-session-title"
+              class="text-ink font-display text-lg font-bold tracking-tight"
+            >
+              Discard Stopwatch Session
+            </h2>
+            <p class="text-body-muted text-xs">Cancel active stopwatch without recording time.</p>
+          </div>
+        </div>
+
+        <aos-button
+          variant="ghost"
+          size="sm"
+          type="button"
+          (click)="onClose()"
+          (keydown.enter)="onClose()"
+          class="size-8 rounded-full !p-0"
+          ariaLabel="Close dialog"
+        >
+          <aos-icons name="lucideX" class="size-5" />
+        </aos-button>
+      </div>
+
+      <!-- Confirmation Message -->
+      <div class="text-body-muted mt-5 space-y-2 text-sm">
+        <p>
+          Are you sure you want to discard the active stopwatch timer for
+          <span class="text-ink font-bold">"{{ activeTask()?.title || "Active Task" }}"</span>?
+        </p>
+        <p class="text-xs">
+          Current elapsed time:
+          <span class="text-ink font-mono font-bold">{{ elapsedFormatted() }}</span
+          >. This session will be discarded immediately and no billable or non-billable hours will
+          be saved.
+        </p>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="border-hairline mt-8 flex items-center justify-end gap-3 border-t pt-4">
+        <aos-button
+          variant="outlined"
+          size="sm"
+          type="button"
+          (click)="onClose()"
+          (keydown.enter)="onClose()"
+        >
+          Keep Timing
+        </aos-button>
+
+        <aos-button
+          variant="danger"
+          size="sm"
+          type="button"
+          (click)="onDiscard()"
+          (keydown.enter)="onDiscard()"
+        >
+          <aos-icons name="lucideTrash2" class="size-4" />
+          <span class="ml-1.5">Discard Session</span>
+        </aos-button>
+      </div>
+    </div>
+  </dialog>
+}

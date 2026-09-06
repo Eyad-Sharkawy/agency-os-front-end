@@ -2,6 +2,7 @@ import { Routes } from "@angular/router";
 import { authGuard } from "./core/auth/guards/auth.guard";
 import { redirectIfAuthenticatedGuard } from "./core/auth/guards/redirect-if-authenticated.guard";
 import { tenantGuard } from "./core/multitenancy/tenant.guard";
+import { roleGuard } from "./core/auth/guards/role.guard";
 import { LandingPage } from "./features/landing-page/landing-page";
 import { DashboardShell } from "./layout/dashboard-shell/dashboard-shell";
 
@@ -24,6 +25,12 @@ export const routes: Routes = [
       import("./features/workspaces/workspaces.routes").then(m => m.WORKSPACE_ROUTES),
   },
   {
+    path: "unauthorized",
+    title: "Agency OS - Access Restricted",
+    loadComponent: () =>
+      import("./features/unauthorized/unauthorized").then(m => m.UnauthorizedComponent),
+  },
+  {
     path: "w/:workspaceId",
     canActivate: [authGuard, tenantGuard],
     canActivateChild: [tenantGuard],
@@ -38,6 +45,8 @@ export const routes: Routes = [
       {
         path: "clients",
         title: "Agency OS - Clients",
+        canActivate: [roleGuard],
+        data: { roles: ["OWNER", "ADMIN", "MEMBER"] },
         loadComponent: () => import("./features/clients/clients").then(m => m.ClientsComponent),
       },
       {
@@ -53,6 +62,8 @@ export const routes: Routes = [
       {
         path: "time-tracking",
         title: "Agency OS - Time Tracking",
+        canActivate: [roleGuard],
+        data: { roles: ["OWNER", "ADMIN", "MEMBER"] },
         loadComponent: () =>
           import("./features/time-tracking/time-tracking").then(m => m.TimeTrackingComponent),
       },
@@ -60,6 +71,12 @@ export const routes: Routes = [
         path: "invoices",
         title: "Agency OS - Invoices",
         loadComponent: () => import("./features/invoices/invoices").then(m => m.InvoicesComponent),
+      },
+      {
+        path: "unauthorized",
+        title: "Agency OS - Access Restricted",
+        loadComponent: () =>
+          import("./features/unauthorized/unauthorized").then(m => m.UnauthorizedComponent),
       },
     ],
   },

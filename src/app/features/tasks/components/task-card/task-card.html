@@ -40,27 +40,52 @@
     </div>
 
     <!-- Time & Over Budget Tracking -->
-    <div
-      class="border-hairline/60 mt-3 flex items-center justify-between gap-2 border-t pt-2.5 font-mono text-xs"
-    >
-      <div class="text-body-muted flex items-center gap-1.5">
-        <aos-icons name="lucideClock" class="size-3.5 shrink-0" />
-        <span>
-          {{ loggedHours() }}h
-          @if (estimatedHours() !== null) {
-            <span class="text-muted">/ {{ estimatedHours() }}h</span>
+    <div class="border-hairline/60 mt-3 space-y-1.5 border-t pt-2.5">
+      <div class="flex items-center justify-between gap-2 font-mono text-xs">
+        <div class="text-body-muted flex items-center gap-1.5">
+          <aos-icons name="lucideClock" class="size-3.5 shrink-0" />
+          <span>
+            {{ loggedHours() }}h
+            @if (estimatedHours() !== null) {
+              <span class="text-muted">/ {{ estimatedHours() }}h</span>
+            }
+          </span>
+        </div>
+
+        <div class="flex items-center gap-1">
+          @if (isOverBudget()) {
+            <span
+              class="bg-error/10 text-error inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[10px] font-semibold"
+              title="Logged hours exceed task estimate"
+            >
+              <aos-icons name="lucideAlertTriangle" class="size-3" />
+              <span>Over Budget ({{ timeProgress() }}%)</span>
+            </span>
+          } @else if (isNearBudget()) {
+            <span
+              class="inline-flex items-center gap-1 rounded-sm bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-amber-600 dark:text-amber-400"
+              title="Task has consumed 80%+ of estimated time"
+            >
+              <aos-icons name="lucideAlertTriangle" class="size-3" />
+              <span>Near Limit ({{ timeProgress() }}%)</span>
+            </span>
+          } @else if (timeProgress() !== null) {
+            <span class="text-muted font-mono text-[10px]"> {{ timeProgress() }}% </span>
           }
-        </span>
+        </div>
       </div>
 
-      @if (task().isOverBudget) {
-        <span
-          class="bg-error/10 text-error inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[10px] font-semibold"
-          title="Logged hours exceed initial estimate"
-        >
-          <aos-icons name="lucideAlertTriangle" class="size-3" />
-          <span>Over Budget</span>
-        </span>
+      <!-- Time Budget Progress Meter Bar -->
+      @if (timeProgress() !== null) {
+        <div class="bg-soft-stone/80 h-1.5 w-full overflow-hidden rounded-full">
+          <div
+            class="h-full rounded-full transition-all duration-300"
+            [class.bg-error]="isOverBudget()"
+            [class.bg-amber-500]="isNearBudget()"
+            [class.bg-brand-green]="!isOverBudget() && !isNearBudget()"
+            [style.width.%]="progressPercentageCapped()"
+          ></div>
+        </div>
       }
     </div>
 
@@ -145,6 +170,99 @@
 
       <!-- Edit & Delete Buttons -->
       <div class="flex items-center gap-1">
+        @if (canTrackTime()) {
+          @if (isTrackingThisTask()) {
+            <div
+              class="border-brand-green/30 bg-brand-green/10 flex items-center gap-1 rounded-sm border px-1.5 py-0.5"
+            >
+              <!-- Live Status & Elapsed time -->
+              <div
+                class="flex items-center gap-1 font-mono text-[10px] font-bold"
+                [class.text-amber-600]="isTimerPaused()"
+                [class.dark:text-amber-400]="isTimerPaused()"
+                [class.text-brand-green]="!isTimerPaused()"
+              >
+                @if (!isTimerPaused()) {
+                  <span class="relative flex size-2">
+                    <span
+                      class="bg-brand-green absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+                    ></span>
+                    <span class="bg-brand-green relative inline-flex size-2 rounded-full"></span>
+                  </span>
+                } @else {
+                  <span class="size-2 rounded-full bg-amber-500"></span>
+                }
+                <span>{{ activeTimerFormatted() }}</span>
+              </div>
+
+              <!-- Pause / Resume Button -->
+              @if (isTimerPaused()) {
+                <button
+                  type="button"
+                  (click)="onResumeTracking($event)"
+                  (keydown.enter)="onResumeTracking($event)"
+                  class="text-brand-green hover:bg-brand-green/20 rounded-xs p-0.5 transition-colors"
+                  title="Resume stopwatch"
+                  aria-label="Resume stopwatch"
+                >
+                  <aos-icons name="lucidePlay" class="size-3" />
+                </button>
+              } @else {
+                <button
+                  type="button"
+                  (click)="onPauseTracking($event)"
+                  (keydown.enter)="onPauseTracking($event)"
+                  class="hover:bg-brand-green/20 rounded-xs p-0.5 text-amber-600 transition-colors dark:text-amber-400"
+                  title="Pause stopwatch"
+                  aria-label="Pause stopwatch"
+                >
+                  <aos-icons name="lucidePause" class="size-3" />
+                </button>
+              }
+
+              <!-- Stop & Save Button -->
+              <button
+                type="button"
+                (click)="onStopAndSaveTracking($event)"
+                (keydown.enter)="onStopAndSaveTracking($event)"
+                [disabled]="isTimerSubmitting()"
+                class="text-brand-green hover:bg-brand-green/20 rounded-xs p-0.5 transition-colors disabled:opacity-50"
+                title="Stop & Save time entry"
+                aria-label="Stop & Save time entry"
+              >
+                <aos-icons name="lucideSquare" class="size-3" />
+              </button>
+
+              <!-- Discard Button -->
+              <button
+                type="button"
+                (click)="onDiscardTracking($event)"
+                (keydown.enter)="onDiscardTracking($event)"
+                [disabled]="isTimerSubmitting()"
+                class="text-error hover:bg-error/20 rounded-xs p-0.5 transition-colors disabled:opacity-50"
+                title="Discard stopwatch"
+                aria-label="Discard stopwatch"
+              >
+                <aos-icons name="lucideTrash2" class="size-3" />
+              </button>
+            </div>
+          } @else {
+            <aos-button
+              variant="ghost"
+              size="xs"
+              type="button"
+              (click)="onStartTracking($event)"
+              (keydown.enter)="onStartTracking($event)"
+              title="Start tracking time on this task"
+              ariaLabel="Track time on task"
+              class="text-brand-green hover:bg-brand-green/10 hover:text-brand-green-dark"
+            >
+              <aos-icons name="lucideClock" class="size-3" />
+              <span class="ml-1 font-mono text-[10px]">Track</span>
+            </aos-button>
+          }
+        }
+
         @if (tm.canEdit()) {
           <aos-button
             variant="ghost"
