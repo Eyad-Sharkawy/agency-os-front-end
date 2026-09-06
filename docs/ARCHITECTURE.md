@@ -115,6 +115,15 @@ export class AuthStore {
 }
 ```
 
+### 3.3 Dashboard Overview Reactive Aggregation
+
+The `DashboardOverviewComponent` leverages signal-based computed derivations across tenant REST APIs:
+
+- **Tenant API Ingestion**: Integrates `ClientApi`, `ProjectApi`, `TaskApi`, `TimeEntryApi`, and `InvoiceApi` with reactive refresh signals.
+- **Role-Scoped Aggregation**: Distinguishes administrative overviews (global client, project, and billing metrics) from member-scoped tasks and personal hours.
+- **Budget Burn Metrics**: Calculates project budget consumption percentage (`(loggedHours * billingRate) / budget * 100`) and categorizes health thresholds (`normal` $< 80\%$, `warning` $80-100\%$, `danger` $> 100\%$).
+- **Live Stopwatch Integration**: Injects `TimeTrackingManagement` to display active/paused timer state, elapsed ticker numbers, and one-click timer controls.
+
 ---
 
 ## 4. Route Architecture & Functional Guards
@@ -205,15 +214,19 @@ The application connects to `/ws-timer` with STOMP over SockJS:
 
 ---
 
-## 7. Testing Architecture with Vitest
+## 7. Testing Architecture & SonarQube Standards
 
 Unit tests run with **Vitest** and `jsdom`:
 
 - **Component Tests**: Verifies DOM rendering, signal binding, user clicks, and modal open/close transitions.
 - **Service & Store Tests**: Tests signal updates, computed values, and localStorage persistence.
 - **HTTP Mock Tests**: Uses `provideHttpClientTesting()` and `HttpTestingController` to verify request paths, headers, and responses.
+- **SonarQube Quality Gate**: All feature components maintain $>80\%$ line and statement coverage with zero lint or typing violations.
 
 ```bash
 # Run unit tests
 npm test -- --run
+
+# Run unit tests with code coverage report
+npx ng test --watch=false --coverage
 ```

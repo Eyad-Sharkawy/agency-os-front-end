@@ -171,9 +171,10 @@ Stopwatch Numbers   →  font-mono text-2xl font-bold tracking-wider
 
 ### 3.3 Live Stopwatch Widget
 
-- Sticky floating indicator or topbar component displaying elapsed time `HH:MM:SS`.
-- Controls: Start, Pause (`text-amber-500`), Resume (`text-emerald-500`), Stop (`text-rose-500`).
-- Synchronized dynamically via WebSockets.
+- Active state: `border-brand-green/30 bg-brand-green/5` with emerald pulsing indicator, `text-ink` numbers, and pause/complete controls.
+- Paused state: `border-amber-500/30 bg-amber-500/5` with amber status badge, `text-ink` numbers, and resume/discard controls.
+- Theme adaptive: Uses CSS variable design tokens (`--ink`, `--surface`, `--brand-green`) ensuring high-contrast legibility across both light and dark themes without hardcoded dark background overrides.
+- Synchronized dynamically via WebSockets across topbar and dashboard overview.
 
 ### 3.4 Task Kanban Columns
 

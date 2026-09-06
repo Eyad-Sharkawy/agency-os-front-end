@@ -26,17 +26,16 @@ The **Agency OS Front-End** is an enterprise-grade Single Page Application (SPA)
 
 ## Feature Modules
 
-| Feature Module                    | Description                                                                                                                 |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **Landing & Onboarding**          | High-conversion landing page, feature highlights, and interactive "How It Works" walkthrough.                               |
-| **Workspace Management**          | Multi-organization switcher, workspace creation, teammate directory, role assignments, and ownership transfer.              |
-| **Workspace Invitations**         | Send email/username invites with role scoping, and view/accept/decline incoming invitations.                                |
-| **Client CRM**                    | Client registry with lifecycle stages (`PROSPECT`, `ACTIVE`, `INACTIVE`), billing contacts, and project linking.            |
-| **Project Tracking**              | Project planning with fixed budgets, hourly billing rates, health indicators, and role-based client scoping.                |
-| **Task Kanban Board**             | Interactive drag-and-drop workflow statuses (`TODO`, `IN_PROGRESS`, `REVIEW`, `DONE`), assignees, and deadlines.            |
-| **Live Stopwatch & Time Logging** | Real-time stopwatch ticker (start, pause, resume, stop) synced across users via WebSockets, with manual timesheet logging.  |
-| **Invoice Center & PDF Viewer**   | One-click invoice generation aggregating unbilled project hours with in-app multi-page PDF previewer and status management. |
-| **User Profile & Account Center** | Keycloak account profile management, password resets, active session termination, and identity provider linking.            |
+| **Landing & Onboarding** | High-conversion landing page, feature highlights, and interactive "How It Works" walkthrough. |
+| **Dashboard Overview** | Real-time aggregated metrics (active clients, active projects, open tasks, billable hours, invoice financials), budget burn meters, priority tasks, and interactive stopwatch widget. |
+| **Workspace Management** | Multi-organization switcher, workspace creation, teammate directory, role assignments, and ownership transfer. |
+| **Workspace Invitations** | Send email/username invites with role scoping, and view/accept/decline incoming invitations. |
+| **Client CRM** | Client registry with lifecycle stages (`PROSPECT`, `ACTIVE`, `INACTIVE`), billing contacts, and project linking. |
+| **Project Tracking** | Project planning with fixed budgets, hourly billing rates, health indicators, and role-based client scoping. |
+| **Task Kanban Board** | Interactive drag-and-drop workflow statuses (`TODO`, `IN_PROGRESS`, `REVIEW`, `DONE`), assignees, and deadlines. |
+| **Live Stopwatch & Time Logging** | Real-time stopwatch ticker (start, pause, resume, stop) synced across users via WebSockets, with manual timesheet logging. |
+| **Invoice Center & PDF Viewer** | One-click invoice generation aggregating unbilled project hours with in-app multi-page PDF previewer and status management. |
+| **User Profile & Account Center** | Keycloak account profile management, password resets, active session termination, and identity provider linking. |
 
 ---
 
@@ -103,15 +102,20 @@ ng serve
 
 Navigate to `http://localhost:4200/`. The application will automatically reload on source changes.
 
-### Running Unit Tests
+### Running Unit Tests & Code Coverage
 
 ```bash
 # Run all tests once with Vitest
 npm test -- --run
 
+# Run unit tests with code coverage report (SonarQube compatible)
+npx ng test --watch=false --coverage
+
 # Run in watch mode
 npm test
 ```
+
+> **Quality Gate Standards**: Built for SonarQube "Sonar Way" compliance, maintaining $\ge 80\%$ line & statement test coverage on new components and business logic.
 
 ### Building for Production
 
