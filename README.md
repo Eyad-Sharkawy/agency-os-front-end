@@ -6,21 +6,37 @@
 [![Vitest](https://img.shields.io/badge/Vitest-4.0.8-yellow.svg)](https://vitest.dev/)
 [![License](https://img.shields.io/badge/License-Proprietary-lightgrey.svg)](<>)
 
-The **Agency OS Front-End** is a single page application built with **Angular 22** using a pure standalone architecture, Angular Signals for reactive state management, Tailwind CSS v4 for styling, and Vitest for testing.
+The **Agency OS Front-End** is an enterprise-grade Single Page Application (SPA) built with **Angular 22** utilizing a pure standalone component architecture, Angular Signals for fine-grained reactivity, Tailwind CSS v4 for modern responsive styling, Keycloak OAuth2/PKCE authentication, STOMP/WebSocket real-time timer updates, and Vitest for testing.
 
 ---
 
 ## Tech Stack
 
-- **Framework**: Angular `22.0.0` (Pure Standalone Component Architecture)
-- **Language**: TypeScript `~6.0.2`
-- **Styling**: Tailwind CSS `^4.1.12` with `@tailwindcss/postcss`
-- **State Management & Reactivity**: Angular Signals (`signal()`, `computed()`, `effect()`) + RxJS `~7.8.0`
-- **Routing**: `@angular/router` with lazy-loaded standalone components and functional guards
-- **Authentication**: Keycloak OpenID Connect / OAuth2 (PKCE flow)
+- **Framework**: Angular `22.0.0` (Pure Standalone Component Architecture, zoneless-ready)
+- **Language**: TypeScript `~6.0.2` (Strict Mode)
+- **Styling**: Tailwind CSS `^4.1.12` with `@tailwindcss/postcss` and custom design tokens
+- **State Management & Reactivity**: Angular Signals (`signal()`, `computed()`, `effect()`) + `httpResource` + RxJS `~7.8.0`
+- **Routing**: `@angular/router` with lazy-loaded standalone components and functional guards (`authGuard`, `redirectIfAuthenticatedGuard`, `roleGuard`, `tenantGuard`)
+- **Authentication**: Keycloak OpenID Connect / OAuth2 (Authorization Code Flow with PKCE)
 - **Real-Time Client**: STOMP over SockJS (`@stomp/stompjs` + `sockjs-client`)
 - **Testing**: Vitest `^4.0.8` with `jsdom: ^28.0.0`
-- **Code Formatting**: Prettier `^3.8.1`
+- **Code Formatting & Linting**: Prettier `^3.8.1`, ESLint `^9.x`
+
+---
+
+## Feature Modules
+
+| Feature Module                    | Description                                                                                                                 |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Landing & Onboarding**          | High-conversion landing page, feature highlights, and interactive "How It Works" walkthrough.                               |
+| **Workspace Management**          | Multi-organization switcher, workspace creation, teammate directory, role assignments, and ownership transfer.              |
+| **Workspace Invitations**         | Send email/username invites with role scoping, and view/accept/decline incoming invitations.                                |
+| **Client CRM**                    | Client registry with lifecycle stages (`PROSPECT`, `ACTIVE`, `INACTIVE`), billing contacts, and project linking.            |
+| **Project Tracking**              | Project planning with fixed budgets, hourly billing rates, health indicators, and role-based client scoping.                |
+| **Task Kanban Board**             | Interactive drag-and-drop workflow statuses (`TODO`, `IN_PROGRESS`, `REVIEW`, `DONE`), assignees, and deadlines.            |
+| **Live Stopwatch & Time Logging** | Real-time stopwatch ticker (start, pause, resume, stop) synced across users via WebSockets, with manual timesheet logging.  |
+| **Invoice Center & PDF Viewer**   | One-click invoice generation aggregating unbilled project hours with in-app multi-page PDF previewer and status management. |
+| **User Profile & Account Center** | Keycloak account profile management, password resets, active session termination, and identity provider linking.            |
 
 ---
 
@@ -29,21 +45,35 @@ The **Agency OS Front-End** is a single page application built with **Angular 22
 ```
 src/
 ├── app/
-│   ├── core/                        # Singleton services, interceptors, auth, guards
-│   │   ├── auth/                    # Keycloak OIDC service & auth guard
-│   │   ├── interceptors/            # Auth, Tenant (X-Tenant-ID), and Error interceptors
-│   │   ├── multitenancy/            # WorkspaceStore & active tenant signals
-│   │   └── websocket/               # TimerWebSocketService (STOMP / SockJS)
+│   ├── core/                        # Core infrastructure & singleton services
+│   │   ├── api/                     # Typed REST API services & domain models
+│   │   │   ├── models/              # TypeScript interfaces (Account, Client, Project, Task, Time, Invoice, Workspace)
+│   │   │   └── services/            # Http services (Account, Client, Project, Task, TimeEntry, Invoice, Workspace, Invitation)
+│   │   ├── auth/                    # Keycloak authentication, AuthStore, functional guards & interceptors
+│   │   ├── multitenancy/            # WorkspaceStore, active tenant signal & tenantGuard
+│   │   ├── services/                # ThemeService (Dark/Light mode), ToastService
+│   │   └── tokens/                  # Environment injection tokens
 │   ├── shared/                      # Reusable UI widgets, models, and pipes
-│   │   ├── components/              # Buttons, Modals, Tables, Form controls
-│   │   └── models/                  # TypeScript domain interfaces
-│   ├── features/                    # Feature modules (Workspaces, Clients, Projects, Tasks, Time, Invoices)
-│   ├── layout/                      # Application shell, sidebar, and topbar
-│   ├── app.config.ts                # Application providers (router, http client)
-│   ├── app.routes.ts                # Application routes
+│   │   ├── components/              # Buttons, Modals, Tables, Badges, Form controls, Loaders
+│   │   └── pipes/                   # Currency, Date, Duration formatters
+│   ├── features/                    # Standalone feature route components
+│   │   ├── clients/                 # Client CRM list, modal dialogs, and deletion guards
+│   │   ├── dashboard-overview/      # Metric summaries, recent activity, and quick actions
+│   │   ├── how-it-works/            # Interactive product tour
+│   │   ├── invoices/                # Invoice list, creation wizard, PDF modal viewer
+│   │   ├── landing-page/            # Marketing landing page with hero and feature cards
+│   │   ├── profile/                 # Profile modal tabs (Personal, Security, Sessions, Linked Accounts)
+│   │   ├── projects/                # Project cards, budget tracking, create/edit modal
+│   │   ├── tasks/                   # Kanban task board, create/edit modal, status patchers
+│   │   ├── time-tracking/           # Live stopwatch bar, manual log modal, timesheet table
+│   │   ├── unauthorized/            # 403 Forbidden landing view
+│   │   └── workspaces/              # Workspace switcher, member manager, ownership transfer
+│   ├── layout/                      # Application shell, responsive sidebar, topbar, timer status widget
+│   ├── app.config.ts                # Application providers (Router, HttpClient, Keycloak)
+│   ├── app.routes.ts                # Application routes with functional guards
 │   └── app.ts                       # Root bootstrap component
 ├── styles.css                       # Global Tailwind CSS stylesheet (@import 'tailwindcss')
-└── main.ts                          # Bootstrap application entry point
+└── main.ts                          # Application bootstrap entry point
 ```
 
 ---
@@ -52,8 +82,10 @@ src/
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 20+ (LTS recommended)
 - npm 10+
+- Running Keycloak server (Port 8080 or configured URL)
+- Running Agency OS Back-End API (Port 8080)
 
 ### Installation
 
@@ -69,15 +101,17 @@ npm start
 ng serve
 ```
 
-Navigate to `http://localhost:4200/`. The application will automatically reload upon source code changes.
+Navigate to `http://localhost:4200/`. The application will automatically reload on source changes.
 
 ### Running Unit Tests
 
 ```bash
+# Run all tests once with Vitest
+npm test -- --run
+
+# Run in watch mode
 npm test
 ```
-
-Executes unit tests using Vitest and jsdom.
 
 ### Building for Production
 
@@ -85,12 +119,16 @@ Executes unit tests using Vitest and jsdom.
 npm run build
 ```
 
-Build artifacts are compiled with optimizations into the `dist/` directory.
+Compiled production assets are output with optimizations into the `dist/agency-os` directory.
 
-### Code Formatting
+### Code Formatting & Linting
 
 ```bash
+# Format code
 npx prettier --write .
+
+# Lint code
+npm run lint
 ```
 
 ---
@@ -98,9 +136,14 @@ npx prettier --write .
 ## Back-End API Integration
 
 - **API Base URL**: `http://localhost:8080/api/v1`
-- **Multi-Tenant Header**: Outgoing requests must include the `X-Tenant-ID` header corresponding to the active workspace.
-- **Authentication**: Keycloak Bearer JWT attached via `Authorization: Bearer <token>`.
-- **Live Timers**: Connects to `/ws-timer` with STOMP over SockJS, subscribing to `/topic/{tenantId}/timers/start` and `/topic/{tenantId}/timers/stop`.
+- **Multi-Tenant Header**: Outgoing requests to tenant-scoped endpoints automatically include `X-Tenant-ID: <active_tenant_id>`.
+- **Authentication**: Keycloak Bearer JWT attached via `Authorization: Bearer <token>` in `authInterceptor`.
+- **WebSocket STOMP Broker**: Connects to `http://localhost:8080/ws-timer` with STOMP over SockJS:
+  - `/topic/{tenantId}/timers/start`: Live stopwatch started
+  - `/topic/{tenantId}/timers/pause`: Live stopwatch paused
+  - `/topic/{tenantId}/timers/resume`: Live stopwatch resumed
+  - `/topic/{tenantId}/timers/stop`: Live stopwatch stopped & logged
+  - `/topic/{tenantId}/time-entries`: Manual time entry saved
 
 ---
 
@@ -108,3 +151,4 @@ npx prettier --write .
 
 - [📐 Front-End Architecture & State Guide](docs/ARCHITECTURE.md)
 - [📡 Back-End API Integration & WebSocket Guide](docs/API_INTEGRATION.md)
+- [🎨 Design System & UI Specification](DESIGN.md)

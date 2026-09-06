@@ -6,7 +6,7 @@ This guide details how the Angular front-end communicates with the Spring Boot b
 
 ## 1. Environment & API Endpoints
 
-Configure environment settings for API and Keycloak endpoints:
+Environment configurations provide endpoint URLs for the REST API, WebSocket broker, and Keycloak server:
 
 ```typescript
 export const environment = {
@@ -25,21 +25,21 @@ export const environment = {
 
 ## 2. HTTP Interceptors
 
-All outbound HTTP calls to `/api/v1/*` must pass through two essential interceptors:
+All outbound HTTP calls to `/api/v1/*` pass through functional interceptors:
 
-### 2.1 Authentication & Tenant Interceptor
+### 2.1 Authentication & Tenant Interceptor (`auth.interceptor.ts`)
 
 ```typescript
 import { HttpInterceptorFn } from "@angular/common/http";
 import { inject } from "@angular/core";
-import { AuthService } from "../auth/auth.service";
-import { WorkspaceStore } from "../multitenancy/workspace.store";
+import { AuthStore } from "../stores/auth.store";
+import { WorkspaceStore } from "../../multitenancy/workspace.store";
 
-export const apiInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authStore = inject(AuthStore);
   const workspaceStore = inject(WorkspaceStore);
 
-  const token = authService.getAccessToken();
+  const token = authStore.getAccessToken();
   const tenantId = workspaceStore.activeTenantId();
 
   let headers = req.headers;
@@ -48,43 +48,18 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
     headers = headers.set("Authorization", `Bearer ${token}`);
   }
 
-  // Only attach X-Tenant-ID for tenant-scoped endpoints (skip /workspaces root endpoints)
-  if (
-    tenantId &&
-    !req.url.endsWith("/workspaces") &&
-    !req.url.includes("/workspaces/invitations")
-  ) {
+  // Attach X-Tenant-ID for tenant-scoped endpoints
+  const isGlobalEndpoint =
+    req.url.endsWith("/workspaces") ||
+    req.url.includes("/workspaces/invitations") ||
+    req.url.includes("/users/me") ||
+    req.url.includes("/account");
+
+  if (tenantId && !isGlobalEndpoint) {
     headers = headers.set("X-Tenant-ID", tenantId);
   }
 
-  const clonedReq = req.clone({ headers });
-  return next(clonedReq);
-};
-```
-
-### 2.2 Error Interceptor (RFC 7807 ProblemDetail Handling)
-
-```typescript
-import { HttpErrorResponse, HttpInterceptorFn } from "@angular/common/http";
-import { inject } from "@angular/core";
-import { catchError, throwError } from "rxjs";
-import { ToastService } from "../../shared/services/toast.service";
-
-export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-  const toast = inject(ToastService);
-
-  return next(req).pipe(
-    catchError((error: HttpErrorResponse) => {
-      if (error.error && error.error.detail) {
-        toast.error(error.error.title || "Error", error.error.detail);
-      } else if (error.status === 401) {
-        toast.error("Session Expired", "Please log in again.");
-      } else if (error.status === 403) {
-        toast.error("Access Denied", "You do not have permission to perform this action.");
-      }
-      return throwError(() => error);
-    }),
-  );
+  return next(req.clone({ headers }));
 };
 ```
 
@@ -98,17 +73,15 @@ The front-end connects to `/ws-timer` using `@stomp/stompjs` and `sockjs-client`
 import { Injectable, signal } from "@angular/core";
 import { Client, StompSubscription } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { AuthService } from "../auth/auth.service";
+import { AuthStore } from "../auth/stores/auth.store";
 import { environment } from "../../../environments/environment";
 
 @Injectable({ providedIn: "root" })
 export class TimerWebSocketService {
   private client: Client | null = null;
-  private timerSub: StompSubscription | null = null;
-
   readonly activeTimerEvent = signal<any>(null);
 
-  constructor(private authService: AuthService) {}
+  constructor(private authStore: AuthStore) {}
 
   connect(tenantId: string) {
     this.disconnect();
@@ -116,22 +89,26 @@ export class TimerWebSocketService {
     this.client = new Client({
       webSocketFactory: () => new SockJS(environment.wsUrl),
       connectHeaders: {
-        Authorization: `Bearer ${this.authService.getAccessToken()}`,
+        Authorization: `Bearer ${this.authStore.getAccessToken()}`,
       },
       debug: str => console.debug("[STOMP]", str),
       reconnectDelay: 5000,
       onConnect: () => {
-        // Subscribe to live timer start events
-        this.timerSub =
-          this.client?.subscribe(`/topic/${tenantId}/timers/start`, message => {
-            const data = JSON.parse(message.body);
-            this.activeTimerEvent.set({ type: "START", data });
-          }) ?? null;
-
-        // Subscribe to live timer stop events
-        this.client?.subscribe(`/topic/${tenantId}/timers/stop`, message => {
-          const data = JSON.parse(message.body);
-          this.activeTimerEvent.set({ type: "STOP", data });
+        // Subscribe to live timer events
+        this.client?.subscribe(`/topic/${tenantId}/timers/start`, msg => {
+          this.activeTimerEvent.set({ type: "START", data: JSON.parse(msg.body) });
+        });
+        this.client?.subscribe(`/topic/${tenantId}/timers/pause`, msg => {
+          this.activeTimerEvent.set({ type: "PAUSE", data: JSON.parse(msg.body) });
+        });
+        this.client?.subscribe(`/topic/${tenantId}/timers/resume`, msg => {
+          this.activeTimerEvent.set({ type: "RESUME", data: JSON.parse(msg.body) });
+        });
+        this.client?.subscribe(`/topic/${tenantId}/timers/stop`, msg => {
+          this.activeTimerEvent.set({ type: "STOP", data: JSON.parse(msg.body) });
+        });
+        this.client?.subscribe(`/topic/${tenantId}/time-entries`, msg => {
+          this.activeTimerEvent.set({ type: "LOG_ENTRY", data: JSON.parse(msg.body) });
         });
       },
     });
@@ -150,9 +127,26 @@ export class TimerWebSocketService {
 
 ---
 
-## 4. API Service Catalog & Type Models
+## 4. API Service Catalog
 
-### 4.1 TypeScript Data Interfaces
+The application provides strongly-typed API client services located in `src/app/core/api/services/`:
+
+| Service                | Path                      | Key Methods                                                                                                                                                         |
+| ---------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AccountApiService`    | `/realms/{realm}/account` | `getProfile()`, `updateProfile()`, `getSessions()`, `terminateSession()`, `getLinkedAccounts()`, `unlinkAccount()`, `changePassword()`                              |
+| `WorkspaceApiService`  | `/api/v1/workspaces`      | `createWorkspace()`, `getUserWorkspaces()`, `updateWorkspace()`, `deleteWorkspace()`, `getMembers()`, `updateMemberRole()`, `removeMember()`, `transferOwnership()` |
+| `InvitationApiService` | `/api/v1/workspaces`      | `inviteUser()`, `getPendingInvitations()`, `acceptInvitation()`, `declineInvitation()`                                                                              |
+| `ClientApiService`     | `/api/v1/clients`         | `createClient()`, `getAllClients()`, `getClientById()`, `updateClient()`, `deleteClient()`                                                                          |
+| `ProjectApiService`    | `/api/v1/projects`        | `createProject()`, `getAllProjects()`, `getProjectById()`, `getProjectsByClientId()`, `updateProject()`, `deleteProject()`                                          |
+| `TaskApiService`       | `/api/v1/tasks`           | `createTask()`, `getAllTasks()`, `getTaskById()`, `getTasksByProjectId()`, `getTasksByAssigneeId()`, `updateTask()`, `updateTaskStatus()`, `deleteTask()`           |
+| `TimeEntryApiService`  | `/api/v1/time-entries`    | `logTime()`, `getTimeEntries()`, `startTimer()`, `pauseTimer()`, `resumeTimer()`, `stopTimer()`, `getActiveTimer()`, `getTimeEntriesByTask()`, `deleteTimeEntry()`  |
+| `InvoiceApiService`    | `/api/v1/invoices`        | `createInvoice()`, `getAllInvoices()`, `getInvoiceById()`, `getInvoicesByClientId()`, `updateInvoice()`, `deleteInvoice()`, `downloadInvoicePdf()`                  |
+
+---
+
+## 5. TypeScript Data Models
+
+Located in `src/app/core/api/models/`:
 
 ```typescript
 export type WorkspaceRole = "OWNER" | "ADMIN" | "MEMBER" | "CLIENT";
@@ -161,12 +155,25 @@ export type ProjectStatus = "PLANNING" | "IN_PROGRESS" | "ON_HOLD" | "DELIVERED"
 export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "REVIEW" | "DONE";
 export type InvoiceStatus = "DRAFT" | "SENT" | "PAID" | "OVERDUE";
+export type InvitationStatus = "PENDING" | "ACCEPTED" | "DECLINED";
+
+export interface Workspace {
+  id: string;
+  name: string;
+  tenantId: string;
+  contactEmail: string;
+  isActive: boolean;
+  currentUserRole?: WorkspaceRole;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface Client {
   id: string;
   name: string;
-  email: string;
+  email?: string;
   status: ClientStatus;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -179,6 +186,7 @@ export interface Project {
   billingRate: number;
   status: ProjectStatus;
   clientId?: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -194,8 +202,19 @@ export interface Task {
   status: TaskStatus;
   projectId: string;
   assigneeIds: string[];
-  totalLoggedMinutes: number;
-  isOverBudget: boolean;
+  totalLoggedMinutes?: number;
+  isOverBudget?: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ActiveTimerResponse {
+  userId: string;
+  taskId: string;
+  startTime: string;
+  accumulatedSeconds: number;
+  isPaused: boolean;
+  lastPausedAt?: string;
 }
 
 export interface TimeEntry {
@@ -204,6 +223,7 @@ export interface TimeEntry {
   userId: string;
   durationMinutes: number;
   isBillable: boolean;
+  invoiceId?: string;
   createdAt: string;
 }
 
@@ -213,5 +233,6 @@ export interface Invoice {
   totalAmount: number;
   status: InvoiceStatus;
   createdAt: string;
+  updatedAt: string;
 }
 ```
