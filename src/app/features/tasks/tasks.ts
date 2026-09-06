@@ -29,6 +29,7 @@ import {
   lucidePlus,
   lucideRefreshCw,
   lucideSearch,
+  lucideShieldCheck,
   lucideSquare,
   lucideTrash2,
   lucideX,
@@ -92,6 +93,7 @@ import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
       lucidePlay,
       lucidePause,
       lucideSquare,
+      lucideShieldCheck,
     }),
   ],
   templateUrl: "./tasks.html",
@@ -100,6 +102,9 @@ export class TasksComponent implements OnInit {
   readonly tm = inject(TaskManagement);
   readonly ttm = inject(TimeTrackingManagement);
   private readonly workspaceStore = inject(WorkspaceStore);
+
+  readonly isMember = computed(() => this.workspaceStore.activeWorkspace()?.role === "MEMBER");
+  readonly isClient = computed(() => this.workspaceStore.activeWorkspace()?.role === "CLIENT");
 
   readonly canTrackTime = computed(() => {
     return this.workspaceStore.activeWorkspace()?.role !== "CLIENT";
@@ -264,6 +269,12 @@ export class TasksComponent implements OnInit {
   isOverdue(task: TaskResponse): boolean {
     if (!task.dueDate || task.status === "DONE") return false;
     return new Date(task.dueDate).getTime() < Date.now();
+  }
+
+  isDueSoon(task: TaskResponse): boolean {
+    if (!task.dueDate || task.status === "DONE") return false;
+    const diffMs = new Date(task.dueDate).getTime() - Date.now();
+    return diffMs >= 0 && diffMs <= 48 * 60 * 60 * 1000;
   }
 
   getLoggedHours(task: TaskResponse): number {

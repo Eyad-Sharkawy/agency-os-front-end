@@ -22,6 +22,46 @@
     }
   </div>
 
+  <!-- Member Assigned Tasks Callout Banner -->
+  @if (isMember()) {
+    <div
+      class="border-brand-green/30 bg-brand-green/10 text-brand-green flex items-center justify-between gap-3 rounded-md border p-3.5 font-mono text-xs shadow-xs"
+    >
+      <div class="flex items-center gap-2.5">
+        <aos-icons name="lucideShieldCheck" class="size-4 shrink-0" />
+        <span class="font-sans text-xs">
+          <strong>Assigned Tasks View:</strong> You are viewing only tasks assigned to you. Other
+          workspace tasks are hidden.
+        </span>
+      </div>
+      <span
+        class="border-brand-green/30 bg-brand-green/20 shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase"
+      >
+        Assigned Tasks
+      </span>
+    </div>
+  }
+
+  <!-- Client Organization Isolation Callout Banner -->
+  @if (isClient()) {
+    <div
+      class="border-brand-green/30 bg-brand-green/10 text-brand-green flex items-center justify-between gap-3 rounded-md border p-3.5 font-mono text-xs shadow-xs"
+    >
+      <div class="flex items-center gap-2.5">
+        <aos-icons name="lucideShieldCheck" class="size-4 shrink-0" />
+        <span class="font-sans text-xs">
+          <strong>Client Portal View:</strong> You are viewing only tasks associated with your
+          organization's projects.
+        </span>
+      </div>
+      <span
+        class="border-brand-green/30 bg-brand-green/20 shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase"
+      >
+        Client View
+      </span>
+    </div>
+  }
+
   <!-- Error Alert Banner -->
   @if (tm.errorMessage()) {
     <div
@@ -683,12 +723,31 @@
                     <!-- Due Date -->
                     <td class="px-5 py-3.5 font-mono text-xs">
                       @if (task.dueDate) {
-                        <span
-                          [class.text-error]="isOverdue(task)"
-                          [class.text-body-muted]="!isOverdue(task)"
-                        >
-                          {{ task.dueDate | date: "mediumDate" }}
-                        </span>
+                        <div class="flex items-center gap-1.5">
+                          @if (isOverdue(task)) {
+                            <aos-icons
+                              name="lucideAlertCircle"
+                              class="text-error size-3.5 shrink-0"
+                            />
+                            <span class="text-error font-medium">
+                              {{ task.dueDate | date: "mediumDate" }}
+                              <span class="text-[10px] font-bold uppercase">(Overdue)</span>
+                            </span>
+                          } @else if (isDueSoon(task)) {
+                            <aos-icons
+                              name="lucideAlertTriangle"
+                              class="size-3.5 shrink-0 text-amber-500"
+                            />
+                            <span class="font-medium text-amber-600 dark:text-amber-400">
+                              {{ task.dueDate | date: "mediumDate" }}
+                              <span class="text-[10px] font-semibold uppercase">(Due Soon)</span>
+                            </span>
+                          } @else {
+                            <span class="text-body-muted">
+                              {{ task.dueDate | date: "mediumDate" }}
+                            </span>
+                          }
+                        </div>
                       } @else {
                         <span class="text-muted">—</span>
                       }

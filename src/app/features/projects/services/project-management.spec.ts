@@ -312,8 +312,13 @@ describe("ProjectManagement", () => {
   });
 
   it("should restrict permissions based on workspace role", () => {
-    activeWorkspaceSignal.set({ role: "ADMIN" });
+    activeWorkspaceSignal.set({ role: "OWNER" });
     expect(service.canCreate()).toBe(true);
+    expect(service.canEdit()).toBe(true);
+    expect(service.canDelete()).toBe(true);
+
+    activeWorkspaceSignal.set({ role: "ADMIN" });
+    expect(service.canCreate()).toBe(false);
     expect(service.canEdit()).toBe(true);
     expect(service.canDelete()).toBe(false);
 

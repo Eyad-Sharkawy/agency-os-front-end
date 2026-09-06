@@ -32,6 +32,26 @@
     }
   </div>
 
+  <!-- Client Organization Isolation Callout Banner -->
+  @if (isClient()) {
+    <div
+      class="border-brand-green/30 bg-brand-green/10 text-brand-green flex items-center justify-between gap-3 rounded-md border p-3.5 font-mono text-xs shadow-xs"
+    >
+      <div class="flex items-center gap-2.5">
+        <aos-icons name="lucideShieldCheck" class="size-4 shrink-0" />
+        <span class="font-sans text-xs">
+          <strong>Client Portal View:</strong> You are viewing only invoices issued directly to your
+          organization.
+        </span>
+      </div>
+      <span
+        class="border-brand-green/30 bg-brand-green/20 shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase"
+      >
+        Client Invoices
+      </span>
+    </div>
+  }
+
   <!-- Financial KPI Ribbon -->
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
     <!-- Total Invoiced -->

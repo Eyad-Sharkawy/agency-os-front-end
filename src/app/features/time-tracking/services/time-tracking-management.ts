@@ -9,9 +9,11 @@ import {
 } from "../../../core/api/models/time-entry.models";
 import { TaskResponse } from "../../../core/api/models/task.models";
 import { ProjectResponse } from "../../../core/api/models/project.models";
+import { WorkspaceMemberResponse } from "../../../core/api/models/workspace.models";
 import { TimeEntryApi } from "../../../core/api/services/time-entry/time-entry-api";
 import { TaskApi } from "../../../core/api/services/task/task-api";
 import { ProjectApi } from "../../../core/api/services/project/project-api";
+import { WorkspaceApi } from "../../../core/api/services/workspace/workspace-api";
 import { WorkspaceStore } from "../../../core/multitenancy/workspace.store";
 
 export type BillableFilter = "ALL" | "BILLABLE" | "NON_BILLABLE";
@@ -24,6 +26,7 @@ export class TimeTrackingManagement implements OnDestroy {
   private readonly timeEntryApi = inject(TimeEntryApi);
   private readonly taskApi = inject(TaskApi);
   private readonly projectApi = inject(ProjectApi);
+  private readonly workspaceApi = inject(WorkspaceApi);
   readonly workspaceStore = inject(WorkspaceStore);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -36,6 +39,7 @@ export class TimeTrackingManagement implements OnDestroy {
   readonly activeTimerSeconds = signal<number>(0);
   readonly tasks = signal<TaskResponse[]>([]);
   readonly projects = signal<ProjectResponse[]>([]);
+  readonly members = signal<WorkspaceMemberResponse[]>([]);
   readonly isLoading = signal<boolean>(false);
   readonly isSubmitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
@@ -43,6 +47,7 @@ export class TimeTrackingManagement implements OnDestroy {
   // Filter State
   readonly projectFilter = signal<string>("ALL");
   readonly billableFilter = signal<BillableFilter>("ALL");
+  readonly memberFilter = signal<string>("ALL");
   readonly searchQuery = signal<string>("");
 
   // Modal State
@@ -295,10 +300,45 @@ export class TimeTrackingManagement implements OnDestroy {
     return map;
   });
 
+  readonly memberMap = computed(() => {
+    const map = new Map<string, WorkspaceMemberResponse>();
+    for (const m of this.members()) {
+      if (m.keycloakId) {
+        map.set(m.keycloakId, m);
+      }
+      map.set(m.userId, m);
+      map.set(m.username, m);
+    }
+    return map;
+  });
+
+  getMember(userId: string): WorkspaceMemberResponse | null {
+    return this.memberMap().get(userId) ?? null;
+  }
+
+  getMemberDisplayName(userId: string): string {
+    const member = this.getMember(userId);
+    if (!member) return "Team Member";
+    if (member.firstName && member.lastName) {
+      return `${member.firstName} ${member.lastName}`;
+    }
+    return member.username || member.email || "Team Member";
+  }
+
+  getMemberInitials(userId: string): string {
+    const member = this.getMember(userId);
+    if (!member) return userId ? userId.substring(0, 2).toUpperCase() : "TM";
+    if (member.firstName && member.lastName) {
+      return `${member.firstName[0]}${member.lastName[0]}`.toUpperCase();
+    }
+    return (member.username?.substring(0, 2) || "TM").toUpperCase();
+  }
+
   readonly filteredEntries = computed(() => {
     let entries = this.timeEntries();
     const projectF = this.projectFilter();
     const billableF = this.billableFilter();
+    const memberF = this.memberFilter();
     const query = this.searchQuery().trim().toLowerCase();
     const taskMap = this.taskMap();
 
@@ -313,6 +353,10 @@ export class TimeTrackingManagement implements OnDestroy {
       entries = entries.filter(e => e.isBillable);
     } else if (billableF === "NON_BILLABLE") {
       entries = entries.filter(e => !e.isBillable);
+    }
+
+    if (memberF !== "ALL") {
+      entries = entries.filter(e => e.userId === memberF);
     }
 
     if (query) {
@@ -362,19 +406,26 @@ export class TimeTrackingManagement implements OnDestroy {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
+    const tenantId = this.workspaceStore.activeTenantId();
+    const members$ = tenantId
+      ? this.workspaceApi.getMembers(tenantId).pipe(catchError(() => of([])))
+      : of([]);
+
     forkJoin({
       entries: this.timeEntryApi.getTimeEntries().pipe(catchError(() => of([]))),
       active: this.timeEntryApi.getActiveTimer().pipe(catchError(() => of(null))),
       tasks: this.taskApi.getTasks().pipe(catchError(() => of([]))),
       projects: this.projectApi.getProjects().pipe(catchError(() => of([]))),
+      members: members$,
     })
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
-        next: ({ entries, active, tasks, projects }) => {
+        next: ({ entries, active, tasks, projects, members }) => {
           this.timeEntries.set(entries);
           this.activeTimer.set(active);
           this.tasks.set(tasks);
           this.projects.set(projects);
+          this.members.set(members);
         },
         error: () => {
           this.errorMessage.set("Failed to load time tracking records.");

@@ -10,9 +10,13 @@ import { ActiveTimerResponse, TimeEntryResponse } from "../../../core/api/models
 import { TaskResponse } from "../../../core/api/models/task.models";
 import { ProjectResponse } from "../../../core/api/models/project.models";
 import { provideRouter, Router } from "@angular/router";
+import { WorkspaceApi } from "../../../core/api/services/workspace/workspace-api";
 
 describe("TimeTrackingManagement", () => {
   let service: TimeTrackingManagement;
+  let mockWorkspaceApi: {
+    getMembers: ReturnType<typeof vi.fn>;
+  };
   let mockTimeEntryApi: {
     getTimeEntries: ReturnType<typeof vi.fn>;
     getActiveTimer: ReturnType<typeof vi.fn>;
@@ -114,6 +118,10 @@ describe("TimeTrackingManagement", () => {
       activeTenantId: vi.fn().mockReturnValue("tenant-1"),
     };
 
+    mockWorkspaceApi = {
+      getMembers: vi.fn().mockReturnValue(of([])),
+    };
+
     TestBed.configureTestingModule({
       providers: [
         TimeTrackingManagement,
@@ -122,6 +130,7 @@ describe("TimeTrackingManagement", () => {
         { provide: TaskApi, useValue: mockTaskApi },
         { provide: ProjectApi, useValue: mockProjectApi },
         { provide: WorkspaceStore, useValue: mockWorkspaceStore },
+        { provide: WorkspaceApi, useValue: mockWorkspaceApi },
       ],
     });
 
@@ -166,6 +175,15 @@ describe("TimeTrackingManagement", () => {
     service.searchQuery.set("Review");
     expect(service.filteredEntries()).toHaveLength(1);
     expect(service.filteredEntries()[0].id).toBe("te-2");
+  });
+
+  it("should filter entries by member", () => {
+    service.loadInitialData();
+    service.memberFilter.set("u-1");
+    expect(service.filteredEntries()).toHaveLength(2);
+
+    service.memberFilter.set("non-existent-user");
+    expect(service.filteredEntries()).toHaveLength(0);
   });
 
   it("should start timer and update activeTimer signal", () => {

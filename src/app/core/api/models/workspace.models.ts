@@ -18,6 +18,7 @@ export interface WorkspaceResponse {
 
 export interface WorkspaceMemberResponse {
   userId: string;
+  keycloakId?: string;
   username: string;
   email: string;
   firstName: string;

@@ -19,6 +19,12 @@ export const routes: Routes = [
     canActivate: [redirectIfAuthenticatedGuard],
   },
   {
+    path: "demo",
+    title: "Agency OS - Live Interactive Demo",
+    loadComponent: () => import("./features/demo/demo").then(m => m.DemoComponent),
+    canActivate: [redirectIfAuthenticatedGuard],
+  },
+  {
     path: "workspaces",
     canActivate: [authGuard],
     loadChildren: () =>
@@ -46,7 +52,7 @@ export const routes: Routes = [
         path: "clients",
         title: "Agency OS - Clients",
         canActivate: [roleGuard],
-        data: { roles: ["OWNER", "ADMIN", "MEMBER"] },
+        data: { roles: ["OWNER", "ADMIN"] },
         loadComponent: () => import("./features/clients/clients").then(m => m.ClientsComponent),
       },
       {

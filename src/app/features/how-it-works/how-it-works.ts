@@ -1,6 +1,7 @@
 import { Component, computed, OnDestroy, OnInit, signal } from "@angular/core";
 import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
+import { RouterLink } from "@angular/router";
 import { provideIcons } from "@ng-icons/core";
 import {
   lucideArrowRight,
@@ -24,7 +25,7 @@ import { simpleGithub } from "@ng-icons/simple-icons";
 
 @Component({
   selector: "aos-how-it-works",
-  imports: [Button, Icons],
+  imports: [Button, Icons, RouterLink],
   providers: [
     provideIcons({
       lucideSparkles,

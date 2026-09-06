@@ -27,6 +27,7 @@ The **Agency OS Front-End** is an enterprise-grade Single Page Application (SPA)
 ## Feature Modules
 
 | **Landing & Onboarding** | High-conversion landing page, feature highlights, and interactive "How It Works" walkthrough. |
+| **Demo Showcase Hub** | Dedicated showcase page (`/demo`) with pre-configured demo account personas (`Owner`, `Admin`, `Member`, `Client`), master password credentials, and one-click clipboard copying. |
 | **Dashboard Overview** | Real-time aggregated metrics (active clients, active projects, open tasks, billable hours, invoice financials), budget burn meters, priority tasks, and interactive stopwatch widget. |
 | **Workspace Management** | Multi-organization switcher, workspace creation, teammate directory, role assignments, and ownership transfer. |
 | **Workspace Invitations** | Send email/username invites with role scoping, and view/accept/decline incoming invitations. |

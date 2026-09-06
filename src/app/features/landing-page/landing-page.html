@@ -28,13 +28,18 @@
       precision time logging, and automated PDF billing in one sovereign engine.
     </p>
 
-    <!-- CTAs: Primary Pill + Secondary Underlined Action -->
+    <!-- CTAs: Primary Pill + Secondary Underlined Action + Demo -->
     <div class="flex flex-wrap items-center justify-center gap-4 pt-8">
       <aos-button variant="primary" routerLink="/workspaces" class="min-w-40">
         Get Started Free
       </aos-button>
-      <aos-button routerLink="." fragment="features" variant="secondary">
-        Explore Capabilities &rarr;
+      <aos-button
+        routerLink="/demo"
+        variant="secondary"
+        class="border-brand-green/40 hover:border-brand-green"
+      >
+        <span class="bg-brand-green mr-1.5 inline-block size-1.5 animate-pulse rounded-full"></span>
+        <span>Try 1-Click Demo &rarr;</span>
       </aos-button>
     </div>
 
@@ -221,6 +226,173 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Demo Accounts Spotlight -->
+  <section class="mx-auto max-w-6xl px-6 py-8">
+    <div
+      class="border-hairline bg-canvas text-ink rounded-xl border p-6 shadow-xs transition-colors sm:p-8 dark:border-white/10 dark:bg-[#071829] dark:text-white dark:shadow-2xl"
+    >
+      <div
+        class="border-hairline mb-6 flex flex-wrap items-center justify-between gap-4 border-b pb-5 dark:border-white/10"
+      >
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="bg-brand-green size-2 animate-pulse rounded-full"></span>
+            <span class="text-brand-green font-mono text-xs font-semibold tracking-wider uppercase">
+              Live Showcase Environment
+            </span>
+          </div>
+          <h3 class="text-ink mt-1 font-sans text-xl font-normal sm:text-2xl dark:text-white">
+            Test Agency OS in 1 Click (8 Pre-Seeded Roles)
+          </h3>
+          <p class="text-body-muted mt-1 text-xs dark:text-zinc-400">
+            Click any persona below to launch a live authenticated session directly into their
+            workspace.
+          </p>
+        </div>
+
+        <aos-button variant="outlined" routerLink="/demo">
+          <span class="font-mono text-xs">View All 8 Roles &rarr;</span>
+        </aos-button>
+      </div>
+
+      <!-- Quick 1-Click Cards Grid -->
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <!-- Alex Vance (Owner) -->
+        <div
+          class="bg-soft-stone/30 border-hairline hover:border-brand-green/40 flex flex-col justify-between rounded-lg border p-5 transition-colors dark:border-white/10 dark:bg-white/5"
+        >
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-ink text-sm font-bold dark:text-white">Alex Vance</span>
+              <span
+                class="bg-brand-green/10 border-brand-green/30 text-brand-green rounded border px-2 py-0.5 font-mono text-[10px] font-semibold"
+                >OWNER</span
+              >
+            </div>
+            <div class="text-muted mt-0.5 font-mono text-[11px] dark:text-zinc-400">alex_owner</div>
+            <p class="text-body-muted mt-3 text-xs leading-relaxed dark:text-zinc-300">
+              Agency founder: view company-wide financials, rate cards, and download PDF invoices.
+            </p>
+          </div>
+          <div class="border-hairline mt-4 border-t pt-3 dark:border-white/10">
+            <aos-button
+              variant="primary"
+              size="sm"
+              shape="rounded"
+              fullWidth="true"
+              [disabled]="loggingInUser() !== null"
+              (click)="launchDemo('alex_owner')"
+              (keydown.enter)="launchDemo('alex_owner')"
+            >
+              @if (loggingInUser() === "alex_owner") {
+                <span class="flex items-center gap-1.5 font-mono text-xs">
+                  <span
+                    class="border-on-primary size-3 animate-spin rounded-full border-2 border-t-transparent"
+                  ></span>
+                  Launching...
+                </span>
+              } @else {
+                <span class="font-mono text-xs">Launch as Owner &rarr;</span>
+              }
+            </aos-button>
+          </div>
+        </div>
+
+        <!-- Sarah Chen (Member) -->
+        <div
+          class="bg-soft-stone/30 border-hairline flex flex-col justify-between rounded-lg border p-5 transition-colors hover:border-sky-500/40 dark:border-white/10 dark:bg-white/5"
+        >
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-ink text-sm font-bold dark:text-white">Sarah Chen</span>
+              <span
+                class="rounded border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-sky-600 dark:bg-sky-500/20 dark:text-sky-300"
+                >MEMBER</span
+              >
+            </div>
+            <div class="text-muted mt-0.5 font-mono text-[11px] dark:text-zinc-400">
+              sarah_member
+            </div>
+            <p class="text-body-muted mt-3 text-xs leading-relaxed dark:text-zinc-300">
+              Lead Engineer: test the
+              <strong class="text-ink font-medium dark:text-white"
+                >live running stopwatch timer</strong
+              >
+              and sprint Kanban board.
+            </p>
+          </div>
+          <div class="border-hairline mt-4 border-t pt-3 dark:border-white/10">
+            <aos-button
+              variant="primary"
+              size="sm"
+              shape="rounded"
+              fullWidth="true"
+              [disabled]="loggingInUser() !== null"
+              (click)="launchDemo('sarah_member')"
+              (keydown.enter)="launchDemo('sarah_member')"
+            >
+              @if (loggingInUser() === "sarah_member") {
+                <span class="flex items-center gap-1.5 font-mono text-xs">
+                  <span
+                    class="border-on-primary size-3 animate-spin rounded-full border-2 border-t-transparent"
+                  ></span>
+                  Launching...
+                </span>
+              } @else {
+                <span class="font-mono text-xs">Launch as Engineer &rarr;</span>
+              }
+            </aos-button>
+          </div>
+        </div>
+
+        <!-- David Miller (Client) -->
+        <div
+          class="bg-soft-stone/30 border-hairline flex flex-col justify-between rounded-lg border p-5 transition-colors hover:border-amber-500/40 dark:border-white/10 dark:bg-white/5"
+        >
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-ink text-sm font-bold dark:text-white">David Miller</span>
+              <span
+                class="rounded border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-amber-600 dark:bg-amber-500/20 dark:text-amber-300"
+                >CLIENT</span
+              >
+            </div>
+            <div class="text-muted mt-0.5 font-mono text-[11px] dark:text-zinc-400">
+              david_client
+            </div>
+            <p class="text-body-muted mt-3 text-xs leading-relaxed dark:text-zinc-300">
+              External client: test strictly isolated portal view for
+              <strong class="text-ink font-medium dark:text-white">Cybernetic Co.</strong>
+              deliverables.
+            </p>
+          </div>
+          <div class="border-hairline mt-4 border-t pt-3 dark:border-white/10">
+            <aos-button
+              variant="primary"
+              size="sm"
+              shape="rounded"
+              fullWidth="true"
+              [disabled]="loggingInUser() !== null"
+              (click)="launchDemo('david_client')"
+              (keydown.enter)="launchDemo('david_client')"
+            >
+              @if (loggingInUser() === "david_client") {
+                <span class="flex items-center gap-1.5 font-mono text-xs">
+                  <span
+                    class="border-on-primary size-3 animate-spin rounded-full border-2 border-t-transparent"
+                  ></span>
+                  Launching...
+                </span>
+              } @else {
+                <span class="font-mono text-xs">Launch as Client &rarr;</span>
+              }
+            </aos-button>
           </div>
         </div>
       </div>

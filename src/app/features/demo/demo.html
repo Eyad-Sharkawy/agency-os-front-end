@@ -1,0 +1,316 @@
+<div class="bg-canvas text-ink relative transition-colors">
+  <!-- Hero Section -->
+  <section
+    class="mx-auto flex max-w-6xl flex-col items-center justify-center px-6 pt-16 pb-10 text-center"
+  >
+    <div
+      class="border-hairline bg-soft-stone/50 text-ink mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs transition-colors"
+    >
+      <span class="bg-brand-green size-1.5 animate-pulse rounded-full"></span>
+      <span class="text-ink font-mono text-xs tracking-wider uppercase">
+        Live Interactive Showcase
+      </span>
+    </div>
+
+    <h1
+      class="font-display text-ink max-w-5xl text-4xl leading-tight font-normal tracking-[-0.04em] sm:text-6xl md:text-7xl lg:text-[76px]"
+    >
+      Test Agency OS with <span class="text-brand-green">1-click demo accounts.</span>
+    </h1>
+
+    <p
+      class="text-body-muted mt-6 max-w-3xl text-base leading-relaxed font-normal sm:text-lg md:text-xl"
+    >
+      Experience the platform in real-time across 8 pre-seeded roles. Click any account below to
+      instantly launch into a live session with pre-configured client contracts, active stopwatches,
+      Kanban boards, and PDF invoices.
+    </p>
+
+    <!-- Global Password Callout -->
+    <div
+      class="border-hairline bg-soft-stone/60 mt-6 inline-flex flex-wrap items-center justify-center gap-3 rounded-lg border px-5 py-2.5 font-mono text-xs"
+    >
+      <span class="text-muted">Master Demo Password:</span>
+      <div class="flex items-center gap-1.5">
+        <span class="bg-canvas border-hairline text-ink rounded border px-2.5 py-1 font-bold">
+          DemoPass123!
+        </span>
+        <aos-button
+          variant="ghost"
+          size="xs"
+          shape="rounded"
+          type="button"
+          (click)="copyPassword($event)"
+          (keydown.enter)="copyPassword($event)"
+          ariaLabel="Copy master demo password"
+          class="text-muted hover:text-ink !px-2 !py-1"
+        >
+          @if (copiedPassword()) {
+            <aos-icons name="lucideCheck" class="text-brand-green size-3.5" />
+            <span class="text-brand-green ml-1 font-mono text-[11px]">Copied!</span>
+          } @else {
+            <aos-icons name="lucideCopy" class="size-3.5" />
+            <span class="ml-1 font-mono text-[11px]">Copy</span>
+          }
+        </aos-button>
+      </div>
+      <span
+        class="text-brand-green ml-1 inline-flex items-center gap-1 font-sans text-[11px] font-medium"
+      >
+        <aos-icons name="lucideZap" class="size-3.5" />
+        <span>1-Click login supported</span>
+      </span>
+    </div>
+  </section>
+
+  <!-- 8-Card Showcase Grid -->
+  <section class="mx-auto max-w-6xl px-6 py-8">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      @for (persona of personas; track persona.id) {
+        <div
+          class="border-hairline bg-canvas flex flex-col justify-between rounded-xl border p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+          [class]="persona.colorClass"
+        >
+          <!-- Card Header -->
+          <div>
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-2.5">
+                <div
+                  class="bg-brand-green/10 border-brand-green/30 text-brand-green flex size-9 items-center justify-center rounded-sm border font-mono text-xs font-bold"
+                >
+                  {{ persona.avatarInitials }}
+                </div>
+                <div>
+                  <h3 class="text-ink font-sans text-sm leading-tight font-bold">
+                    {{ persona.name }}
+                  </h3>
+                  <div class="mt-0.5 flex items-center gap-1.5">
+                    <span class="text-muted max-w-[120px] truncate font-mono text-[10px]">
+                      {{ persona.username }}
+                    </span>
+                    <button
+                      type="button"
+                      (click)="copyUsername(persona, $event)"
+                      class="text-muted hover:text-brand-green cursor-pointer p-0.5 transition-colors"
+                      title="Copy username"
+                      [attr.aria-label]="'Copy username ' + persona.username"
+                    >
+                      @if (copiedField() === persona.username + "-user") {
+                        <aos-icons name="lucideCheck" class="text-brand-green size-3" />
+                      } @else {
+                        <aos-icons name="lucideCopy" class="size-3" />
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <span
+                class="rounded-full border px-2 py-0.5 font-mono text-[9px] font-semibold tracking-wider uppercase"
+                [class]="persona.badgeClass"
+              >
+                {{ persona.role }}
+              </span>
+            </div>
+
+            <!-- Title & Description -->
+            <div class="mt-3.5">
+              <span class="text-ink block text-xs font-medium">{{ persona.title }}</span>
+              <p class="text-body-muted mt-1 text-xs leading-relaxed">
+                {{ persona.description }}
+              </p>
+            </div>
+
+            <!-- Highlight Tag -->
+            <div
+              class="border-hairline bg-soft-stone/80 text-ink mt-3.5 flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 font-mono text-[10px]"
+            >
+              <aos-icons
+                [name]="persona.highlightIcon"
+                class="text-brand-green size-3.5 shrink-0"
+              />
+              <span class="truncate">{{ persona.highlightText }}</span>
+            </div>
+
+            <!-- Capabilities List -->
+            <ul
+              class="text-body-muted border-hairline/60 mt-3.5 space-y-1.5 border-t pt-3 text-[11px]"
+            >
+              @for (cap of persona.capabilities; track cap) {
+                <li class="flex items-start gap-1.5">
+                  <aos-icons name="lucideCheck" class="text-brand-green mt-0.5 size-3 shrink-0" />
+                  <span class="leading-tight">{{ cap }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+
+          <!-- Card Actions -->
+          <div class="border-hairline/60 mt-5 flex flex-col gap-2 border-t pt-3">
+            <aos-button
+              variant="primary"
+              size="sm"
+              shape="rounded"
+              fullWidth="true"
+              [disabled]="loggingInUser() !== null"
+              (click)="launchDemo(persona)"
+              (keydown.enter)="launchDemo(persona)"
+            >
+              @if (loggingInUser() === persona.username) {
+                <span class="flex items-center gap-1.5 font-mono text-xs">
+                  <span
+                    class="size-3 animate-spin rounded-full border-2 border-white border-t-transparent"
+                  ></span>
+                  Launching...
+                </span>
+              } @else {
+                <span
+                  class="flex items-center justify-center gap-1.5 font-mono text-xs font-medium"
+                >
+                  <span>Launch Session</span>
+                  <aos-icons name="lucideArrowRight" class="size-3.5" />
+                </span>
+              }
+            </aos-button>
+
+            <!-- 2 Copy Actions: Copy Username & Copy Password -->
+            <div class="grid grid-cols-2 gap-1.5">
+              <aos-button
+                variant="outlined"
+                size="xs"
+                shape="rounded"
+                type="button"
+                (click)="copyUsername(persona, $event)"
+                (keydown.enter)="copyUsername(persona, $event)"
+                [attr.ariaLabel]="'Copy username ' + persona.username"
+                class="!py-1 font-mono text-[10px]"
+              >
+                @if (copiedField() === persona.username + "-user") {
+                  <span class="text-brand-green flex items-center justify-center gap-1">
+                    <aos-icons name="lucideCheck" class="size-3" />
+                    <span>Copied!</span>
+                  </span>
+                } @else {
+                  <span class="text-muted hover:text-ink flex items-center justify-center gap-1">
+                    <aos-icons name="lucideCopy" class="size-3" />
+                    <span>Copy User</span>
+                  </span>
+                }
+              </aos-button>
+
+              <aos-button
+                variant="outlined"
+                size="xs"
+                shape="rounded"
+                type="button"
+                (click)="copyPassword($event)"
+                (keydown.enter)="copyPassword($event)"
+                ariaLabel="Copy password DemoPass123!"
+                class="!py-1 font-mono text-[10px]"
+              >
+                @if (copiedPassword()) {
+                  <span class="text-brand-green flex items-center justify-center gap-1">
+                    <aos-icons name="lucideCheck" class="size-3" />
+                    <span>Copied!</span>
+                  </span>
+                } @else {
+                  <span class="text-muted hover:text-ink flex items-center justify-center gap-1">
+                    <aos-icons name="lucideCopy" class="size-3" />
+                    <span>Copy Pass</span>
+                  </span>
+                }
+              </aos-button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- What to Test Guide -->
+  <section class="border-hairline bg-soft-stone/30 mt-12 border-y px-6 py-16">
+    <div class="mx-auto max-w-6xl">
+      <div class="mb-12 flex flex-col items-center gap-2 text-center">
+        <span class="text-brand-green font-mono text-xs font-semibold tracking-wider uppercase">
+          Walkthrough & Test Scenarios
+        </span>
+        <h2 class="text-ink font-sans text-2xl font-normal tracking-tight sm:text-3xl md:text-4xl">
+          Key Features to Test in This Demo
+        </h2>
+        <p class="text-body-muted max-w-2xl text-xs sm:text-sm">
+          Here is what makes Agency OS stand out. Try these workflows as you switch between
+          different roles:
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Feature 1 -->
+        <div class="border-hairline bg-canvas rounded-sm border p-6">
+          <div class="text-brand-green mb-3 flex size-8 items-center">
+            <aos-icons name="lucideTimer" class="size-6" />
+          </div>
+          <h3 class="text-ink font-sans text-base font-semibold">1. Live Stopwatch Timers</h3>
+          <p class="text-body-muted mt-2 text-xs leading-relaxed">
+            Log in as <strong>Sarah Chen</strong> to view the live running timer in the top bar.
+            Pause, resume, or start a new stopwatch directly attached to any task.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="border-hairline bg-canvas rounded-sm border p-6">
+          <div class="text-brand-green mb-3 flex size-8 items-center">
+            <aos-icons name="lucideLayers" class="size-6" />
+          </div>
+          <h3 class="text-ink font-sans text-base font-semibold">2. Drag-and-Drop Kanban</h3>
+          <p class="text-body-muted mt-2 text-xs leading-relaxed">
+            Navigate to <strong>Tasks</strong> to see sprint deliverables across TODO, IN_PROGRESS,
+            REVIEW, and DONE with real-time optimistic UI updates.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="border-hairline bg-canvas rounded-sm border p-6">
+          <div class="text-brand-green mb-3 flex size-8 items-center">
+            <aos-icons name="lucideReceiptText" class="size-6" />
+          </div>
+          <h3 class="text-ink font-sans text-base font-semibold">3. PDF Invoice Engine</h3>
+          <p class="text-body-muted mt-2 text-xs leading-relaxed">
+            Log in as <strong>Alex Vance (Owner)</strong> &rarr; Invoices, and click
+            <em>Download PDF</em> to generate branded, itemized client invoices using Apache PDFBox.
+          </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="border-hairline bg-canvas rounded-sm border p-6">
+          <div class="text-brand-green mb-3 flex size-8 items-center">
+            <aos-icons name="lucideShieldCheck" class="size-6" />
+          </div>
+          <h3 class="text-ink font-sans text-base font-semibold">4. Client Portal Isolation</h3>
+          <p class="text-body-muted mt-2 text-xs leading-relaxed">
+            Log in as <strong>David Miller</strong> &rarr; Notice you strictly see Cybernetic Co.
+            projects. Switch to <strong>Elena</strong> &rarr; Strictly Velocity Labs.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom Action Section -->
+  <section class="mx-auto max-w-6xl px-6 py-16 text-center">
+    <h3 class="font-display text-ink text-2xl font-normal tracking-tight sm:text-3xl">
+      Ready to dive into the architecture?
+    </h3>
+    <p class="text-body-muted mx-auto mt-2 max-w-xl text-xs sm:text-sm">
+      Read how our multi-tenant PostgreSQL schema isolation, Keycloak PKCE auth, and virtual threads
+      work under the hood.
+    </p>
+
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-4">
+      <aos-button variant="primary" routerLink="/how-it-works"> How It Works &rarr; </aos-button>
+      <aos-button variant="outlined" href="https://github.com/Eyad-Sharkawy/agency-os-back-end">
+        <aos-icons name="simpleGithub" class="size-4" />
+        <span class="ml-2">GitHub Repository</span>
+      </aos-button>
+    </div>
+  </section>
+</div>

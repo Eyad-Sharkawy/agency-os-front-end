@@ -43,7 +43,7 @@ import { Button } from "../../../../shared/components/button/button";
         <!-- Header -->
         <div class="flex items-start justify-between gap-3">
           <div
-            class="bg-primary text-on-primary flex size-12 shrink-0 items-center justify-center rounded-sm font-mono text-sm font-bold tracking-wider"
+            class="bg-brand-green/10 border-brand-green/30 text-brand-green flex size-12 shrink-0 items-center justify-center rounded-sm border font-mono text-sm font-bold tracking-wider"
           >
             {{ initials() }}
           </div>

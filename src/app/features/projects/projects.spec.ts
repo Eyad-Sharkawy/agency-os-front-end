@@ -4,6 +4,7 @@ import { provideRouter } from "@angular/router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ClientResponse } from "../../core/api/models/client.models";
 import { ProjectResponse, ProjectStatus } from "../../core/api/models/project.models";
+import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 import { ProjectsComponent } from "./projects";
 import {
   ProjectFilterStatus,
@@ -14,6 +15,7 @@ import {
 describe("ProjectsComponent", () => {
   let component: ProjectsComponent;
   let fixture: ComponentFixture<ProjectsComponent>;
+  let activeWorkspaceSignal: ReturnType<typeof signal<{ role: string } | null>>;
 
   let pmMock: {
     projects: ReturnType<typeof signal<ProjectResponse[]>>;
@@ -127,9 +129,15 @@ describe("ProjectsComponent", () => {
       }),
     };
 
+    activeWorkspaceSignal = signal<{ role: string } | null>({ role: "OWNER" });
+
     await TestBed.configureTestingModule({
       imports: [ProjectsComponent],
-      providers: [provideRouter([]), { provide: ProjectManagement, useValue: pmMock }],
+      providers: [
+        provideRouter([]),
+        { provide: ProjectManagement, useValue: pmMock },
+        { provide: WorkspaceStore, useValue: { activeWorkspace: activeWorkspaceSignal } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProjectsComponent);
@@ -264,5 +272,23 @@ describe("ProjectsComponent", () => {
 
     deleteBtn.click();
     expect(pmMock.openDeleteModal).toHaveBeenCalledWith(mockProjects[0]);
+  });
+
+  it("should render member isolation banner when role is MEMBER", () => {
+    activeWorkspaceSignal.set({ role: "MEMBER" });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Assigned Projects View:");
+    expect(compiled.textContent).toContain("Assigned Projects");
+  });
+
+  it("should render client portal banner when role is CLIENT", () => {
+    activeWorkspaceSignal.set({ role: "CLIENT" });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Client Portal View:");
+    expect(compiled.textContent).toContain("Client View");
   });
 });

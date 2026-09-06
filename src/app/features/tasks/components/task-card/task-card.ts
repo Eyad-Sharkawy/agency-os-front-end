@@ -3,6 +3,7 @@ import { Component, computed, inject, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { provideIcons } from "@ng-icons/core";
 import {
+  lucideAlertCircle,
   lucideAlertTriangle,
   lucideArrowLeft,
   lucideArrowRight,
@@ -38,6 +39,7 @@ import { TimeTrackingManagement } from "../../../time-tracking/services/time-tra
       lucidePencil,
       lucideTrash2,
       lucideAlertTriangle,
+      lucideAlertCircle,
       lucideGripVertical,
       lucideArrowLeft,
       lucideArrowRight,
@@ -85,6 +87,43 @@ export class TaskCard {
     const due = this.task().dueDate;
     if (!due || this.task().status === "DONE") return false;
     return new Date(due).getTime() < Date.now();
+  });
+
+  readonly isDueSoon = computed(() => {
+    const due = this.task().dueDate;
+    if (!due || this.task().status === "DONE") return false;
+    const diffMs = new Date(due).getTime() - Date.now();
+    return diffMs >= 0 && diffMs <= 48 * 60 * 60 * 1000;
+  });
+
+  readonly dueDateRemainingText = computed<string | null>(() => {
+    const due = this.task().dueDate;
+    if (!due) return null;
+    const dueTime = new Date(due).getTime();
+    const now = Date.now();
+    const diffMs = dueTime - now;
+
+    if (this.task().status === "DONE") {
+      return null;
+    }
+
+    if (diffMs < 0) {
+      const daysOverdue = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60 * 24));
+      if (daysOverdue === 0) {
+        return "Overdue today";
+      }
+      return `${daysOverdue}d overdue`;
+    }
+
+    const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+    if (diffHours <= 24) {
+      return diffHours <= 1 ? "Due in <1h" : `Due in ${diffHours}h`;
+    }
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays <= 2) {
+      return "Due tomorrow";
+    }
+    return `${diffDays}d left`;
   });
 
   readonly loggedHours = computed(() => {

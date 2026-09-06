@@ -126,7 +126,7 @@ export class Sidebar {
       { label: "Overview", route: base, icon: "lucideLayoutDashboard", exact: true },
     ];
 
-    if (role !== "CLIENT") {
+    if (role === "OWNER" || role === "ADMIN") {
       items.push({ label: "Clients", route: `${base}/clients`, icon: "lucideUsers" });
     }
 

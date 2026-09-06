@@ -11,9 +11,12 @@ import {
   lucidePause,
   lucidePlay,
   lucidePlus,
+  lucideRefreshCw,
   lucideSearch,
+  lucideShieldCheck,
   lucideSquare,
   lucideTrash2,
+  lucideUser,
   lucideXCircle,
 } from "@ng-icons/lucide";
 import { Button } from "../../shared/components/button/button";
@@ -54,6 +57,9 @@ import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
       lucideAlertCircle,
       lucideDollarSign,
       lucideXCircle,
+      lucideRefreshCw,
+      lucideShieldCheck,
+      lucideUser,
     }),
   ],
   templateUrl: "./time-tracking.html",
@@ -61,6 +67,16 @@ import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 export class TimeTrackingComponent {
   readonly tm = inject(TimeTrackingManagement);
   readonly workspaceStore = inject(WorkspaceStore);
+
+  readonly isMember = computed(() => {
+    const role = this.workspaceStore.activeWorkspace()?.role;
+    return role === "MEMBER";
+  });
+
+  readonly isOwnerOrAdmin = computed(() => {
+    const role = this.workspaceStore.activeWorkspace()?.role;
+    return role === "OWNER" || role === "ADMIN";
+  });
 
   readonly canTrackTime = computed(() => {
     const role = this.workspaceStore.activeWorkspace()?.role;
@@ -71,6 +87,16 @@ export class TimeTrackingComponent {
     return [
       { label: "All Projects", value: "ALL" },
       ...this.tm.projects().map(p => ({ label: p.name, value: p.id })),
+    ];
+  });
+
+  readonly memberFilterOptions = computed<SelectOption<string>[]>(() => {
+    return [
+      { label: "All Team Members", value: "ALL" },
+      ...this.tm.members().map(m => ({
+        label: `${m.firstName} ${m.lastName} (@${m.username})`,
+        value: m.userId,
+      })),
     ];
   });
 

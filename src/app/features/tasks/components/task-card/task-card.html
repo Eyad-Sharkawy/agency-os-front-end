@@ -95,13 +95,37 @@
         <div
           class="flex items-center gap-1 font-mono text-[11px]"
           [class.text-error]="isOverdue()"
-          [class.text-body-muted]="!isOverdue()"
-          [title]="isOverdue() ? 'Task is past due date!' : 'Due date'"
+          [class.text-amber-600]="isDueSoon()"
+          [class.dark:text-amber-400]="isDueSoon()"
+          [class.text-body-muted]="!isOverdue() && !isDueSoon()"
+          [title]="
+            isOverdue()
+              ? 'Task is past due date!'
+              : isDueSoon()
+                ? 'Task is due soon!'
+                : 'Task due date'
+          "
         >
-          <aos-icons name="lucideCalendar" class="size-3.5" />
+          @if (isOverdue()) {
+            <aos-icons name="lucideAlertCircle" class="text-error size-3.5" />
+          } @else if (isDueSoon()) {
+            <aos-icons name="lucideAlertTriangle" class="size-3.5 text-amber-500" />
+          } @else {
+            <aos-icons name="lucideCalendar" class="size-3.5" />
+          }
           <span>{{ task().dueDate | date: "MMM d" }}</span>
           @if (isOverdue()) {
-            <span class="text-error text-[10px] font-bold uppercase">(Overdue)</span>
+            <span
+              class="bg-error/10 text-error rounded-xs px-1 py-0.5 text-[10px] font-bold uppercase"
+            >
+              {{ dueDateRemainingText() || "Overdue" }}
+            </span>
+          } @else if (isDueSoon()) {
+            <span
+              class="rounded-xs bg-amber-500/10 px-1 py-0.5 text-[10px] font-semibold text-amber-600 dark:text-amber-400"
+            >
+              {{ dueDateRemainingText() }}
+            </span>
           }
         </div>
       } @else {
@@ -116,7 +140,7 @@
         >
           @for (id of task().assigneeIds.slice(0, 3); track id) {
             <div
-              class="bg-soft-stone border-canvas text-ink flex size-5 items-center justify-center rounded-full border font-mono text-[9px] font-bold uppercase"
+              class="bg-brand-green/10 border-brand-green/30 text-brand-green flex size-5 items-center justify-center rounded-full border font-mono text-[9px] font-bold uppercase"
             >
               {{ id.substring(0, 2) }}
             </div>

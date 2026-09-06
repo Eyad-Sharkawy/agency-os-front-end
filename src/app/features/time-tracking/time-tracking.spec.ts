@@ -6,6 +6,7 @@ import { BillableFilter, TimeTrackingManagement } from "./services/time-tracking
 import { ActiveTimerResponse, TimeEntryResponse } from "../../core/api/models/time-entry.models";
 import { TaskResponse } from "../../core/api/models/task.models";
 import { ProjectResponse } from "../../core/api/models/project.models";
+import { WorkspaceMemberResponse } from "../../core/api/models/workspace.models";
 import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 
 describe("TimeTrackingComponent", () => {
@@ -21,8 +22,10 @@ describe("TimeTrackingComponent", () => {
     isLoading: ReturnType<typeof signal<boolean>>;
     isSubmitting: ReturnType<typeof signal<boolean>>;
     errorMessage: ReturnType<typeof signal<string | null>>;
+    members: ReturnType<typeof signal<WorkspaceMemberResponse[]>>;
     projectFilter: ReturnType<typeof signal<string>>;
     billableFilter: ReturnType<typeof signal<BillableFilter>>;
+    memberFilter: ReturnType<typeof signal<string>>;
     searchQuery: ReturnType<typeof signal<string>>;
     isManualModalOpen: ReturnType<typeof signal<boolean>>;
     activeTimerFormatted: ReturnType<typeof signal<string>>;
@@ -55,6 +58,9 @@ describe("TimeTrackingComponent", () => {
     resumeTimer: ReturnType<typeof vi.fn>;
     isPaused: ReturnType<typeof signal<boolean>>;
     closeManualModal: ReturnType<typeof vi.fn>;
+    getMember: ReturnType<typeof vi.fn>;
+    getMemberDisplayName: ReturnType<typeof vi.fn>;
+    getMemberInitials: ReturnType<typeof vi.fn>;
   };
 
   const sampleEntry: TimeEntryResponse = {
@@ -106,8 +112,10 @@ describe("TimeTrackingComponent", () => {
       isLoading: signal<boolean>(false),
       isSubmitting: signal<boolean>(false),
       errorMessage: signal<string | null>(null),
+      members: signal<WorkspaceMemberResponse[]>([]),
       projectFilter: signal<string>("ALL"),
       billableFilter: signal<BillableFilter>("ALL"),
+      memberFilter: signal<string>("ALL"),
       searchQuery: signal<string>(""),
       isManualModalOpen: signal<boolean>(false),
       activeTimerFormatted: signal<string>("00:00:00"),
@@ -140,6 +148,9 @@ describe("TimeTrackingComponent", () => {
       resumeTimer: vi.fn(),
       isPaused: signal<boolean>(false),
       closeManualModal: vi.fn(),
+      getMember: vi.fn().mockReturnValue(null),
+      getMemberDisplayName: vi.fn().mockReturnValue("Team Member"),
+      getMemberInitials: vi.fn().mockReturnValue("TM"),
     };
 
     const workspaceStoreMock = {
@@ -181,7 +192,8 @@ describe("TimeTrackingComponent", () => {
 
   it("should open manual modal when Manual Entry button clicked", () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const manualBtn = compiled.querySelector("aos-button") as HTMLElement;
+    const buttons = Array.from(compiled.querySelectorAll("aos-button")) as HTMLElement[];
+    const manualBtn = buttons.find(btn => btn.textContent?.includes("Manual Entry"));
     manualBtn?.click();
     expect(tmMock.openManualModal).toHaveBeenCalled();
   });
@@ -259,5 +271,27 @@ describe("TimeTrackingComponent", () => {
     tmMock.isPaused.set(true);
     component.onTogglePause();
     expect(tmMock.resumeTimer).toHaveBeenCalled();
+  });
+
+  it("should compute memberFilterOptions correctly and handle member role privacy banner", () => {
+    tmMock.members.set([
+      {
+        userId: "u-1",
+        username: "sarah_member",
+        firstName: "Sarah",
+        lastName: "Chen",
+        email: "sarah@example.com",
+        role: "MEMBER",
+      },
+    ]);
+
+    const options = component.memberFilterOptions();
+    expect(options).toHaveLength(2);
+    expect(options[0].value).toBe("ALL");
+    expect(options[1].value).toBe("u-1");
+    expect(options[1].label).toBe("Sarah Chen (@sarah_member)");
+
+    expect(component.isOwnerOrAdmin()).toBe(true);
+    expect(component.isMember()).toBe(false);
   });
 });
