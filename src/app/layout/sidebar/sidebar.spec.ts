@@ -120,6 +120,21 @@ describe("Sidebar Component", () => {
     ]);
   });
 
+  it("should hide Invoices navigation item for MEMBER role", () => {
+    activeWorkspaceSignal.set({
+      ...mockWorkspaces[1],
+      role: "MEMBER",
+    });
+    expect(component.navItems()).toHaveLength(5);
+    expect(component.navItems().map(i => i.label)).toEqual([
+      "Overview",
+      "Clients",
+      "Projects",
+      "Tasks",
+      "Time Tracking",
+    ]);
+  });
+
   it("should compute active workspace initials correctly", () => {
     expect(component.activeInitials()).toBe("AC");
   });

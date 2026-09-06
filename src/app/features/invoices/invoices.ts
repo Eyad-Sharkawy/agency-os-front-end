@@ -1,51 +1,165 @@
-import { Component, computed, inject } from "@angular/core";
+import { CurrencyPipe, DatePipe } from "@angular/common";
+import { Component, computed, inject, OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { provideIcons } from "@ng-icons/core";
-import { lucidePlus, lucideReceipt } from "@ng-icons/lucide";
-import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
+import {
+  lucideAlertCircle,
+  lucideArrowUpRight,
+  lucideBuilding2,
+  lucideCheck,
+  lucideCheckCircle2,
+  lucideChevronDown,
+  lucideClock,
+  lucideDollarSign,
+  lucideDownload,
+  lucideEye,
+  lucideFilter,
+  lucideGrid,
+  lucideLayoutList,
+  lucideLoader2,
+  lucidePlus,
+  lucideReceipt,
+  lucideRefreshCw,
+  lucideSearch,
+  lucideSend,
+  lucideTrash2,
+  lucideX,
+} from "@ng-icons/lucide";
+import {
+  INVOICE_STATUS_META,
+  InvoiceResponse,
+  InvoiceStatus,
+} from "../../core/api/models/invoice.models";
 import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
+import { Select, SelectOption } from "../../shared/components/select/select";
+import { InvoiceCreateModal } from "./components/invoice-create-modal/invoice-create-modal";
+import { InvoiceDeleteModal } from "./components/invoice-delete-modal/invoice-delete-modal";
+import { InvoicePdfModal } from "./components/invoice-pdf-modal/invoice-pdf-modal";
+import {
+  InvoiceFilterStatus,
+  InvoiceManagement,
+  InvoiceViewMode,
+} from "./services/invoice-management";
 
 @Component({
   selector: "aos-invoices",
   standalone: true,
-  imports: [Button, Icons],
-  providers: [provideIcons({ lucideReceipt, lucidePlus })],
-  template: `
-    <div class="space-y-6">
-      <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 class="text-ink font-display text-2xl font-bold tracking-tight">Invoices</h1>
-          <p class="text-body-muted text-sm">
-            Generate invoices, monitor client payments, and track receivables.
-          </p>
-        </div>
-        @if (canCreateInvoice()) {
-          <aos-button variant="primary" size="sm">
-            <aos-icons name="lucidePlus" class="size-4" />
-            <span class="ml-1.5 font-mono text-xs">Create Invoice</span>
-          </aos-button>
-        }
-      </div>
-
-      <div class="border-hairline bg-canvas rounded-md border p-12 text-center">
-        <div
-          class="bg-soft-stone text-muted mx-auto flex size-12 items-center justify-center rounded-full"
-        >
-          <aos-icons name="lucideReceipt" class="size-6" />
-        </div>
-        <h3 class="text-ink mt-4 text-base font-semibold">Invoicing System Ready</h3>
-        <p class="text-body-muted mx-auto mt-1 max-w-sm text-xs">
-          Generate branded invoices from logged hours and fixed project fees.
-        </p>
-      </div>
-    </div>
-  `,
+  imports: [
+    CurrencyPipe,
+    DatePipe,
+    FormsModule,
+    Button,
+    Icons,
+    Select,
+    InvoiceCreateModal,
+    InvoiceDeleteModal,
+    InvoicePdfModal,
+  ],
+  providers: [
+    provideIcons({
+      lucideReceipt,
+      lucidePlus,
+      lucideSearch,
+      lucideGrid,
+      lucideLayoutList,
+      lucideRefreshCw,
+      lucideX,
+      lucideBuilding2,
+      lucideCheckCircle2,
+      lucideAlertCircle,
+      lucideLoader2,
+      lucideDownload,
+      lucideEye,
+      lucideTrash2,
+      lucideFilter,
+      lucideClock,
+      lucideCheck,
+      lucideDollarSign,
+      lucideChevronDown,
+      lucideSend,
+      lucideArrowUpRight,
+    }),
+  ],
+  templateUrl: "./invoices.html",
 })
-export class InvoicesComponent {
-  private readonly workspaceStore = inject(WorkspaceStore);
+export class InvoicesComponent implements OnInit {
+  readonly im = inject(InvoiceManagement);
+  readonly statusMeta = INVOICE_STATUS_META;
 
-  readonly canCreateInvoice = computed(() => {
-    const role = this.workspaceStore.activeWorkspace()?.role;
-    return role === "OWNER" || role === "ADMIN";
+  readonly activeStatusFilter = computed(() => this.im.statusFilter());
+  readonly activeViewMode = computed(() => this.im.viewMode());
+
+  readonly statusFilterOptions: { label: string; value: InvoiceFilterStatus }[] = [
+    { label: "All Statuses", value: "ALL" },
+    { label: "Draft", value: "DRAFT" },
+    { label: "Sent", value: "SENT" },
+    { label: "Paid", value: "PAID" },
+    { label: "Overdue", value: "OVERDUE" },
+    { label: "Void", value: "VOID" },
+  ];
+
+  readonly statusUpdateOptions: SelectOption<InvoiceStatus>[] = [
+    { label: "Draft", value: "DRAFT" },
+    { label: "Sent", value: "SENT" },
+    { label: "Paid", value: "PAID" },
+    { label: "Overdue", value: "OVERDUE" },
+    { label: "Void", value: "VOID" },
+  ];
+
+  readonly clientFilterOptions = computed<SelectOption<string>[]>(() => {
+    const list = this.im.clients().map(c => ({
+      label: c.name,
+      value: c.id,
+    }));
+    return [{ label: "All Clients", value: "ALL" }, ...list];
   });
+
+  ngOnInit(): void {
+    this.im.loadInvoices();
+  }
+
+  getClientName(clientId: string): string {
+    return this.im.clientMap().get(clientId)?.name || "Client";
+  }
+
+  getClientEmail(clientId: string): string | null {
+    return this.im.clientMap().get(clientId)?.email || null;
+  }
+
+  onSearch(query: string): void {
+    this.im.setSearchQuery(query);
+  }
+
+  onStatusFilter(status: InvoiceFilterStatus): void {
+    this.im.setStatusFilter(status);
+  }
+
+  onClientFilter(clientId: unknown): void {
+    if (typeof clientId === "string") {
+      this.im.setClientFilter(clientId);
+    }
+  }
+
+  onViewMode(mode: InvoiceViewMode): void {
+    this.im.setViewMode(mode);
+  }
+
+  onStatusChange(invoice: InvoiceResponse, newStatus: unknown): void {
+    if (newStatus && typeof newStatus === "string") {
+      this.im.updateStatus(invoice, newStatus as InvoiceStatus);
+    }
+  }
+
+  onDownloadPdf(invoice: InvoiceResponse): void {
+    this.im.downloadPdf(invoice);
+  }
+
+  onPreviewPdf(invoice: InvoiceResponse): void {
+    this.im.openPdfModal(invoice);
+  }
+
+  onDelete(invoice: InvoiceResponse): void {
+    this.im.openDeleteModal(invoice);
+  }
 }

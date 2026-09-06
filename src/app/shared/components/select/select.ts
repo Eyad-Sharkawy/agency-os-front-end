@@ -9,6 +9,7 @@ import {
   output,
   signal,
 } from "@angular/core";
+import { CdkConnectedOverlay, CdkOverlayOrigin, ConnectedPosition } from "@angular/cdk/overlay";
 import { provideIcons } from "@ng-icons/core";
 import { lucideCheck, lucideChevronDown } from "@ng-icons/lucide";
 import { Icons } from "../icons/icons";
@@ -26,7 +27,7 @@ export type SELECT_VARIANTS = "outlined" | "filled" | "ghost";
 @Component({
   selector: "aos-select",
   standalone: true,
-  imports: [Icons],
+  imports: [Icons, CdkOverlayOrigin, CdkConnectedOverlay],
   providers: [provideIcons({ lucideChevronDown, lucideCheck })],
   host: {
     class: "relative inline-block text-left",
@@ -37,6 +38,8 @@ export type SELECT_VARIANTS = "outlined" | "filled" | "ghost";
       <!-- Trigger Button -->
       <button
         type="button"
+        cdkOverlayOrigin
+        #trigger="cdkOverlayOrigin"
         [disabled]="disabled()"
         [attr.aria-haspopup]="'listbox'"
         [attr.aria-expanded]="isOpen()"
@@ -58,12 +61,20 @@ export type SELECT_VARIANTS = "outlined" | "filled" | "ghost";
         </span>
       </button>
 
-      <!-- Dropdown Options Menu -->
-      @if (isOpen()) {
+      <!-- Dropdown Options Menu rendered in CDK Overlay (floats over any container) -->
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="trigger"
+        [cdkConnectedOverlayOpen]="isOpen()"
+        [cdkConnectedOverlayPositions]="overlayPositions"
+        [cdkConnectedOverlayMinWidth]="overlayWidth()"
+        (overlayOutsideClick)="close()"
+        (detach)="close()"
+      >
         <div
           role="listbox"
           [attr.aria-activedescendant]="activeOptionId()"
-          class="border-hairline bg-canvas text-ink animate-in fade-in zoom-in-95 absolute right-0 z-[60] mt-1.5 max-h-60 w-full min-w-[150px] overflow-auto rounded-sm border p-1 shadow-2xl duration-100 focus:outline-none"
+          class="border-hairline bg-canvas text-ink animate-in fade-in zoom-in-95 my-1 max-h-60 min-w-[150px] overflow-auto rounded-sm border p-1 shadow-2xl duration-100 focus:outline-none"
         >
           @for (option of options(); track option.value; let idx = $index) {
             <div
@@ -95,7 +106,7 @@ export type SELECT_VARIANTS = "outlined" | "filled" | "ghost";
             </div>
           }
         </div>
-      }
+      </ng-template>
     </div>
   `,
 })
@@ -163,17 +174,62 @@ export class Select<T = unknown> {
     return "size-3.5";
   });
 
+  readonly overlayWidth = signal<number>(150);
+
+  readonly overlayPositions: ConnectedPosition[] = [
+    {
+      originX: "start",
+      originY: "bottom",
+      overlayX: "start",
+      overlayY: "top",
+      offsetY: 4,
+    },
+    {
+      originX: "end",
+      originY: "bottom",
+      overlayX: "end",
+      overlayY: "top",
+      offsetY: 4,
+    },
+    {
+      originX: "start",
+      originY: "top",
+      overlayX: "start",
+      overlayY: "bottom",
+      offsetY: -4,
+    },
+    {
+      originX: "end",
+      originY: "top",
+      overlayX: "end",
+      overlayY: "bottom",
+      offsetY: -4,
+    },
+  ];
+
   @HostListener("document:click", ["$event"])
   onDocumentClick(event: MouseEvent): void {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.isOpen.set(false);
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+    const isInsideComponent = this.elementRef.nativeElement.contains(target);
+    const isInsideOverlay = target.closest?.(".cdk-overlay-pane");
+    if (!isInsideComponent && !isInsideOverlay) {
+      this.close();
     }
   }
 
   toggleOpen(): void {
     if (!this.disabled()) {
+      if (!this.isOpen()) {
+        const width = this.elementRef.nativeElement?.getBoundingClientRect()?.width || 150;
+        this.overlayWidth.set(Math.max(width, 150));
+      }
       this.isOpen.update(open => !open);
     }
+  }
+
+  close(): void {
+    this.isOpen.set(false);
   }
 
   selectOption(option: SelectOption<T>): void {

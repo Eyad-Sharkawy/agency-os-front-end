@@ -139,7 +139,9 @@ export class Sidebar {
       items.push({ label: "Time Tracking", route: `${base}/time-tracking`, icon: "lucideClock" });
     }
 
-    items.push({ label: "Invoices", route: `${base}/invoices`, icon: "lucideReceipt" });
+    if (role !== "MEMBER") {
+      items.push({ label: "Invoices", route: `${base}/invoices`, icon: "lucideReceipt" });
+    }
 
     return items;
   });
