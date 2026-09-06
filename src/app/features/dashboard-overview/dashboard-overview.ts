@@ -19,6 +19,7 @@ import {
   lucidePlay,
   lucidePlus,
   lucideReceipt,
+  lucideShieldCheck,
   lucideSquare,
   lucideTrendingUp,
   lucideUsers,
@@ -64,6 +65,7 @@ import { TimeTrackingManagement } from "../time-tracking/services/time-tracking-
       lucideTrendingUp,
       lucideLoader2,
       lucideCalendar,
+      lucideShieldCheck,
     }),
   ],
   template: `
@@ -154,6 +156,46 @@ import { TimeTrackingManagement } from "../time-tracking/services/time-tracking-
             </div>
           </div>
         </div>
+
+        <!-- Member Personal Dashboard Isolation Callout Banner -->
+        @if (isMember()) {
+          <div
+            class="border-brand-green/30 bg-brand-green/10 text-brand-green flex items-center justify-between gap-3 rounded-md border p-3.5 font-mono text-xs shadow-xs"
+          >
+            <div class="flex items-center gap-2.5">
+              <aos-icons name="lucideShieldCheck" class="size-4 shrink-0" />
+              <span class="font-sans text-xs">
+                <strong>Member Workspace View:</strong> You are viewing dashboard metrics, projects,
+                tasks, and time tracking entries scoped exclusively to work assigned to you.
+              </span>
+            </div>
+            <span
+              class="border-brand-green/30 bg-brand-green/20 shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase"
+            >
+              Assigned Work
+            </span>
+          </div>
+        }
+
+        <!-- Client Company Dashboard Isolation Callout Banner -->
+        @if (isClient()) {
+          <div
+            class="border-brand-green/30 bg-brand-green/10 text-brand-green flex items-center justify-between gap-3 rounded-md border p-3.5 font-mono text-xs shadow-xs"
+          >
+            <div class="flex items-center gap-2.5">
+              <aos-icons name="lucideShieldCheck" class="size-4 shrink-0" />
+              <span class="font-sans text-xs">
+                <strong>Client Portal Dashboard:</strong> You are viewing project metrics, task
+                progress, and billing invoices scoped exclusively to your company.
+              </span>
+            </div>
+            <span
+              class="border-brand-green/30 bg-brand-green/20 shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase"
+            >
+              Company View
+            </span>
+          </div>
+        }
 
         <!-- Active Stopwatch Banner (Live Widget) -->
         @if (activeTimer(); as timer) {
@@ -657,11 +699,18 @@ import { TimeTrackingManagement } from "../time-tracking/services/time-tracking-
                             <span class="text-muted text-xs">·</span>
                             <span
                               class="font-mono text-[11px]"
-                              [class]="
-                                isTaskOverdue(task) ? 'font-semibold text-rose-600' : 'text-muted'
-                              "
+                              [class.text-rose-600]="isTaskOverdue(task)"
+                              [class.font-semibold]="isTaskOverdue(task) || isTaskDueSoon(task)"
+                              [class.text-amber-600]="isTaskDueSoon(task)"
+                              [class.dark:text-amber-400]="isTaskDueSoon(task)"
+                              [class.text-muted]="!isTaskOverdue(task) && !isTaskDueSoon(task)"
                             >
-                              {{ isTaskOverdue(task) ? "Overdue: " : "Due "
+                              {{
+                                isTaskOverdue(task)
+                                  ? "Overdue: "
+                                  : isTaskDueSoon(task)
+                                    ? "Due soon: "
+                                    : "Due "
                               }}{{ task.dueDate | date: "shortDate" }}
                             </span>
                           }
@@ -728,17 +777,21 @@ export class DashboardOverview {
   );
 
   readonly userRole = computed(() => this.activeWorkspace()?.role);
+  readonly isMember = computed(() => this.userRole() === "MEMBER");
+  readonly isClient = computed(() => this.userRole() === "CLIENT");
 
   readonly canTrackTime = computed(() => this.userRole() !== "CLIENT");
   readonly canCreateProject = computed(() => {
     const role = this.userRole();
-    return role === "OWNER" || role === "ADMIN";
+    return role === "OWNER";
   });
   readonly canCreateTask = computed(() => {
     const role = this.userRole();
     return role === "OWNER" || role === "ADMIN" || role === "MEMBER";
   });
-  readonly canViewClients = computed(() => this.userRole() !== "CLIENT");
+  readonly canViewClients = computed(
+    () => this.userRole() === "OWNER" || this.userRole() === "ADMIN",
+  );
   readonly canCreateInvoice = computed(() => {
     const role = this.userRole();
     return role === "OWNER" || role === "ADMIN";
@@ -930,15 +983,17 @@ export class DashboardOverview {
     this.isDataLoading.set(true);
 
     const isClient = this.userRole() === "CLIENT";
+    const isMember = this.userRole() === "MEMBER";
 
     forkJoin({
-      clients: isClient ? of([]) : this.clientApi.getClients().pipe(catchError(() => of([]))),
+      clients:
+        isClient || isMember ? of([]) : this.clientApi.getClients().pipe(catchError(() => of([]))),
       projects: this.projectApi.getProjects().pipe(catchError(() => of([]))),
       tasks: this.taskApi.getTasks().pipe(catchError(() => of([]))),
       timeEntries: isClient
         ? of([])
         : this.timeEntryApi.getTimeEntries().pipe(catchError(() => of([]))),
-      invoices: this.invoiceApi.getInvoices().pipe(catchError(() => of([]))),
+      invoices: isMember ? of([]) : this.invoiceApi.getInvoices().pipe(catchError(() => of([]))),
     }).subscribe({
       next: ({ clients, projects, tasks, timeEntries, invoices }) => {
         this.clients.set(clients || []);
@@ -1001,6 +1056,12 @@ export class DashboardOverview {
   isTaskOverdue(task: TaskResponse): boolean {
     if (!task.dueDate || task.status === "DONE") return false;
     return new Date(task.dueDate).getTime() < Date.now();
+  }
+
+  isTaskDueSoon(task: TaskResponse): boolean {
+    if (!task.dueDate || task.status === "DONE") return false;
+    const diffMs = new Date(task.dueDate).getTime() - Date.now();
+    return diffMs >= 0 && diffMs <= 48 * 60 * 60 * 1000;
   }
 
   getStatusClass(status: ProjectStatus): string {

@@ -7,8 +7,21 @@
         Record billable hours, monitor active timers, and review team timesheet activity.
       </p>
     </div>
-    @if (canTrackTime()) {
-      <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2">
+      <aos-button
+        variant="outlined"
+        size="sm"
+        type="button"
+        [disabled]="tm.isLoading()"
+        (click)="tm.loadInitialData()"
+        (keydown.enter)="tm.loadInitialData()"
+        ariaLabel="Refresh time tracking data"
+      >
+        <aos-icons name="lucideRefreshCw" class="size-3.5" [class.animate-spin]="tm.isLoading()" />
+        <span class="ml-1.5 hidden font-mono text-xs sm:inline">Refresh</span>
+      </aos-button>
+
+      @if (canTrackTime()) {
         <aos-button
           variant="outlined"
           size="sm"
@@ -29,9 +42,29 @@
             <span class="ml-1.5 font-mono text-xs">Start Timer</span>
           </aos-button>
         }
-      </div>
-    }
+      }
+    </div>
   </div>
+
+  <!-- Member Personal Isolation Callout Banner -->
+  @if (isMember()) {
+    <div
+      class="border-brand-green/30 bg-brand-green/10 text-brand-green flex items-center justify-between gap-3 rounded-md border p-3.5 font-mono text-xs shadow-xs"
+    >
+      <div class="flex items-center gap-2.5">
+        <aos-icons name="lucideShieldCheck" class="size-4 shrink-0" />
+        <span class="font-sans text-xs">
+          <strong>Member Privacy Mode:</strong> You are viewing exclusively your own personal logged
+          time entries and active stopwatch sessions.
+        </span>
+      </div>
+      <span
+        class="border-brand-green/30 bg-brand-green/20 shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase"
+      >
+        Personal View
+      </span>
+    </div>
+  }
 
   <!-- Active Stopwatch Widget (Visible when timer is running) -->
   @if (tm.activeTimer()) {
@@ -245,6 +278,17 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-2">
+      @if (isOwnerOrAdmin() && tm.members().length > 0) {
+        <div class="w-48">
+          <aos-select
+            [options]="memberFilterOptions()"
+            [value]="tm.memberFilter()"
+            (valueChange)="tm.memberFilter.set($event)"
+            [fullWidth]="true"
+          />
+        </div>
+      }
+
       <div class="w-44">
         <aos-select
           [options]="projectFilterOptions()"
@@ -315,6 +359,7 @@
           <thead class="bg-soft-stone/40 text-muted font-mono text-xs uppercase">
             <tr>
               <th scope="col" class="px-5 py-3">Task & Project</th>
+              <th scope="col" class="px-5 py-3">Team Member</th>
               <th scope="col" class="px-5 py-3">Duration</th>
               <th scope="col" class="px-5 py-3">Type</th>
               <th scope="col" class="px-5 py-3">Logged Date</th>
@@ -329,6 +374,32 @@
                   <div class="text-ink font-medium">{{ getTaskTitle(entry.taskId) }}</div>
                   <div class="text-body-muted font-mono text-xs">
                     {{ getProjectName(entry.taskId) }}
+                  </div>
+                </td>
+
+                <!-- Team Member (Who Did This Entry) -->
+                <td class="px-5 py-3.5">
+                  <div class="flex items-center gap-2.5">
+                    <div
+                      class="bg-brand-green/10 border-brand-green/30 text-brand-green flex size-7 items-center justify-center rounded-full border font-mono text-[10px] font-bold uppercase"
+                    >
+                      {{ tm.getMemberInitials(entry.userId) }}
+                    </div>
+                    <div>
+                      <div class="text-ink text-xs font-medium">
+                        {{ tm.getMemberDisplayName(entry.userId) }}
+                      </div>
+                      @if (tm.getMember(entry.userId); as member) {
+                        <div class="text-muted flex items-center gap-1 font-mono text-[10px]">
+                          <span>&#64;{{ member.username }}</span>
+                          <span
+                            class="bg-soft-stone text-muted rounded px-1 text-[9px] font-semibold"
+                          >
+                            {{ member.role }}
+                          </span>
+                        </div>
+                      }
+                    </div>
                   </div>
                 </td>
 

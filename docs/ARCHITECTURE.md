@@ -134,17 +134,26 @@ Routes are defined declaratively in `app.routes.ts` with code-splitting and func
 export const routes: Routes = [
   {
     path: "",
-    component: LandingPageComponent,
+    component: LandingPage,
     canActivate: [redirectIfAuthenticatedGuard],
   },
   {
     path: "how-it-works",
-    component: HowItWorksComponent,
+    loadComponent: () => import("./features/how-it-works/how-it-works"),
   },
   {
-    path: "app",
-    component: ShellComponent,
+    path: "demo",
+    loadComponent: () => import("./features/demo/demo"),
+  },
+  {
+    path: "workspaces",
     canActivate: [authGuard],
+    loadComponent: () => import("./features/workspaces/workspaces"),
+  },
+  {
+    path: "w/:workspaceId",
+    component: DashboardShell,
+    canActivate: [authGuard, tenantGuard],
     children: [
       { path: "", redirectTo: "dashboard", pathMatch: "full" },
       {
@@ -152,32 +161,33 @@ export const routes: Routes = [
         loadComponent: () => import("./features/dashboard-overview/dashboard-overview"),
       },
       {
-        path: "workspaces",
-        loadComponent: () => import("./features/workspaces/workspaces"),
-      },
-      {
         path: "clients",
-        canActivate: [tenantGuard, roleGuard(["OWNER", "ADMIN", "MEMBER", "CLIENT"])],
+        canActivate: [roleGuard],
+        data: { roles: ["OWNER", "ADMIN"] },
         loadComponent: () => import("./features/clients/clients"),
       },
       {
         path: "projects",
-        canActivate: [tenantGuard, roleGuard(["OWNER", "ADMIN", "MEMBER", "CLIENT"])],
+        canActivate: [roleGuard],
+        data: { roles: ["OWNER", "ADMIN", "MEMBER", "CLIENT"] },
         loadComponent: () => import("./features/projects/projects"),
       },
       {
         path: "tasks",
-        canActivate: [tenantGuard, roleGuard(["OWNER", "ADMIN", "MEMBER", "CLIENT"])],
+        canActivate: [roleGuard],
+        data: { roles: ["OWNER", "ADMIN", "MEMBER", "CLIENT"] },
         loadComponent: () => import("./features/tasks/tasks"),
       },
       {
         path: "time-tracking",
-        canActivate: [tenantGuard, roleGuard(["OWNER", "ADMIN", "MEMBER"])],
+        canActivate: [roleGuard],
+        data: { roles: ["OWNER", "ADMIN", "MEMBER"] },
         loadComponent: () => import("./features/time-tracking/time-tracking"),
       },
       {
         path: "invoices",
-        canActivate: [tenantGuard, roleGuard(["OWNER", "ADMIN", "CLIENT"])],
+        canActivate: [roleGuard],
+        data: { roles: ["OWNER", "ADMIN", "CLIENT"] },
         loadComponent: () => import("./features/invoices/invoices"),
       },
     ],
@@ -186,6 +196,7 @@ export const routes: Routes = [
     path: "unauthorized",
     loadComponent: () => import("./features/unauthorized/unauthorized"),
   },
+  { path: "app", redirectTo: "workspaces", pathMatch: "full" },
   { path: "**", redirectTo: "" },
 ];
 ```

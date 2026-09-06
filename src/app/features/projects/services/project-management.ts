@@ -55,7 +55,7 @@ export class ProjectManagement {
   readonly userRole = computed(() => this.workspaceStore.activeWorkspace()?.role);
   readonly canCreate = computed(() => {
     const role = this.userRole();
-    return role === "OWNER" || role === "ADMIN";
+    return role === "OWNER";
   });
   readonly canEdit = computed(() => {
     const role = this.userRole();
@@ -216,9 +216,14 @@ export class ProjectManagement {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
+    const role = this.workspaceStore.activeWorkspace()?.role;
+    const canFetchClients = role === "OWNER" || role === "ADMIN";
+
     forkJoin({
       projects: this.projectApi.getProjects(),
-      clients: this.clientApi.getClients().pipe(catchError(() => of([]))),
+      clients: canFetchClients
+        ? this.clientApi.getClients().pipe(catchError(() => of([])))
+        : of([]),
       tasks: this.taskApi.getTasks().pipe(catchError(() => of([]))),
     }).subscribe({
       next: ({ projects, clients, tasks }) => {

@@ -20,10 +20,12 @@ import {
   lucidePlus,
   lucideRefreshCw,
   lucideSearch,
+  lucideShieldCheck,
   lucideTrash2,
   lucideX,
 } from "@ng-icons/lucide";
 import { ProjectStatus } from "../../core/api/models";
+import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
 import { Select, SelectOption } from "../../shared/components/select/select";
@@ -71,13 +73,18 @@ import {
       lucideDollarSign,
       lucideClock,
       lucideAlertTriangle,
+      lucideShieldCheck,
     }),
   ],
   templateUrl: "./projects.html",
 })
 export class ProjectsComponent implements OnInit {
   readonly pm = inject(ProjectManagement);
+  private readonly workspaceStore = inject(WorkspaceStore);
   readonly Math = Math;
+
+  readonly isMember = computed(() => this.workspaceStore.activeWorkspace()?.role === "MEMBER");
+  readonly isClient = computed(() => this.workspaceStore.activeWorkspace()?.role === "CLIENT");
 
   getCappedPercentage(percentage: number): number {
     return Math.min(100, Math.max(0, percentage));

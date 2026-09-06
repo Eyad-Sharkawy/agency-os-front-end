@@ -4,6 +4,7 @@ import { provideRouter } from "@angular/router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ClientResponse } from "../../core/api/models/client.models";
 import { InvoiceResponse } from "../../core/api/models/invoice.models";
+import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 import { InvoicesComponent } from "./invoices";
 import {
   InvoiceFilterStatus,
@@ -27,6 +28,7 @@ describe("InvoicesComponent", () => {
   let canEditSignal: WritableSignal<boolean>;
   let canDeleteSignal: WritableSignal<boolean>;
   let isReadOnlySignal: WritableSignal<boolean>;
+  let activeWorkspaceSignal: ReturnType<typeof signal<{ role: string } | null>>;
 
   let loadInvoicesMock: ReturnType<typeof vi.fn>;
   let openCreateModalMock: ReturnType<typeof vi.fn>;
@@ -75,6 +77,7 @@ describe("InvoicesComponent", () => {
     canEditSignal = signal(true);
     canDeleteSignal = signal(true);
     isReadOnlySignal = signal(false);
+    activeWorkspaceSignal = signal<{ role: string } | null>({ role: "OWNER" });
 
     loadInvoicesMock = vi.fn();
     openCreateModalMock = vi.fn();
@@ -142,6 +145,7 @@ describe("InvoicesComponent", () => {
       providers: [
         provideRouter([]),
         { provide: InvoiceManagement, useValue: invoiceManagementMock },
+        { provide: WorkspaceStore, useValue: { activeWorkspace: activeWorkspaceSignal } },
       ],
     }).compileComponents();
 
@@ -259,5 +263,14 @@ describe("InvoicesComponent", () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.textContent).toContain("Acme Corp");
+  });
+
+  it("should render client portal banner when role is CLIENT", () => {
+    activeWorkspaceSignal.set({ role: "CLIENT" });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Client Portal View:");
+    expect(compiled.textContent).toContain("Client Invoices");
   });
 });

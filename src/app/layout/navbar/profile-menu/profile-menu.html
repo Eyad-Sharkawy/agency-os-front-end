@@ -1,9 +1,10 @@
 <aos-button
-  variant="primary"
+  variant="outlined"
   size="xs"
   shape="circle"
   type="button"
-  class="border-hairline size-9 border font-mono text-xs font-bold tracking-wider shadow-xs"
+  buttonClass="!bg-brand-green/10 !border-brand-green/30 !text-brand-green hover:!bg-brand-green/20"
+  class="size-9 font-mono text-xs font-bold tracking-wider shadow-xs"
   [ariaExpanded]="isOpen() ? 'true' : 'false'"
   [ariaLabel]="authStore.initials() + ' - User profile menu'"
   (click)="toggleMenu($event)"
@@ -21,7 +22,7 @@
     <div class="border-hairline border-b px-3.5 py-3">
       <div class="flex items-center gap-2.5">
         <div
-          class="bg-primary text-on-primary flex size-8 shrink-0 items-center justify-center rounded-sm font-mono text-xs font-bold"
+          class="bg-brand-green/10 border-brand-green/30 text-brand-green flex size-8 shrink-0 items-center justify-center rounded-sm border font-mono text-xs font-bold"
         >
           {{ authStore.initials() }}
         </div>

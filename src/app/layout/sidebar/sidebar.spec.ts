@@ -120,15 +120,14 @@ describe("Sidebar Component", () => {
     ]);
   });
 
-  it("should hide Invoices navigation item for MEMBER role", () => {
+  it("should hide Clients and Invoices navigation items for MEMBER role", () => {
     activeWorkspaceSignal.set({
       ...mockWorkspaces[1],
       role: "MEMBER",
     });
-    expect(component.navItems()).toHaveLength(5);
+    expect(component.navItems()).toHaveLength(4);
     expect(component.navItems().map(i => i.label)).toEqual([
       "Overview",
-      "Clients",
       "Projects",
       "Tasks",
       "Time Tracking",

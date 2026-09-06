@@ -1,9 +1,10 @@
-import { Component, computed, OnDestroy, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { Button } from "../../shared/components/button/button";
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { Icons } from "../../shared/components/icons/icons";
 import { provideIcons } from "@ng-icons/core";
 import { FeatureCard } from "./feature-card/feature-card";
+import { AuthStore } from "../../core/auth/stores/auth.store";
 
 import {
   lucideArrowRight,
@@ -58,8 +59,25 @@ import { simpleGithub } from "@ng-icons/simple-icons";
   templateUrl: "./landing-page.html",
 })
 export class LandingPage implements OnInit, OnDestroy {
+  private readonly authStore = inject(AuthStore);
+  private readonly router = inject(Router);
+
+  readonly loggingInUser = signal<string | null>(null);
+
   private timerIntervalId?: ReturnType<typeof setInterval>;
   readonly timerSeconds = signal<number>(3 * 3600 + 42 * 60 + 19);
+
+  async launchDemo(username: string): Promise<void> {
+    this.loggingInUser.set(username);
+    try {
+      const success = await this.authStore.loginDemo(username, "DemoPass123!");
+      if (success) {
+        await this.router.navigate(["/workspaces"]);
+      }
+    } finally {
+      this.loggingInUser.set(null);
+    }
+  }
 
   readonly formattedTimer = computed(() => {
     const total = this.timerSeconds();

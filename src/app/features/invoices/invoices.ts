@@ -22,6 +22,7 @@ import {
   lucideRefreshCw,
   lucideSearch,
   lucideSend,
+  lucideShieldCheck,
   lucideTrash2,
   lucideX,
 } from "@ng-icons/lucide";
@@ -30,6 +31,7 @@ import {
   InvoiceResponse,
   InvoiceStatus,
 } from "../../core/api/models/invoice.models";
+import { WorkspaceStore } from "../../core/multitenancy/workspace.store";
 import { Button } from "../../shared/components/button/button";
 import { Icons } from "../../shared/components/icons/icons";
 import { Select, SelectOption } from "../../shared/components/select/select";
@@ -79,13 +81,17 @@ import {
       lucideChevronDown,
       lucideSend,
       lucideArrowUpRight,
+      lucideShieldCheck,
     }),
   ],
   templateUrl: "./invoices.html",
 })
 export class InvoicesComponent implements OnInit {
   readonly im = inject(InvoiceManagement);
+  private readonly workspaceStore = inject(WorkspaceStore);
   readonly statusMeta = INVOICE_STATUS_META;
+
+  readonly isClient = computed(() => this.workspaceStore.activeWorkspace()?.role === "CLIENT");
 
   readonly activeStatusFilter = computed(() => this.im.statusFilter());
   readonly activeViewMode = computed(() => this.im.viewMode());

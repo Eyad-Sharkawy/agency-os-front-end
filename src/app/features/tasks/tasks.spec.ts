@@ -20,6 +20,7 @@ import { ActiveTimerResponse } from "../../core/api/models/time-entry.models";
 describe("TasksComponent", () => {
   let component: TasksComponent;
   let fixture: ComponentFixture<TasksComponent>;
+  let activeWorkspaceSignal: ReturnType<typeof signal<{ role: string } | null>>;
 
   let tmMock: {
     tasks: WritableSignal<TaskResponse[]>;
@@ -169,6 +170,8 @@ describe("TasksComponent", () => {
       isDiscardModalOpen: signal(false),
     };
 
+    activeWorkspaceSignal = signal<{ role: string } | null>({ role: "ADMIN" });
+
     await TestBed.configureTestingModule({
       imports: [TasksComponent],
       providers: [
@@ -180,7 +183,7 @@ describe("TasksComponent", () => {
         },
         {
           provide: WorkspaceStore,
-          useValue: { activeWorkspace: signal({ role: "ADMIN" }) },
+          useValue: { activeWorkspace: activeWorkspaceSignal },
         },
       ],
     }).compileComponents();
@@ -421,5 +424,23 @@ describe("TasksComponent", () => {
       startTime: "2026-08-14T00:00:00Z",
     });
     expect(component.isTrackingTask("task-1")).toBe(true);
+  });
+
+  it("should render member isolation banner when role is MEMBER", () => {
+    activeWorkspaceSignal.set({ role: "MEMBER" });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Assigned Tasks View:");
+    expect(compiled.textContent).toContain("Assigned Tasks");
+  });
+
+  it("should render client portal banner when role is CLIENT", () => {
+    activeWorkspaceSignal.set({ role: "CLIENT" });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Client Portal View:");
+    expect(compiled.textContent).toContain("Client View");
   });
 });

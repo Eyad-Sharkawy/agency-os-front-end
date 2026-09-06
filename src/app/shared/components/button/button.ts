@@ -207,7 +207,7 @@ export class Button {
         break;
 
       case "inverted":
-        variantClasses = "bg-white text-[#17171c] hover:bg-soft-stone active:scale-[0.99]";
+        variantClasses = "bg-white text-zinc-900 hover:bg-zinc-200 active:scale-[0.99]";
         break;
 
       case "outlined":

@@ -550,10 +550,33 @@ describe("DashboardOverview Component", () => {
 
     expect(component.canTrackTime()).toBe(true);
     expect(component.canCreateTask()).toBe(true);
-    expect(component.canViewClients()).toBe(true);
+    expect(component.canViewClients()).toBe(false);
     expect(component.canCreateProject()).toBe(false);
     expect(component.canCreateInvoice()).toBe(false);
     expect(component.canViewFinancials()).toBe(false);
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Member Workspace View:");
+    expect(compiled.textContent).toContain("Assigned Work");
+  });
+
+  it("should render client company dashboard isolation banner for CLIENT role", () => {
+    mockWorkspaceStore.activeWorkspace.mockReturnValue({
+      id: "ws-1",
+      name: "Acme Agency",
+      tenantId: "acme-agency",
+      ownerId: "user-1",
+      role: "CLIENT",
+      createdAt: "2026-01-01T00:00:00Z",
+    });
+
+    fixture = TestBed.createComponent(DashboardOverview);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain("Client Portal Dashboard:");
+    expect(compiled.textContent).toContain("Company View");
   });
 
   it("should return fallback client and project names for unmapped IDs", () => {

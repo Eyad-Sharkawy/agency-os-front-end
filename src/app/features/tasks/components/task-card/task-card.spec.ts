@@ -113,7 +113,7 @@ describe("TaskCard", () => {
     expect(compiled.textContent).toContain("Alpha Project");
     expect(compiled.textContent).toContain("HIGH");
     expect(compiled.textContent).toContain("Over Budget");
-    expect(compiled.textContent).toContain("(Overdue)");
+    expect(compiled.textContent).toContain("overdue");
   });
 
   it("should calculate correct previous and next status transitions", () => {
