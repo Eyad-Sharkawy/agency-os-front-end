@@ -134,4 +134,29 @@ describe("Select Component", () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain("Member");
   });
+
+  it("should filter options when searchable is enabled and query is entered", () => {
+    fixture.componentRef.setInput("searchable", true);
+    fixture.componentRef.setInput("searchPlaceholder", "Search roles...");
+    fixture.detectChanges();
+
+    component.isOpen.set(true);
+    expect(component.filteredOptions()).toHaveLength(3);
+
+    // Filter by query "adm"
+    const inputEvent = { target: { value: "adm" } } as unknown as Event;
+    component.onSearchInput(inputEvent);
+    expect(component.filteredOptions()).toHaveLength(1);
+    expect(component.filteredOptions()[0].value).toBe("ADMIN");
+
+    // Filter by query matching description "access"
+    component.onSearchInput({ target: { value: "access" } } as unknown as Event);
+    expect(component.filteredOptions()).toHaveLength(1);
+    expect(component.filteredOptions()[0].value).toBe("MEMBER");
+
+    // Clear filter on close
+    component.close();
+    expect(component.filterQuery()).toBe("");
+    expect(component.filteredOptions()).toHaveLength(3);
+  });
 });

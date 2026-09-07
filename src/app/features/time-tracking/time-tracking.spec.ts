@@ -290,6 +290,7 @@ describe("TimeTrackingComponent", () => {
     expect(options[0].value).toBe("ALL");
     expect(options[1].value).toBe("u-1");
     expect(options[1].label).toBe("Sarah Chen (@sarah_member)");
+    expect(options[1].description).toBe("MEMBER");
 
     expect(component.isOwnerOrAdmin()).toBe(true);
     expect(component.isMember()).toBe(false);
