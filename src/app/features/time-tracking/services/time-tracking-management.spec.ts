@@ -170,18 +170,60 @@ describe("TimeTrackingManagement", () => {
     expect(service.filteredEntries()[0].isBillable).toBe(false);
   });
 
-  it("should filter entries by task search query", () => {
+  it("should filter entries by task, project, and member search query", () => {
     service.loadInitialData();
+    // Task query
     service.searchQuery.set("Review");
     expect(service.filteredEntries()).toHaveLength(1);
     expect(service.filteredEntries()[0].id).toBe("te-2");
+
+    // Project name query
+    service.searchQuery.set("Acme");
+    expect(service.filteredEntries()).toHaveLength(1);
+    expect(service.filteredEntries()[0].id).toBe("te-1");
+
+    // Member name query
+    service.members.set([
+      {
+        userId: "db-u-1",
+        keycloakId: "u-1",
+        username: "sarah_chen",
+        firstName: "Sarah",
+        lastName: "Chen",
+        email: "sarah@example.com",
+        role: "MEMBER",
+      },
+    ]);
+    service.searchQuery.set("Sarah");
+    expect(service.filteredEntries()).toHaveLength(2);
+
+    service.searchQuery.set("@sarah_chen");
+    expect(service.filteredEntries()).toHaveLength(2);
   });
 
-  it("should filter entries by member", () => {
+  it("should filter entries by member correctly when member has keycloakId or database userId", () => {
     service.loadInitialData();
+    service.members.set([
+      {
+        userId: "db-u-1",
+        keycloakId: "u-1",
+        username: "sarah_chen",
+        firstName: "Sarah",
+        lastName: "Chen",
+        email: "sarah@example.com",
+        role: "MEMBER",
+      },
+    ]);
+
+    // Filtering by database userId should match entries with keycloakId "u-1"
+    service.memberFilter.set("db-u-1");
+    expect(service.filteredEntries()).toHaveLength(2);
+
+    // Filtering by keycloakId directly should match
     service.memberFilter.set("u-1");
     expect(service.filteredEntries()).toHaveLength(2);
 
+    // Non-existent member returns empty list
     service.memberFilter.set("non-existent-user");
     expect(service.filteredEntries()).toHaveLength(0);
   });

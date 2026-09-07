@@ -341,6 +341,7 @@ export class TimeTrackingManagement implements OnDestroy {
     const memberF = this.memberFilter();
     const query = this.searchQuery().trim().toLowerCase();
     const taskMap = this.taskMap();
+    const projectMap = this.projectMap();
 
     if (projectF !== "ALL") {
       entries = entries.filter(e => {
@@ -356,13 +357,71 @@ export class TimeTrackingManagement implements OnDestroy {
     }
 
     if (memberF !== "ALL") {
-      entries = entries.filter(e => e.userId === memberF);
+      const targetMember = this.getMember(memberF);
+      entries = entries.filter(e => {
+        if (e.userId === memberF) return true;
+        const entryMember = this.getMember(e.userId);
+        if (targetMember && entryMember) {
+          return (
+            entryMember.userId === targetMember.userId ||
+            (!!entryMember.keycloakId &&
+              !!targetMember.keycloakId &&
+              entryMember.keycloakId === targetMember.keycloakId)
+          );
+        }
+        if (entryMember) {
+          return (
+            entryMember.userId === memberF ||
+            entryMember.keycloakId === memberF ||
+            entryMember.username === memberF
+          );
+        }
+        if (targetMember) {
+          return (
+            targetMember.userId === e.userId ||
+            targetMember.keycloakId === e.userId ||
+            targetMember.username === e.userId
+          );
+        }
+        return false;
+      });
     }
 
     if (query) {
+      const cleanQuery = query.startsWith("@") ? query.substring(1) : query;
       entries = entries.filter(e => {
         const task = taskMap.get(e.taskId);
-        return task?.title.toLowerCase().includes(query) ?? false;
+        const taskMatches =
+          (task?.title.toLowerCase().includes(query) ||
+            (cleanQuery ? task?.title.toLowerCase().includes(cleanQuery) : false)) ??
+          false;
+        const project = task ? projectMap.get(task.projectId) : null;
+        const projectMatches =
+          (project?.name.toLowerCase().includes(query) ||
+            (cleanQuery ? project?.name.toLowerCase().includes(cleanQuery) : false)) ??
+          false;
+
+        const member = this.getMember(e.userId);
+        const memberFullName = member ? `${member.firstName} ${member.lastName}`.toLowerCase() : "";
+        const memberUsername = member?.username ? member.username.toLowerCase() : "";
+        const memberUsernameWithAt = member?.username ? `@${member.username.toLowerCase()}` : "";
+        const memberEmail = member?.email ? member.email.toLowerCase() : "";
+        const memberDisplayName = this.getMemberDisplayName(e.userId).toLowerCase();
+        const rawUserId = e.userId ? e.userId.toLowerCase() : "";
+
+        const memberMatches =
+          memberFullName.includes(query) ||
+          (cleanQuery ? memberFullName.includes(cleanQuery) : false) ||
+          memberUsername.includes(query) ||
+          memberUsername.includes(cleanQuery) ||
+          memberUsernameWithAt.includes(query) ||
+          memberEmail.includes(query) ||
+          (cleanQuery ? memberEmail.includes(cleanQuery) : false) ||
+          memberDisplayName.includes(query) ||
+          (cleanQuery ? memberDisplayName.includes(cleanQuery) : false) ||
+          rawUserId.includes(query);
+
+        return taskMatches || projectMatches || memberMatches;
       });
     }
 

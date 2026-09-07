@@ -96,6 +96,7 @@ export class TimeTrackingComponent {
       ...this.tm.members().map(m => ({
         label: `${m.firstName} ${m.lastName} (@${m.username})`,
         value: m.userId,
+        description: m.role,
       })),
     ];
   });

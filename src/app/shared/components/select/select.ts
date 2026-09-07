@@ -11,7 +11,7 @@ import {
 } from "@angular/core";
 import { CdkConnectedOverlay, CdkOverlayOrigin, ConnectedPosition } from "@angular/cdk/overlay";
 import { provideIcons } from "@ng-icons/core";
-import { lucideCheck, lucideChevronDown } from "@ng-icons/lucide";
+import { lucideCheck, lucideChevronDown, lucideSearch } from "@ng-icons/lucide";
 import { Icons } from "../icons/icons";
 
 export interface SelectOption<T = unknown> {
@@ -28,7 +28,7 @@ export type SELECT_VARIANTS = "outlined" | "filled" | "ghost";
   selector: "aos-select",
   standalone: true,
   imports: [Icons, CdkOverlayOrigin, CdkConnectedOverlay],
-  providers: [provideIcons({ lucideChevronDown, lucideCheck })],
+  providers: [provideIcons({ lucideChevronDown, lucideCheck, lucideSearch })],
   host: {
     class: "relative inline-block text-left",
     "[class.w-full]": "fullWidth()",
@@ -74,36 +74,59 @@ export type SELECT_VARIANTS = "outlined" | "filled" | "ghost";
         <div
           role="listbox"
           [attr.aria-activedescendant]="activeOptionId()"
-          class="border-hairline bg-canvas text-ink animate-in fade-in zoom-in-95 my-1 max-h-60 min-w-[150px] overflow-auto rounded-sm border p-1 shadow-2xl duration-100 focus:outline-none"
+          class="border-hairline bg-canvas text-ink animate-in fade-in zoom-in-95 my-1 max-h-64 min-w-[150px] overflow-auto rounded-sm border p-1 shadow-2xl duration-100 focus:outline-none"
         >
-          @for (option of options(); track option.value; let idx = $index) {
-            <div
-              role="option"
-              tabindex="0"
-              [id]="'select-opt-' + idx"
-              [attr.aria-selected]="isSelected(option.value)"
-              [attr.aria-disabled]="option.disabled"
-              (click)="selectOption(option)"
-              (keydown.enter)="selectOption(option)"
-              (keydown.space)="selectOption(option)"
-              class="hover:bg-soft-stone focus:bg-soft-stone flex cursor-pointer items-center justify-between rounded-xs px-2.5 py-2 font-mono text-xs transition-colors focus:outline-none"
-              [class.bg-soft-stone]="isSelected(option.value)"
-              [class.font-semibold]="isSelected(option.value)"
-              [class.text-brand-green]="isSelected(option.value)"
-              [class.opacity-40]="option.disabled"
-              [class.cursor-not-allowed]="option.disabled"
-            >
-              <div class="flex min-w-0 flex-col pr-2">
-                <span class="truncate font-medium">{{ option.label }}</span>
-                @if (option.description) {
-                  <span class="text-muted text-[10px]">{{ option.description }}</span>
+          @if (searchable()) {
+            <div class="border-hairline bg-canvas sticky top-0 z-10 border-b p-1">
+              <div class="relative flex items-center">
+                <aos-icons
+                  name="lucideSearch"
+                  class="text-muted pointer-events-none absolute left-2 size-3.5"
+                />
+                <input
+                  type="text"
+                  [placeholder]="searchPlaceholder()"
+                  [value]="filterQuery()"
+                  (input)="onSearchInput($event)"
+                  (keydown)="$event.stopPropagation()"
+                  class="border-hairline bg-soft-stone/50 text-ink placeholder:text-muted focus:border-brand-green/50 w-full rounded-xs border py-1 pr-2 pl-7 font-mono text-xs focus:outline-none"
+                />
+              </div>
+            </div>
+          }
+
+          @if (filteredOptions().length === 0) {
+            <div class="text-muted p-3 text-center font-mono text-xs">No options found</div>
+          } @else {
+            @for (option of filteredOptions(); track option.value; let idx = $index) {
+              <div
+                role="option"
+                tabindex="0"
+                [id]="'select-opt-' + idx"
+                [attr.aria-selected]="isSelected(option.value)"
+                [attr.aria-disabled]="option.disabled"
+                (click)="selectOption(option)"
+                (keydown.enter)="selectOption(option)"
+                (keydown.space)="selectOption(option)"
+                class="hover:bg-soft-stone focus:bg-soft-stone flex cursor-pointer items-center justify-between rounded-xs px-2.5 py-2 font-mono text-xs transition-colors focus:outline-none"
+                [class.bg-soft-stone]="isSelected(option.value)"
+                [class.font-semibold]="isSelected(option.value)"
+                [class.text-brand-green]="isSelected(option.value)"
+                [class.opacity-40]="option.disabled"
+                [class.cursor-not-allowed]="option.disabled"
+              >
+                <div class="flex min-w-0 flex-col pr-2">
+                  <span class="truncate font-medium">{{ option.label }}</span>
+                  @if (option.description) {
+                    <span class="text-muted text-[10px]">{{ option.description }}</span>
+                  }
+                </div>
+
+                @if (isSelected(option.value)) {
+                  <aos-icons name="lucideCheck" class="text-brand-green size-3.5 shrink-0" />
                 }
               </div>
-
-              @if (isSelected(option.value)) {
-                <aos-icons name="lucideCheck" class="text-brand-green size-3.5 shrink-0" />
-              }
-            </div>
+            }
           }
         </div>
       </ng-template>
@@ -120,10 +143,26 @@ export class Select<T = unknown> {
   readonly size = input<SELECT_SIZES>("md");
   readonly variant = input<SELECT_VARIANTS>("outlined");
   readonly fullWidth = input<boolean, unknown>(true, { transform: booleanAttribute });
+  readonly searchable = input<boolean, unknown>(false, { transform: booleanAttribute });
+  readonly searchPlaceholder = input<string>("Search options...");
 
   readonly valueChange = output<T>();
 
   readonly isOpen = signal<boolean>(false);
+  readonly filterQuery = signal<string>("");
+
+  readonly filteredOptions = computed(() => {
+    const opts = this.options();
+    const query = this.filterQuery().trim().toLowerCase();
+    if (!this.searchable() || !query) {
+      return opts;
+    }
+    return opts.filter(
+      opt =>
+        opt.label.toLowerCase().includes(query) ||
+        (opt.description?.toLowerCase().includes(query) ?? false),
+    );
+  });
 
   readonly selectedOption = computed(() => {
     const val = this.value();
@@ -136,7 +175,7 @@ export class Select<T = unknown> {
 
   readonly activeOptionId = computed(() => {
     const val = this.value();
-    const idx = this.options().findIndex(opt => opt.value === val);
+    const idx = this.filteredOptions().findIndex(opt => opt.value === val);
     return idx >= 0 ? `select-opt-${idx}` : undefined;
   });
 
@@ -223,6 +262,7 @@ export class Select<T = unknown> {
       if (!this.isOpen()) {
         const width = this.elementRef.nativeElement?.getBoundingClientRect()?.width || 150;
         this.overlayWidth.set(Math.max(width, 150));
+        this.filterQuery.set("");
       }
       this.isOpen.update(open => !open);
     }
@@ -230,12 +270,19 @@ export class Select<T = unknown> {
 
   close(): void {
     this.isOpen.set(false);
+    this.filterQuery.set("");
+  }
+
+  onSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.filterQuery.set(input.value);
   }
 
   selectOption(option: SelectOption<T>): void {
     if (option.disabled) return;
     this.valueChange.emit(option.value);
     this.isOpen.set(false);
+    this.filterQuery.set("");
   }
 
   isSelected(val: T): boolean {
@@ -247,6 +294,7 @@ export class Select<T = unknown> {
 
     if (event.key === "Escape") {
       this.isOpen.set(false);
+      this.filterQuery.set("");
     } else if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       this.toggleOpen();
@@ -268,7 +316,7 @@ export class Select<T = unknown> {
   }
 
   private navigateOptions(delta: number): void {
-    const opts = this.options().filter(o => !o.disabled);
+    const opts = this.filteredOptions().filter(o => !o.disabled);
     if (opts.length === 0) return;
     const curIdx = opts.findIndex(o => o.value === this.value());
     const nextIdx = (curIdx + delta + opts.length) % opts.length;
